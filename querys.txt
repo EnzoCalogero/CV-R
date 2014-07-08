@@ -1,0 +1,58 @@
+job activity:
+
+SELECT [jobinitfrom]
+      ,[clientname]
+      ,[idataagent]
+      ,[data_sp]
+      ,[jobstatus]
+      ,[startdate]
+      ,[enddate]
+      ,[durationunixsec]
+       ,[numstreams]
+      ,[numbytesuncomp]
+      ,[numbytescomp]
+      ,[numobjects]
+       FROM [commserv].[dbo].[CommCellBackupInfo] where [commserv].[dbo].[CommCellBackupInfo].[startdate] > '2014-05-01'
+
+
+modify type on Excel for start and enddate.
+dd/mm/yyyy hh:mm
+
+
+Then modified the two columns
+numbytesuncomp	numbytescomp
+with decimals --> 0
+ 
+
+###########################################
+dedup activity:
+
+
+SELECT  [SIDBStoreId]
+      ,[SubStoreId]
+       ,[HistoryType]
+      ,[ModifiedTime]
+      ,[PrimaryEntries]
+      ,[SecondaryEntries]
+      ,[AvgQITime]
+      ,[AvgQITimeSampleCount]
+      ,[NumOfConnections]
+      ,[ZeroRefCount]
+      ,[DataSizeToPrune]
+      ,[SizeOccupied]
+      ,[DDBManagedSize]
+      ,[DeleteChunkCount]
+  FROM [commserv].[dbo].[IdxSIDBUsageHistory]
+
+on Execl
+create a new column "Date"
+on the first availabel cell add this (amend appropriately)
+=((E2)/86400)+(DATEVALUE("1-1-1970") )
+
+then modified the cells format into
+ dd/mm/yyyy hh:mm
+######################################################
+AUXCOPY
+
+
+SELECT *  FROM [commserv].[dbo].[CommCellAuxCopyInfo] where startdate >'2014-06-01'
