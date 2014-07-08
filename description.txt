@@ -1,0 +1,33 @@
+JobAnalysisDR.r
+
+function --> CleanDBData
+{Basic fuction for pre analysis manipulation}
+
+
+
+Mo  -> Month number {1-12, 0--> all}
+hour -> Hour {1-12, 0--> all}   Not implemented yet.
+file -> self explaining
+MAgent->  not filtered -->'all',  otherwise grep "Ma08"
+
+function --> AnalysDBWritenSP
+{Basic analysis data against Night Impact}
+
+Mo
+file
+SP
+
+
+function --> AnalysDBtimeSP
+{Basic analysis Duration Time against Night Impact}
+Mo
+file
+SP
+
+function -->  AnalysDBTroughputSP
+
+{Global Analysis for data and troughtput and duration}
+Mo
+file
+SP="all"
+Magent="all"
