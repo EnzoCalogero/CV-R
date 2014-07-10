@@ -15,7 +15,7 @@ CleanDBData<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv'
   jobs<-subset(jobs,jobs$data_sp != 'NULL')
 
   ###          FOR IMPUT TROUBLSHOOTING                  #############
-  #View(jobs)
+
   print("MA")
   print(MAgent)
   if(MAgent!='all'){

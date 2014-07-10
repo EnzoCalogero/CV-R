@@ -9,15 +9,21 @@ DedupRead<-function(file, sidb=0,Mo=6,Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
      DDB<-subset(DDB,DDB$SIDBStoreId %in% sidb)
    }
   
-
+  ##############################
+ # val <- 1352068320
+#  as.POSIXct(val, origin="1970-01-01")
+  #[1] "2012-11-04 22:32:00 CST"
+ # R> as.Date(as.POSIXct(val, origin="1970-01-01"))
+  #[1] "2012-11-05" 
+#############################
   
   #DDB<-subset(DDB,DDB$AvgQITime > 0 & DDB$NumOfConnections > 0)
-  DDB$trughput<-(128/(DDB$AvgQITime/100000))/1024##mg/sec 
- 
+DDB$trughput<-(128/(DDB$AvgQITime/100000))/1024##mg/sec 
+DDB$Date<-as.POSIXct(DDB$ModifiedTime, origin="1970-01-01")
   
- DDB$day<-substr(DDB$Date,1,2)
- DDB$Month<-substr(DDB$Date,4,5)
- DDB$year<-substr(DDB$Date,7,10)
+ DDB$day<-substr(DDB$Date,9,10)
+ DDB$Month<-substr(DDB$Date,6,7)
+ DDB$year<-substr(DDB$Date,2,4)
  DDB$hour<-substr(DDB$Date,12,13)
  
  DDB$year<-as.numeric(DDB$year)
@@ -25,6 +31,8 @@ DedupRead<-function(file, sidb=0,Mo=6,Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
  DDB$day<-as.numeric(DDB$day)
  DDB$hour<-as.numeric(DDB$hour)
  
+#View(DDB)
+#return(DDB)
  ################################################
  #                Time filtering
  ########################################
@@ -41,12 +49,14 @@ DedupRead<-function(file, sidb=0,Mo=6,Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
  DDB$startsimply<-DDB$Month*10000+DDB$day*100+DDB$hour 
  
  
- #View(DDB)
+View(DDB)
 return(DDB)
 }
 
 ##########  Perf Analysis  ###################
 DedupPerf<-function(sidb=0,Mo=6,file='C:/Users/enzo7311/Desktop/Dati/cs7ddb1506.csv',hour=c(18,19,20,12,21,23)){
+  library(ggplot2)
+  library(gcookbook)
   DDB<-DedupRead(file,sidb,Mo)
 #print(file)
 print(sidb)
@@ -69,14 +79,16 @@ p2<-ggplot(DDBAggr2, aes(y=log10(AvgQITime),x=hour)) +  geom_point() + geom_line
 
 p3<-ggplot(DDBAggr2, aes(y=log10(AvgQITime),x=day)) +  geom_point() + geom_line(aes(colour=factor(SIDBStoreId)))
 
-p4<-ggplot(DDBAggr2, aes(y=log10(AvgQITime),x=startsimply)) +  geom_point() + geom_line(aes(colour=factor(SIDBStoreId)))
-multiplot(p0,p1, p2, p3, p4, cols=2)
+p4<-  ggplot(DDBAggr2, aes(y=log10(AvgQITime),x=startsimply)) +  geom_point() + geom_line(aes(colour=factor(SIDBStoreId)))
+multiplot(p0,p1,p2,p3,p4, cols=2)
 }
   
 ###################################
 ####################################
 
 DedupDataAging<-function(sidb=0,Mo=6,file='C:/Users/enzo7311/Desktop/Dati/cs499ddb2006.csv',hour=c(18,19,20,12,21,23)){
+  library(ggplot2)
+  library(gcookbook)
   DDB<-DedupRead(file,sidb,Mo)
   #print(file)
   print(sidb)
@@ -87,15 +99,15 @@ DedupDataAging<-function(sidb=0,Mo=6,file='C:/Users/enzo7311/Desktop/Dati/cs499d
   p1<-ggplot(DDBAggr1, aes(y=ZeroRefCount,x=startsimply)) +  geom_point(aes(colour=factor(SIDBStoreId))) #+ geom_line(aes(colour=factor(SIDBStoreId)))
   
   
-  DDBAggr2<-aggregate(AvgQITime~startsimply + SIDBStoreId +day + hour,max,data=DDB)
-  View(DDBAggr2)
+  #DDBAggr2<-aggregate(AvgQITime~startsimply + SIDBStoreId +day + hour,max,data=DDB)
+  #View(DDBAggr2)
   
   DDBAggr3<-aggregate(NumOfConnections~startsimply + SIDBStoreId , max,data=DDB)
   View(DDBAggr3)
   
   p0<-ggplot(DDBAggr3, aes(y=NumOfConnections,x=startsimply)) +  geom_point(aes(colour=factor(SIDBStoreId))) #+ geom_line(aes(colour=factor(SIDBStoreId)))
   
-  p2<-ggplot(DDBAggr2, aes(y=log10(AvgQITime),x=hour)) +  geom_point(aes(colour=factor(SIDBStoreId))) # + geom_line(aes(colour=factor(SIDBStoreId)))
+  #p2<-ggplot(DDBAggr2, aes(y=log10(AvgQITime),x=hour)) +  geom_point(aes(colour=factor(SIDBStoreId))) # + geom_line(aes(colour=factor(SIDBStoreId)))
   
   p3<-ggplot(DDBAggr2, aes(y=log10(AvgQITime),x=day)) +  geom_point(aes(colour=factor(SIDBStoreId))) #+ geom_line(aes(colour=factor(SIDBStoreId)))
   

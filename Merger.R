@@ -1,4 +1,4 @@
-Merger<-function(sp="all",sidb=0,Mo=6,fileDDP='C:/Users/enzo7311/Desktop/Dati/cs499ddb2006.csv',fileJOB='C:/Users/enzo7311/Desktop/Dati/cs499jobs2306.csv',Hour=c(18,19,20,21,22)){
+Merger<-function(sp="all",sidb=0,Mo=6,fileDDP='C:/Users/enzo7311/Desktop/Dati/cs401ddb0907.csv',fileJOB='C:/Users/enzo7311/Desktop/Dati/cs401jobs0907.csv',Hour=c(18,19,20,21,22)){
   library(ggplot2)
   library(gcookbook)
   library(plyr)
@@ -176,11 +176,25 @@ mergertru<-function(sp="all",sidb=0,Mo=6,fileDDP='C:/Users/enzo7311/Desktop/Dati
   #plot(log(AvgQITime), log(ZeroRefCount)) 
   #abcurve(fit2)
   #title("Regression")
+  fitfinale <- glm(trupt ~ ZeroRefCount+AvgQITime, data=miaZvsIQ, family=poisson())
+  print("ecco il FItting Finale")
+  print(summary(fitfinale))# display results   
+  
+  
+  fitfinale2 <- glm(trupt ~ log(ZeroRefCount)+AvgQITime, data=miaZvsIQ, family=poisson())
+  print("ecco il FItting Finale")
+  print(summary(fitfinale))# display results   
+  
+  fitfinale3 <- glm(trupt ~ log(ZeroRefCount)+AvgQITime -1, data=miaZvsIQ, family=poisson())
+  print("ecco il FItting Finale")
+  print(summary(fitfinale))# display results   
   
   #glm2 <- glm(log(miaZvsIQ$ZeroRefCount)~log(miaZvsIQ$AvgQITime),family="poisson",data=miaZvsIQ)
-  plot(miaZvsIQ$trupt,fit$fitted,col="red",pch=19)
-  points(miaZvsIQ$trupt,fit1$fitted,col="blue",pch=19,xlab="Date",ylab="Fitted Counts")
+  plot(miaZvsIQ$trupt,fit$fitted,col="red",pch=19,xlab="Sperimental",ylab="calculated")
+  points(miaZvsIQ$trupt,fitfinale$fitted,col="blue",pch=19)
   points(miaZvsIQ$trupt,fit2$fitted,col="green",pch=19)
+  points(miaZvsIQ$trupt,fitfinale2$fitted,col="yellow",pch=19)
+  points(miaZvsIQ$trupt,fitfinale3$fitted,col="orange",pch=19)
   #points(miaZvsIQ$ZeroRefCount,miaZvsIQ$AvgQITime,col="red",pch=19)
   abline(a=0,b=1)
   
