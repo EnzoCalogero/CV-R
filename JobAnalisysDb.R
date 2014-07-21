@@ -291,3 +291,73 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
     }
   }
 }
+
+
+########################################################################################
+############  INDEX CACHE###############################################################
+########################################################################################
+
+
+
+sortNumObjects<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv',MAgent='all',hour=0)
+{
+  library(ggplot2)
+  library(gcookbook)
+  
+  jobs<-CleanDBDataAll(Mo=7,file='C:/Users/enzo7311/Desktop/dati/cs402jobs2107.csv',MAgent='all',hour=0)  
+  
+  job<-jobs[with(jobs, order(-numobjects)),]
+  
+  globalNUM<-aggregate(numobjects~day+hour, sum,data=jobs)
+  globalNUM<-globalNUM[with(globalNUM, order(day,hour)),]
+  globalNUM_Day<-aggregate(numobjects~day, sum,data=jobs)
+  
+  
+  View(globalNUM)
+#  View(job)
+p1<-ggplot(globalNUM, aes(y=numobjects,x=day))   + geom_point() + geom_line()#colour=factors(hour) 
+p2<-ggplot(globalNUM_Day, aes(y=numobjects,x=day))   +geom_point()+ geom_line() #colour=factors(hour) 
+ # return(job)
+multiplot(p1, p2,  cols=2) 
+}
+
+#########Clean Data####################
+
+CleanDBDataAll<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv',MAgent='all',hour=0){
+  
+  jobs <- read.csv(file)
+  
+  jobs$day<-substr(jobs$startdate,1,2)
+  jobs$Month<-substr(jobs$startdate,4,5)
+  jobs$year<-substr(jobs$startdate,7,10)
+  jobs$hour<-substr(jobs$startdate,12,13)
+  
+  jobs$year<-as.numeric(jobs$year)
+  jobs$Month<-as.numeric(jobs$Month)
+  jobs$day<-as.numeric(jobs$day)
+  jobs$hour<-as.numeric(jobs$hour)
+  
+  jobs$nightImp<-jobs$day
+  
+  jobs$nightImp<-jobs$nightImp +  floor(jobs$hour/12)
+  
+  jobs$startsimply<-jobs$Month*10000+jobs$day*100+jobs$hour  ###Simpolyfide
+  
+  ###########################################################
+  jobs$numbytescomp<-jobs$numbytescomp/(1024^3) ###transform in Gb
+  jobs$numbytesuncomp<-jobs$numbytesuncomp/(1024^3)
+  
+  ###############################################
+  #                Time filtering
+  ########################################
+  if(Mo!=0){
+    jobs<-subset(jobs,jobs$Month == Mo)
+  }
+  
+  ######################################
+  ######################################
+  
+  
+  View(jobs)
+  return (jobs)
+}
