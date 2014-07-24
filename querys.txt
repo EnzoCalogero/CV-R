@@ -14,6 +14,12 @@ SELECT [jobinitfrom]
       ,[numobjects]
        FROM [commserv].[dbo].[CommCellBackupInfo] where [commserv].[dbo].[CommCellBackupInfo].[startdate] > '2014-05-01'
 
+!!!!!!!  full one.....!!!!!!!!!!!!!!!!!!!!!!
+
+SELECT * FROM [commserv].[dbo].[CommCellBackupInfo] where [commserv].[dbo].[CommCellBackupInfo].[startdate] > '2014-07-01'
+
+
+
 
 modify type on Excel for start and enddate.
 dd/mm/yyyy hh:mm

@@ -306,19 +306,30 @@ sortNumObjects<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.c
   
   jobs<-CleanDBDataAll(Mo=7,file='C:/Users/enzo7311/Desktop/dati/cs402jobs2107.csv',MAgent='all',hour=0)  
   
-  job<-jobs[with(jobs, order(-numobjects)),]
-  
+  job_ORd_OBJ<-jobs[with(jobs, order(-numobjects)),]
+  View(job_ORd_OBJ)
   globalNUM<-aggregate(numobjects~day+hour, sum,data=jobs)
   globalNUM<-globalNUM[with(globalNUM, order(day,hour)),]
   globalNUM_Day<-aggregate(numobjects~day, sum,data=jobs)
-  
+  globalNUM_SPDay<-aggregate(numobjects~day+data_sp, sum,data=jobs)
+  globalNUM_hour<-aggregate(numobjects~hour, sum,data=jobs)
+  globalNUM_idataagent<-aggregate(numobjects~idataagent, mean,data=jobs)
   
   View(globalNUM)
-#  View(job)
+  View(globalNUM_idataagent)
+  View(globalNUM_SPDay)
 p1<-ggplot(globalNUM, aes(y=numobjects,x=day))   + geom_point() + geom_line()#colour=factors(hour) 
 p2<-ggplot(globalNUM_Day, aes(y=numobjects,x=day))   +geom_point()+ geom_line() #colour=factors(hour) 
- # return(job)
-multiplot(p1, p2,  cols=2) 
+p3<-ggplot(globalNUM_hour, aes(y=numobjects,x=hour))   +geom_point()+ geom_line() #colour=factors(hour) 
+p4<-ggplot(globalNUM_idataagent, aes(y=numobjects,x=idataagent))   +geom_point()#+ geom_line(
+p5<-ggplot(globalNUM_SPDay, aes(y=log10(numobjects),x=day))   +geom_point() + facet_grid(. ~ data_sp)#+ geom_line(
+p6<-ggplot(jobs,aes(factor(idataagent),log10(numobjects)))+geom_boxplot()
+p7<-ggplot(jobs,aes(factor(idataagent),log10(numbytescomp)))+geom_boxplot()
+#p8<-ggplot(jobs),aes(factor(idataagent),log10(numobjects)))+geom_boxplot()  +facet(# return(job)
+multiplot(p1, p2,p3,p4,  cols=2) #  cols=2) 
+plot(p5)
+plot(p6)
+plot(p7)
 }
 
 #########Clean Data####################
@@ -326,11 +337,11 @@ multiplot(p1, p2,  cols=2)
 CleanDBDataAll<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv',MAgent='all',hour=0){
   
   jobs <- read.csv(file)
-  
-  jobs$day<-substr(jobs$startdate,1,2)
-  jobs$Month<-substr(jobs$startdate,4,5)
-  jobs$year<-substr(jobs$startdate,7,10)
-  jobs$hour<-substr(jobs$startdate,12,13)
+  jobs<-subset(jobs,jobs$data_sp != 'zDDB 7Day DO NOT USE')
+  jobs$day<-substr(jobs$enddate,1,2)
+  jobs$Month<-substr(jobs$enddate,4,5)
+  jobs$year<-substr(jobs$enddate,7,10)
+  jobs$hour<-substr(jobs$enddate,12,13)
   
   jobs$year<-as.numeric(jobs$year)
   jobs$Month<-as.numeric(jobs$Month)
