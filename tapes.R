@@ -1,5 +1,5 @@
 
-tapesF<-function(file="C:/Users/enzo7311/Desktop/test_/tapes1206.csv", dayREF=20140612){
+tapesF<-function(file="C:/Users/enzo7311/Desktop/dati/tapes0708.csv", dayREF=20140806){
   #Read the big File######
   library("plyr")
   #  library(lubridate)

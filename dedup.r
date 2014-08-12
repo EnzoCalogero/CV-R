@@ -99,15 +99,15 @@ DedupDataAging<-function(sidb=0,Mo=6,file='C:/Users/enzo7311/Desktop/Dati/cs499d
   p1<-ggplot(DDBAggr1, aes(y=ZeroRefCount,x=startsimply)) +  geom_point(aes(colour=factor(SIDBStoreId))) #+ geom_line(aes(colour=factor(SIDBStoreId)))
   
   
-  #DDBAggr2<-aggregate(AvgQITime~startsimply + SIDBStoreId +day + hour,max,data=DDB)
-  #View(DDBAggr2)
+  DDBAggr2<-aggregate(AvgQITime~startsimply + SIDBStoreId +day + hour,max,data=DDB)
+  View(DDBAggr2)
   
   DDBAggr3<-aggregate(NumOfConnections~startsimply + SIDBStoreId , max,data=DDB)
   View(DDBAggr3)
   
   p0<-ggplot(DDBAggr3, aes(y=NumOfConnections,x=startsimply)) +  geom_point(aes(colour=factor(SIDBStoreId))) #+ geom_line(aes(colour=factor(SIDBStoreId)))
   
-  #p2<-ggplot(DDBAggr2, aes(y=log10(AvgQITime),x=hour)) +  geom_point(aes(colour=factor(SIDBStoreId))) # + geom_line(aes(colour=factor(SIDBStoreId)))
+  p2<-ggplot(DDBAggr2, aes(y=log10(AvgQITime),x=hour)) +  geom_point(aes(colour=factor(SIDBStoreId))) # + geom_line(aes(colour=factor(SIDBStoreId)))
   
   p3<-ggplot(DDBAggr2, aes(y=log10(AvgQITime),x=day)) +  geom_point(aes(colour=factor(SIDBStoreId))) #+ geom_line(aes(colour=factor(SIDBStoreId)))
   
@@ -223,29 +223,10 @@ DedupTrendAnalysis<-function(sidb=0,Mo=6,file='C:/Users/enzo7311/Desktop/Dati/cs
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ##############################
 
-regressionDDB<-function(file='C:/Users/enzo7311/Desktop/dati/cs403ddb1306.csv', sidb=0){
-  DDB<-DedupRead(file,sidb)
+regressionDDB<-function(file='C:/Users/enzo7311/Desktop/dati/cs7ddb1506.csv', sidb=0){
+  DDB<-DedupRead(file)
 #  DDB<-DedupReadGlobal(file)
   print("Coefficient con lo spazio usato")
   print(coef(lm(DDB$SizeOccupied~DDB$PrimaryEntries+DDB$SecondaryEntries)))

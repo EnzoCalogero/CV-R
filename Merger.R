@@ -1,4 +1,4 @@
-Merger<-function(sp="all",sidb=0,Mo=6,fileDDP='C:/Users/enzo7311/Desktop/Dati/cs401ddb0907.csv',fileJOB='C:/Users/enzo7311/Desktop/Dati/cs401jobs0907.csv',Hour=c(18,19,20,21,22)){
+Merger<-function(sp="all",sidb=0,Mo=6,fileDDP='C:/Users/enzo7311/Desktop/Dati/cs401ddb0907.csv',fileJOB='C:/Users/enzo7311/Desktop/Dati/cs401jobs0907.csv',Hour=99){
   library(ggplot2)
   library(gcookbook)
   library(plyr)
@@ -74,7 +74,8 @@ print(cor(log10(Mia$truptCALcolato),log10(Mia$trupt),use="complete.obs"))
 
 # print(Mia)
 #print(lm(durationunixsec~.,data=Mia))
-p1<-ggplot(Mia, aes(y=numbytescomp,x=startsimply)) +  geom_point()  
+p1<-  ggplot(Mia, aes(y=numbytescomp,x=startsimply)) +  geom_point(colour = "red")  
+#plot(p1)
 p2<-ggplot(Mia, aes(y=durationunixsec,x=startsimply)) +  geom_point()  
 #p3<-ggplot(Mia, aes(y=trougput,x=startsimply)) +  geom_point()  + geom_line()
 p4<-ggplot(Mia, aes(y=numbytescomp,x=startsimply))+  geom_point()
@@ -88,16 +89,17 @@ p10<-ggplot(Mia, aes(y=log10(ZeroRefCount),x=log10(AvgQITime))) +  geom_point()
 p11<-ggplot(Mia, aes(y=log(truptCALcolato),x=log(trupt))) +  geom_point()  
 p12<-ggplot(Mia, aes(y=(truptCALcolato),x=(trupt))) +  geom_point()  
 #plot(data=Mia, .~startsimply)
-multiplot(p1, p2,p5,p7,p8,p9,p10,p11,p12, cols=2) 
+multiplot(p1,p2,p5,p7,p8,p9,p10,p11,p12,cols=2) 
+#           cols=2) 
 
-return(Mia)
+
 
 print(mean(DDB$AvgQITime))
   print(log10(mean(DDB$AvgQITime)))
   boxplot(log10(AvgQITime)~hour,data=DDB, main="log10(AvgQITime) By Hours",              xlab="Hour", ylab="log10(AvgQITime)") 
   abline(h=log10(mean(DDB$AvgQITime)),col = "red")
   abline(h=log10(median(DDB$AvgQITime)),col = "blue")
-  
+return(Mia) 
 }
 #######################################
 #########################################
@@ -200,3 +202,55 @@ mergertru<-function(sp="all",sidb=0,Mo=6,fileDDP='C:/Users/enzo7311/Desktop/Dati
   
   
 }
+
+
+
+
+
+#############################
+##Visualizzation#############
+#############################
+
+
+
+
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  require(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+
+
+
+

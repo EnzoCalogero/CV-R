@@ -1,5 +1,6 @@
 ################################################
 #### This clean from the DB JOBS Query##########
+#####   Jobs      ##############################
 ################################################
 CleanDBDataFORAUXJOB<-function(Mo=7,file='C:/Users/enzo7311/Desktop/dati/cs404jobs1107.csv',MAgent='all',SP=0){
   #                        
@@ -64,17 +65,20 @@ CleanDBDataFORAUXJOB<-function(Mo=7,file='C:/Users/enzo7311/Desktop/dati/cs404jo
  # ggplot(job2, aes(y=numbytescomp,x=Endsimply))+  geom_point(aes(colour=data_sp))+geom_line(aes(colour=data_sp))
   
   hour<-aggregate(numbytescomp~ ehour+data_sp, sum,data=jobs)
+ View(hour)
 p2<-ggplot(hour, aes(x=numbytescomp,y=ehour))+  geom_point(aes(colour=factor(data_sp)))
  
   View(job2)
 p1<-ggplot(job2, aes(x=numbytescomp,y=Endsimply))+  geom_point(aes(colour=data_sp))
   #return (job2)
  
-h2<-subset(hour,data_sp=='4WeekOffSite (DiskK-MA11)')
-p3<-ggplot(h2, aes(x=numbytescomp,y=ehour))+  geom_point()
- multiplot(p1, p2,p3, cols=2) 
- 
- 
+h2<-subset(hour,data_sp=='52WeekOffSite (DiskA-MA15)')
+p3<-ggplot(h2, aes(y=numbytescomp,x=ehour))+  geom_point()+ geom_line() + geom_hline(yintercept=2500)
+print(p3)
+p4<-ggplot(hour, aes(x=numbytescomp,y=ehour)) +geom_point()+  facet_grid(data_sp~. )
+print(p4)
+
+# multiplot(p1, p2,p3,p4, cols=2) 
  
  
 }
@@ -84,6 +88,8 @@ p3<-ggplot(h2, aes(x=numbytescomp,y=ehour))+  geom_point()
 
 ################################################
 #### This clean from the AUX Query##############
+
+#### USE this               ####################
 ################################################
 
 
@@ -101,6 +107,7 @@ CleanAUXData<-function(Mo=7,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_11_07.
   
   ###          FOR IMPUT TROUBLSHOOTING                  #############
   #View(AUX)
+  AUX<-subset(AUX,AUX$sourcecopyid != 'NULL')
   
   AUX$day<-substr(AUX$startdate,1,2)
   AUX$Month<-substr(AUX$startdate,4,5)
@@ -150,17 +157,17 @@ CleanAUXData<-function(Mo=7,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_11_07.
   ######################################
   
   AUX2<-aggregate(DataWritten~day + storagepolicy, sum,data=AUX)
-  p1<-ggplot(AUX2, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line(aes(colour=storagepolicy))
+  #p1<-ggplot(AUX2, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line(aes(colour=storagepolicy))
  
   #abline(coef(lm(mio$durationunixhours~mio$numbytescomp+mio$numobjects)))
-  multiplot(p1, cols=2) 
+  #multiplot(p1, cols=2) 
   View(AUX)
   View(AUX2)
   return (AUX)
 }
 
 
-AUXDataAnalysis<-function(Mo=7,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_11_07.csv',hour=0,Day=0){
+AUXDataAnalysis<-function(Mo=8,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_04_08.csv',hour=0,Day=0){
   #                        c(18,19,20,12,21,23)){
   #  1,2,3,4,5,6,7,8,9,
   #Read the big File
@@ -169,30 +176,30 @@ AUXDataAnalysis<-function(Mo=7,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_11_
   library(ggplot2)
   #### FROM [commserv].[dbo].[CommCellBackupInfo] 
   AUX<-CleanAUXData(Mo=7,file,hour,Day)
-  
+  print ("here")
   AUXDay<-aggregate(DataWritten~day, sum,data=AUX)
   AUXDay$DataWritten<-(AUXDay$DataWritten/(1024))
   p1<-ggplot(AUXDay, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line()
   
   
   AUXDUr<-aggregate(ElapsedTime~day+storagepolicy, sum,data=AUX)
-  p2<-ggplot(AUXDUr, aes(y=ElapsedTime,x=day)) +  geom_point()  + geom_line(aes(colour=storagepolicy))
+  p2<-ggplot(AUXDUr, aes(y=ElapsedTime,x=day)) +  geom_point()  + geom_line(aes(colour=factor(storagepolicy)))
   
   AUX2<-aggregate(DataWritten~day + storagepolicy, sum,data=AUX)
   AUX2$DataWritten<-(AUX2$DataWritten/(1024))
   
-  p3<-ggplot(AUX2, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line(aes(colour=storagepolicy))
+  p3<-ggplot(AUX2, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line(aes(colour=factor(storagepolicy)))
   
-  
-  
+  AUX_h<-aggregate(DataWritten~hour + storagepolicy, sum,data=AUX)
+  p4<-ggplot(AUX_h, aes(y=DataWritten,x=hour)) +  geom_point()  + geom_line(aes(colour=factor(storagepolicy)))
   
   #abline(coef(lm(mio$durationunixhours~mio$numbytescomp+mio$numobjects)))
-  multiplot(p1,p2,p3, cols=2) 
+  multiplot(p1,p2,p3,p4, cols=2) 
   
   complessive<-aggregate(DataWritten~storagepolicy+day, median,data=AUX)
   finale<-aggregate(DataWritten~storagepolicy, median,data=complessive)
-  abline(h=mean(finale$DataWritten))
-  print(finale)
+ # abline(h=mean(finale$DataWritten))
+#  print(finale)
   boxplot(complessive$DataWritten~complessive$storagepolicy,las=2,par(mar = c(12, 5, 4, 2)+ 0.3))
   
 }

@@ -1,5 +1,12 @@
-JobAnalysisDR.r
+############################
 
+	JobAnalysisDR.r
+
+###########################
+~~~~~~~~~~~~~~~~~~~~~
+JOB Performances~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+###########################
 function --> CleanDBData
 {Basic fuction for pre analysis manipulation}
 
@@ -9,7 +16,7 @@ Mo  -> Month number {1-12, 0--> all}
 hour -> Hour {1-12, 0--> all}   Not implemented yet.
 file -> self explaining
 MAgent->  not filtered -->'all',  otherwise grep "Ma08"
-
+##################
 function --> AnalysDBWritenSP
 {Basic analysis data against Night Impact}
 
@@ -17,13 +24,13 @@ Mo
 file
 SP
 
-
+#################
 function --> AnalysDBtimeSP
 {Basic analysis Duration Time against Night Impact}
 Mo
 file
 SP
-
+################
 function -->  AnalysDBTroughputSP
 
 {Global Analysis for data and troughtput and duration}
@@ -31,3 +38,143 @@ Mo
 file
 SP="all"
 Magent="all"
+###############
+function -->  AnalysTrendJOBS
+(Experiment for analysis trend on teh Time series)
+
+Failed
+
+#############################
+~~~~~~~~~~INDEX ANALYSIS~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+###########################################
+sortNumObjects
+
+Index analysis
+
+##########################################
+
+CleanDBDataAll
+
+Clean data for Index Analysis
+############################################
+
+	dedup.r
+
+############################################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~  DEDUP PERFORMANCE ANALYSIS ~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+function --> DedupRead
+
+Read the dedup cvs and implemet all the filter used so far.
+
+###########################
+
+function --> DedupPerf
+(NOT working)
+
+###########################
+
+function -->DedupDataAging
+
+Provide generic graphic and analysis on the dedup statistics.
+
+##########################
+
+function -->DedupDataAgingINSERT
+
+provides log 10(avg QI time ) on boxplot
+ 
+##########################
+
+function -->DedupDataAgingConnection
+
+provides number of connection over time on boxplot
+
+#########################
+function --> DedupDataAgingRefZero
+
+provides number zero Ref over time on boxplot
+##########################
+function -->DedupDataAgingINSERTHours
+
+provides log 10(avg QI time ) on boxplot for each hour of the day
+
+###########################
+function -->DedupTrendAnalysis
+
+trend analysis 
+(Not Working)
+##########################
+function -->regressionDDB
+
+First test regression model 
+
+(Not Working)
+
+############################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~ AUX COPY ANALYSIS~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+############################
+
+	AuxCopy.R
+###########################
+
+function -->CleanDBDataFORAUXJOB
+
+Cleaning function for the job table for AUX analysis.
+############################
+function--> CleanAUXData
+
+Cleaning function for the AUX DDB table for AUX analysis.
+
+############################
+function --> AUXDataAnalysis
+
+Basic explorirg information on teh aux data
+
+############################
+
+############################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~ Tapes ANALYSIS~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+############################
+
+	Tapes.R
+###########################
+
+function --> tapesF
+
+Dataaging on the tapes (import/Export staff)
+
+###########################
+############################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~ Trouput forecast~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+############################
+
+	Merger.R
+###########################
+
+function -->Merger
+
+comparing simultaneously job performances with ddb performances
+###########################
+
+function --> MergerZEROvQI
+
+First experiemnts
+###########################
+
+function -->Mergertru
+
+First experiments for regression analysis 
+###########################
