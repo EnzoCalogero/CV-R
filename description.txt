@@ -40,7 +40,7 @@ SP="all"
 Magent="all"
 ###############
 function -->  AnalysTrendJOBS
-(Experiment for analysis trend on teh Time series)
+(Experiment for analysis trend on the Time series)
 
 Failed
 
