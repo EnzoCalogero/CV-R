@@ -4,12 +4,18 @@ CleanDBData<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv'
 #                        c(18,19,20,12,21,23)){
 #  1,2,3,4,5,6,7,8,9,
 #Read the big File
-
+  #file<-'ODBC'
   #Type of query
  
   #### FROM [commserv].[dbo].[CommCellBackupInfo] 
-    
-  jobs <- read.csv(file)
+  
+  if(file!='ODBC'){  
+    jobs <- read.csv(file)
+  }
+  if(file=='ODBC'){  
+    jobs <- ReadODBCJobs()
+  }  
+  
   ############## Time transformation##############
   jobs<-subset(jobs,jobs$jobstatus == 'Success')
   jobs<-subset(jobs,jobs$data_sp != 'NULL')
@@ -160,6 +166,8 @@ AnalysDBTroughputSP<-function(Mo=6,file='C:/Users/enzo7311/Desktop/dati/cs403job
   if(SP!='all'){
     jobs<-subset(jobs,jobs$data_sp %in%  SP)
   }
+  print(summary(jobs))
+  pp<-ggplot(jobs,aes(x=numbytescomp, y=numobjects,z=durationunixsec))   +  stat_density2d()
   
   
   #### carico a livello di CS
@@ -186,6 +194,7 @@ AnalysDBTroughputSP<-function(Mo=6,file='C:/Users/enzo7311/Desktop/dati/cs403job
   
   jobs<-subset(mio,jobs$numbytescomp >0)
   
+  
   ################################
   ##Analysis#############
   print("Correlation data vs time")
@@ -209,10 +218,14 @@ AnalysDBTroughputSP<-function(Mo=6,file='C:/Users/enzo7311/Desktop/dati/cs403job
   print(summary(mio$ratio))
   Details<-mio
   View(Details)
+  View(mio)
   print(SP)
   print(acf(mio$numbytescomp))
 #  ggplot(mio, aes(y=trougput,x=Delta)) +  geom_point()  
+#pp<-ggplot(jobs,aes(x=numbytescomp, y=numobjects,z=trougput)) +  stat_density2d()
 
+#qplot(x=numbytescomp, y=numobjects,z=trougput, data = Details, geom = "contour")
+p0<-ggplot(mio,aes(x=numbytescomp, y=numobjects))  +  geom_point(aes(colour=data_sp)) + geom_density2d()
 p1<-ggplot(mio, aes(y=numbytescomp,x=nightImp)) +  geom_point()  + geom_line(aes(colour=data_sp))
 p2<-ggplot(mio, aes(y=durationunixhours,x=nightImp)) +  geom_point()  + geom_line(aes(colour=data_sp))
 p3<-ggplot(mio, aes(y=trougput,x=nightImp)) +  geom_point()  + geom_line(aes(colour=data_sp))
@@ -221,7 +234,7 @@ p6<-ggplot(mio, aes(x=numobjects,y=durationunixhours))+  geom_point(aes(colour=d
 p5<-ggplot(mio, aes(y=numobjects,x=nightImp)) +  geom_point()  + geom_line(aes(colour=data_sp))
 print(coef(lm(mio$durationunixhours~mio$numbytescomp+mio$numobjects)))
 #abline(coef(lm(mio$durationunixhours~mio$numbytescomp+mio$numobjects)))
-multiplot(p1, p2, p3, p4,p5,p6, cols=2) 
+multiplot(pp,p0,p1, p2, p3, p4,p5,p6, cols=2) 
 }
 
 #####################################
@@ -372,3 +385,29 @@ CleanDBDataAll<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.c
   View(jobs)
   return (jobs)
 }
+
+
+########################################
+#####Density Analysis###################
+########################################
+
+DensityJobs<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv', SP="all"){
+  library(ggplot2)
+  jobs <- CleanDBData(Mo,file)
+  
+  p4<-ggplot(jobs, aes(x = log(numobjects))) +geom_density(aes(fill=factor(idataagent)))
+  p2<-ggplot(jobs, aes(x = log(numbytescomp))) +geom_density(aes(fill=factor(idataagent)))
+  
+  p3<-ggplot(jobs, aes(x = log(durationunixsec))) +geom_density(aes(fill=factor(idataagent)))                                                                               
+  p1<-ggplot(jobs, aes(x = log(durationunixsec))) +geom_density() + facet_grid(.~hour)                                                                               
+  p5<-ggplot(jobs, aes(x =durationunixsec,y=hour)) + geom_violin()+ geom_jitter(height = 0)
+  p6<-ggplot(jobs, aes(x =numbytescomp,y=hour)) + geom_violin()
+  p7<-ggplot(jobs, aes(y =log(durationunixsec),x=idataagent)) + geom_violin()
+  
+  multiplot(p1,  cols=2) #  cols=2) 
+  
+  multiplot(p2,p3,p4,  cols=2)
+  multiplot(p5,p6,p7,  cols=2) #  cols=2) 
+  
+}
+  
