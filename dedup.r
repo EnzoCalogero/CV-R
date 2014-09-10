@@ -1,10 +1,35 @@
-DedupRead<-function(file, sidb=0,Mo=8,Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=c(18,19,20,12,21,23)){
+DDB_Analysis<-function(sidb=0,Mo=7,file='C:/Users/enzo7311/Desktop/Dati/cs902ddb0809.csv',hour=0){
+  library(ggplot2)
+  library(doBy)
+  DDB<-DedupRead(file,sidb,Mo)
+  
+  #print(file)
+  print(sidb)
+  View(DDB)
+  summary01<-  summaryBy(AvgQITime~SIDBStoreId+wDay, data=DDB, FUN=c(mean, median,sd))
+  print(summary01)
+  View(summary01)
+  
+  m1 <- ggplot(DDB, aes(x = log10(AvgQITime)))+ geom_density(aes(fill=factor(SIDBStoreId)))
+  ##Only for Display purpose####
+  DDB<-subset(DDB,DDB$AvgQITime >-1 & DDB$AvgQITime <10000)
+  t0<- ggplot(DDB, aes(x=Date,y=AvgQITime))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
+  t1<- ggplot(DDB, aes(x=Date,y=(ZeroRefCount)))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
+  t2<- ggplot(DDB, aes(x=WDay,y=AvgQITime))+ facet_grid(SIDBStoreId ~. )+  geom_boxplot()+ stat_smooth()
+  t3<- ggplot(DDB, aes(x=WDay,y=ZeroRefCount))+ facet_grid(SIDBStoreId ~. )+  geom_boxplot()+ stat_smooth()
+  t4<- ggplot(DDB, aes(x=Date,y=DDBManagedSize))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
+  
+  multiplot(m1,t0,t1,t2,t3,t4, cols=2)  
+}
+
+
+DedupRead<-function(file='C:/Users/enzo7311/Desktop/Dati/cs902ddb0809.csv', sidb=0,Mo=8,Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=c(18,19,20,12,21,23)){
   library(ggplot2)
   library(gcookbook)
   library(lubridate) #Date management
   #Read the big File######
   DDB <- read.csv(file)
-
+  View(DDB)
   ##########Focus on the sidb##########
   if(sidb!=0){
      DDB<-subset(DDB,DDB$SIDBStoreId %in% sidb)
@@ -233,7 +258,7 @@ DedupDataAgingINSERT_TimeSeries<-function(sidb=0,Mo=8,file='C:/Users/enzo7311/De
   
   multiplot(m1,t0,t1,t2, cols=2)  
 }
-DedupDataAgingINSERT_WeekD<-function(sidb=0,Mo=8,file='C:/Users/enzo7311/Desktop/Dati/cs007DDB2908.csv',hour=0){
+DedupDataAgingINSERT_WeekD<-function(sidb=0,Mo=7,file='C:/Users/enzo7311/Desktop/Dati/cs902ddb0809.csv',hour=0){
   library(ggplot2)
   library(doBy)
   DDB<-DedupRead(file,sidb,Mo)
@@ -248,12 +273,13 @@ DedupDataAgingINSERT_WeekD<-function(sidb=0,Mo=8,file='C:/Users/enzo7311/Desktop
   m1 <- ggplot(DDB, aes(x = log10(AvgQITime)))+ geom_density(aes(fill=factor(SIDBStoreId)))
   ##Only for Display purpose####
   DDB<-subset(DDB,DDB$AvgQITime >-1 & DDB$AvgQITime <10000)
-  t0<- ggplot(DDB, aes(x=Date,y=AvgQITime))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth(method=lm)
-  t1<- ggplot(DDB, aes(x=Date,y=ZeroRefCount))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth(method=lm)
-  t2<- ggplot(DDB, aes(x=WDay,y=AvgQITime))+ facet_grid(SIDBStoreId ~. )+  geom_boxplot()+ stat_smooth(method=lm)
-  t3<- ggplot(DDB, aes(x=WDay,y=ZeroRefCount))+ facet_grid(SIDBStoreId ~. )+  geom_boxplot()+ stat_smooth(method=lm)
+  t0<- ggplot(DDB, aes(x=Date,y=AvgQITime))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
+  t1<- ggplot(DDB, aes(x=Date,y=(ZeroRefCount)))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
+  t2<- ggplot(DDB, aes(x=WDay,y=AvgQITime))+ facet_grid(SIDBStoreId ~. )+  geom_boxplot()+ stat_smooth()
+  t3<- ggplot(DDB, aes(x=WDay,y=ZeroRefCount))+ facet_grid(SIDBStoreId ~. )+  geom_boxplot()+ stat_smooth()
+  t4<- ggplot(DDB, aes(x=Date,y=DDBManagedSize))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
   
-  multiplot(m1,t0,t1,t2,t3, cols=2)  
+  multiplot(m1,t0,t1,t2,t3,t4, cols=2)  
 }
 
 

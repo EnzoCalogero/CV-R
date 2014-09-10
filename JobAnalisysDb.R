@@ -1,6 +1,54 @@
 #########Clean Data####################
+JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv',MAgent='MA8',SP='all'){
+  library(ggplot2)
+  library(gcookbook)
+  library(lubridate)
+  #Read the big File######
+  
+  jobs <- CleanDBData(Mo,file,MAgent)
+  
+  ############################   Analysis  ###################
+  
+  if(SP!='all'){
+    jobs<-subset(jobs,jobs$data_sp %in%  SP)
+  }
+  
 
-CleanDBData<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv',MAgent='all',hour=0){
+  ##########
+  #Working here###
+  ##############
+  
+  alpha<-aggregate(numbytescomp~Start_Time+data_sp,sum,data=jobs) 
+  alpha$Start_Time<-ymd_hms(alpha$Start_Time)
+  
+  View(alpha)
+  alpha1<-aggregate(durationunixsec  ~Start_Time+data_sp,sum,data=jobs) 
+  alpha1$Start_Time<-ymd_hms(alpha1$Start_Time)
+  
+  View(alpha1)
+  alpha2<-aggregate(Throughput  ~Start_Time+data_sp,mean,data=jobs) 
+  alpha2$Start_Time<-ymd_hms(alpha2$Start_Time)
+  
+  View(alpha2)
+  
+  p0<-ggplot(alpha, aes(x=Start_Time,y=numbytescomp)) +  geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
+  p1<-ggplot(alpha1, aes(x=Start_Time,y=durationunixsec  )) +  geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
+  p2<-ggplot(alpha2, aes(x=Start_Time,y=Throughput  )) +  geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
+   
+  t2<- ggplot(jobs, aes(x=WDay,y=Throughput))+ facet_grid(data_sp  ~. )+  geom_boxplot()+ stat_smooth()
+  t1<- ggplot(jobs, aes(x=hour,y=Throughput))+ facet_grid(data_sp  ~. )+  geom_boxplot()+ stat_smooth()
+  t3<- ggplot(jobs, aes(x=WDay,y=numbytescomp))+ facet_grid(data_sp  ~. )+  geom_boxplot()+ stat_smooth()
+  g0<-ggplot(jobs, aes(x=durationunixsec,y=numbytescomp)) +  geom_point(aes(colour=factor(data_sp)))
+  m1 <- ggplot(jobs, aes(x = log10(numbytescomp)))+ geom_density(aes(fill=factor(data_sp)))
+multiplot(m1,p0,p1,p2,t1,t2,t3,g0, cols=2)
+}
+
+#########################################################################
+#############Clean Data#################################################
+#######################################################################
+
+
+CleanDBData<-function(Mo=6,file='C:/Users/enzo7311/Desktop/dati/cs403jobs1306.csv',MAgent='all',hour=0){
 #                        c(18,19,20,12,21,23)){
 #  1,2,3,4,5,6,7,8,9,
 #Read the big File
@@ -15,19 +63,29 @@ CleanDBData<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv'
   if(file=='ODBC'){  
     jobs <- ReadODBCJobs()
   }  
-  
+ 
   ############## Time transformation##############
   jobs<-subset(jobs,jobs$jobstatus == 'Success')
   jobs<-subset(jobs,jobs$data_sp != 'NULL')
-
+ 
   ###          FOR IMPUT TROUBLSHOOTING                  #############
-
+ # View(jobs)
   print("MA")
   print(MAgent)
   if(MAgent!='all'){
     jobs<-subset(jobs,grepl(MAgent,jobs$data_sp))
   }
  
+  ###############################################
+  #                Time filtering
+  ########################################
+ 
+  
+  
+ 
+ 
+  ######################################
+  ######################################
   jobs$day<-substr(jobs$startdate,1,2)
   jobs$Month<-substr(jobs$startdate,4,5)
   jobs$year<-substr(jobs$startdate,7,10)
@@ -38,7 +96,18 @@ CleanDBData<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv'
   jobs$day<-as.numeric(jobs$day)
   jobs$hour<-as.numeric(jobs$hour)
   
+ if(Mo!=0){
+   jobs<-subset(jobs,jobs$Month == Mo)
+ }
+ # jobs<-subset(jobs,jobs$day<25)
+
   ##########################################
+ ###  Start Time #########
+ 
+  jobs$Start_Time<-dmy_hm(jobs$startdate)
+  jobs$Start_Time<-round(jobs$Start_Time,"hours")
+  jobs$Start_Time<-as.character(jobs$Start_Time)
+ jobs$WDay<-wday(jobs$Start_Time,label = TRUE, abbr = FALSE) 
   ####SchedulerFilter####################
   print("Hour")
   print(hour)
@@ -64,56 +133,16 @@ CleanDBData<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv'
   ###########################################################
  jobs$numbytescomp<-jobs$numbytescomp/(1024^3) ###transform in Gb
  jobs$numbytesuncomp<-jobs$numbytesuncomp/(1024^3)
+
+ jobs$Throughput<-(jobs$numbytesuncomp/jobs$durationunixsec)
  
- ###############################################
- #                Time filtering
- ########################################
- if(Mo!=0){
-    jobs<-subset(jobs,jobs$Month == Mo)
- }
- # jobs<-subset(jobs,jobs$day<25)
- 
- ######################################
- ######################################
   
   View(jobs)
   return (jobs)
 }
 #################################################################
 ################### Data    #####################################
-AnalysDBWritenSP<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv', SP="12WeekOffSite (DiskA-MA14)"){
-  library(ggplot2)
-  library(gcookbook)
-  #Read the big File######
-  
-  jobs <- CleanDBData(Mo,file)
-  
-  ############################   Analysis  ###################
-  
-  
-  if(SP!='all'){
-    jobs<-subset(jobs,jobs$data_sp %in%  SP)
-    }
-  
-   # jobs<-subset(jobs,jobs$data_sp %in%  SP)
-  ###hourly impact#####
-  #mio<-aggregate(numbytescomp~startsimply + data_sp, sum,data=jobs)
-  #ggplot(mio, aes(y=numbytescomp,x=startsimply)) +  geom_point() + geom_line() 
-  
-  ###for night impact
-#  mio<-aggregate(numbytescomp~nightImp + data_sp, sum,data=jobs)
-#### carico a livello di CS
-  mio<-aggregate(numbytescomp~nightImp , sum,data=jobs)
-  View(mio)
-  ggplot(mio, aes(y=numbytescomp,x=nightImp)) +  geom_point() + geom_line() 
-  
-  
-  
- # ggplot(mio, aes(y=numbytescomp,x=startsimply)) +  geom_point() + geom_line() 
-  #ggplot(mio2, aes(y=APpL.TotMB,x=Start.Time)) +  geom_point(aes(colour=Storage.Policy)) + geom_line(aes(colour=Storage.Policy)) 
- # return(mio)
-  
-}
+
 
 ###########################################################
 
@@ -152,7 +181,7 @@ AnalysDBtimeSP<-function(Mo=6,file='C:/Users/enzo7311/Desktop/dati/cs403jobs1306
 
 ##################    Troughput   ##############################
 
-AnalysDBTroughputSP<-function(Mo=6,file='C:/Users/enzo7311/Desktop/dati/cs403jobs1306.csv', SP="all", Magent="all"){
+AnalysDBTroughputSP<-function(Mo=9,file='C:/Users/enzo7311/Desktop/dati/cs902jobs0809.csv', SP="all", Magent="all"){
   library(ggplot2)
   library(gcookbook)
   library(plyr)
