@@ -1,5 +1,5 @@
 #########Clean Data####################
-JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv',MAgent='MA8',SP='all'){
+JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/cs41jobs1209.csv',MAgent='all',SP='all'){
   library(ggplot2)
   library(gcookbook)
   library(lubridate)
@@ -31,15 +31,15 @@ JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/test_/backupinfo.csv'
   
   View(alpha2)
   
-  p0<-ggplot(alpha, aes(x=Start_Time,y=numbytescomp)) +  geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
-  p1<-ggplot(alpha1, aes(x=Start_Time,y=durationunixsec  )) +  geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
-  p2<-ggplot(alpha2, aes(x=Start_Time,y=Throughput  )) +  geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
+  p0<-ggplot(alpha, aes(x=Start_Time,y=numbytescomp)) + ggtitle("Backup Size over Time") + geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
+  p1<-ggplot(alpha1, aes(x=Start_Time,y=durationunixsec  )) + ggtitle("Backup Duration over Time")+  geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
+  p2<-ggplot(alpha2, aes(x=Start_Time,y=Throughput  ))+ ggtitle("BackupTroughPut over Time") +  geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
    
   t2<- ggplot(jobs, aes(x=WDay,y=Throughput))+ facet_grid(data_sp  ~. )+  geom_boxplot()+ stat_smooth()
   t1<- ggplot(jobs, aes(x=hour,y=Throughput))+ facet_grid(data_sp  ~. )+  geom_boxplot()+ stat_smooth()
   t3<- ggplot(jobs, aes(x=WDay,y=numbytescomp))+ facet_grid(data_sp  ~. )+  geom_boxplot()+ stat_smooth()
   g0<-ggplot(jobs, aes(x=durationunixsec,y=numbytescomp)) +  geom_point(aes(colour=factor(data_sp)))
-  m1 <- ggplot(jobs, aes(x = log10(numbytescomp)))+ geom_density(aes(fill=factor(data_sp)))
+  m1 <- ggplot(jobs, aes(x = log10(numbytescomp)))+ ggtitle("Backup Size Distribution")+ geom_density(aes(fill=factor(data_sp)))
 multiplot(m1,p0,p1,p2,t1,t2,t3,g0, cols=2)
 }
 
@@ -48,21 +48,39 @@ multiplot(m1,p0,p1,p2,t1,t2,t3,g0, cols=2)
 #######################################################################
 
 
-CleanDBData<-function(Mo=6,file='C:/Users/enzo7311/Desktop/dati/cs403jobs1306.csv',MAgent='all',hour=0){
+CleanDBData<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/test.csv',MAgent='all',hour=0){
 #                        c(18,19,20,12,21,23)){
 #  1,2,3,4,5,6,7,8,9,
 #Read the big File
-  #file<-'ODBC'
+  library(lubridate) 
+# file<-'ODBC'
   #Type of query
  
   #### FROM [commserv].[dbo].[CommCellBackupInfo] 
   
   if(file!='ODBC'){  
     jobs <- read.csv(file)
+    #View(jobs)
+    jobs$day<-substr(jobs$startdate,1,2)
+    jobs$Month<-substr(jobs$startdate,4,5)
+    jobs$year<-substr(jobs$startdate,7,10)
+    jobs$Start_Time<-dmy_hm(jobs$startdate)
   }
   if(file=='ODBC'){  
     jobs <- ReadODBCJobs()
+
+    jobs$day<-substr(jobs$startdate,9,10)
+    jobs$Month<-substr(jobs$startdate,6,7)
+    jobs$year<-substr(jobs$startdate,1,4)
+    jobs$Start_Time<-ymd_hms(jobs$startdate)
   }  
+ 
+ ###########################
+ #jobs$Start_Time<-dmy_hm(jobs$startdate)
+ 
+ ##########################
+ 
+ 
  
   ############## Time transformation##############
   jobs<-subset(jobs,jobs$jobstatus == 'Success')
@@ -86,9 +104,7 @@ CleanDBData<-function(Mo=6,file='C:/Users/enzo7311/Desktop/dati/cs403jobs1306.cs
  
   ######################################
   ######################################
-  jobs$day<-substr(jobs$startdate,1,2)
-  jobs$Month<-substr(jobs$startdate,4,5)
-  jobs$year<-substr(jobs$startdate,7,10)
+  
   jobs$hour<-substr(jobs$startdate,12,13)
     
   jobs$year<-as.numeric(jobs$year)
@@ -104,8 +120,9 @@ CleanDBData<-function(Mo=6,file='C:/Users/enzo7311/Desktop/dati/cs403jobs1306.cs
   ##########################################
  ###  Start Time #########
  
-  jobs$Start_Time<-dmy_hm(jobs$startdate)
-  jobs$Start_Time<-round(jobs$Start_Time,"hours")
+ # jobs$Start_Time<-ymd_hms(jobs$startdate)
+
+ jobs$Start_Time<-round(jobs$Start_Time,"hours")
   jobs$Start_Time<-as.character(jobs$Start_Time)
  jobs$WDay<-wday(jobs$Start_Time,label = TRUE, abbr = FALSE) 
   ####SchedulerFilter####################

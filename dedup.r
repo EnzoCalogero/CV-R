@@ -1,4 +1,4 @@
-DDB_Analysis<-function(sidb=0,Mo=7,file='C:/Users/enzo7311/Desktop/Dati/cs902ddb0809.csv',hour=0){
+DDB_Analysis<-function(sidb=0,Mo=0,file='C:/Users/enzo7311/Desktop/Dati/cs41DDB1209.csv',hour=0){
   library(ggplot2)
   library(doBy)
   DDB<-DedupRead(file,sidb,Mo)
@@ -6,29 +6,42 @@ DDB_Analysis<-function(sidb=0,Mo=7,file='C:/Users/enzo7311/Desktop/Dati/cs902ddb
   #print(file)
   print(sidb)
   View(DDB)
-  summary01<-  summaryBy(AvgQITime~SIDBStoreId+wDay, data=DDB, FUN=c(mean, median,sd))
-  print(summary01)
-  View(summary01)
+  
+ 
   
   m1 <- ggplot(DDB, aes(x = log10(AvgQITime)))+ geom_density(aes(fill=factor(SIDBStoreId)))
-  ##Only for Display purpose####
-  DDB<-subset(DDB,DDB$AvgQITime >-1 & DDB$AvgQITime <10000)
-  t0<- ggplot(DDB, aes(x=Date,y=AvgQITime))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
+  
+  DDB<-subset(DDB,DDB$AvgQITime >0) #& DDB$AvgQITime <10000)
+  t0<- ggplot(DDB, aes(x=Date,y=AvgQITime))+ facet_grid(SIDBStoreId ~. ) + ylim(0,10000) + geom_point()+ stat_smooth()
   t1<- ggplot(DDB, aes(x=Date,y=(ZeroRefCount)))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
   t2<- ggplot(DDB, aes(x=WDay,y=AvgQITime))+ facet_grid(SIDBStoreId ~. )+  geom_boxplot()+ stat_smooth()
   t3<- ggplot(DDB, aes(x=WDay,y=ZeroRefCount))+ facet_grid(SIDBStoreId ~. )+  geom_boxplot()+ stat_smooth()
   t4<- ggplot(DDB, aes(x=Date,y=DDBManagedSize))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
-  
-  multiplot(m1,t0,t1,t2,t3,t4, cols=2)  
+  t5<- ggplot(DDB, aes(x=Date,y=PrimaryEntries))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
+  t6<- ggplot(DDB, aes(x=Date,y=SecondaryEntries))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
+  multiplot(m1,t0,t1,t2,t3,t4,t5,t6, cols=2)  
 }
 
 
-DedupRead<-function(file='C:/Users/enzo7311/Desktop/Dati/cs902ddb0809.csv', sidb=0,Mo=8,Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=c(18,19,20,12,21,23)){
+DedupRead<-function(file='C:/Users/enzo7311/Desktop/Dati/cs404ddb1109.csv', sidb=0,Mo=0,Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=c(18,19,20,12,21,23)){
   library(ggplot2)
   library(gcookbook)
   library(lubridate) #Date management
   #Read the big File######
-  DDB <- read.csv(file)
+  
+ #  file<-'ODBC'
+  #Type of query
+  
+  #### FROM [commserv].[dbo].[CommCellBackupInfo] 
+  
+  if(file!='ODBC'){  
+    DDB <- read.csv(file)
+      }
+  if(file=='ODBC'){  
+    DDB <- Read_ODBC_DDB()
+    }  
+  
+#  DDB <- read.csv(file)
   View(DDB)
   ##########Focus on the sidb##########
   if(sidb!=0){
@@ -63,9 +76,11 @@ DDB$Date<-as.POSIXct(DDB$ModifiedTime, origin="1970-01-01")
  #                Time filtering
  ########################################
  print(Mo)
- DDB<-subset(DDB,DDB$Month == Mo)
- 
- DDB<-subset(DDB,DDB$day %in% Days)
+DDB<-subset(DDB,DDB$year == 14)
+if(Mo!=0){
+  DDB<-subset(DDB,DDB$Month == Mo)
+}
+ #DDB<-subset(DDB,DDB$day %in% Days)
  
  ######################################
  DDB$nightImp<-DDB$day
