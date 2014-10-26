@@ -1,4 +1,4 @@
-DDB_Analysis<-function(sidb=0,Mo=0,file='C:/Users/enzo7311/Desktop/Dati/cs41DDB1209.csv',hour=0){
+DDB_Analysis<-function(sidb=c(255,256),Mo=c(7,8,9,10),file='C:/Users/enzo7311/Desktop/Dati/cs907DDB2110.csv',hour=0){
   library(ggplot2)
   library(doBy)
   DDB<-DedupRead(file,sidb,Mo)
@@ -19,7 +19,9 @@ DDB_Analysis<-function(sidb=0,Mo=0,file='C:/Users/enzo7311/Desktop/Dati/cs41DDB1
   t4<- ggplot(DDB, aes(x=Date,y=DDBManagedSize))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
   t5<- ggplot(DDB, aes(x=Date,y=PrimaryEntries))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
   t6<- ggplot(DDB, aes(x=Date,y=SecondaryEntries))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
-  multiplot(m1,t0,t1,t2,t3,t4,t5,t6, cols=2)  
+  #t2
+ # multiplot(m1,t0,t1,t4,t5,t6, cols=2)
+ multiplot(t0,t5, cols=2)
 }
 
 

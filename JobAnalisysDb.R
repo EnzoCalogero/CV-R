@@ -1,5 +1,7 @@
-#########Clean Data####################
-JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/cs41jobs1209.csv',MAgent='all',SP='all'){
+
+
+############  JOB Analysis #########################
+JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/CS907jobs1310.csv',MAgent='all',SP='all'){
   library(ggplot2)
   library(gcookbook)
   library(lubridate)
@@ -40,7 +42,8 @@ JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/cs41jobs1209.csv
   t3<- ggplot(jobs, aes(x=WDay,y=numbytescomp))+ facet_grid(data_sp  ~. )+  geom_boxplot()+ stat_smooth()
   g0<-ggplot(jobs, aes(x=durationunixsec,y=numbytescomp)) +  geom_point(aes(colour=factor(data_sp)))
   m1 <- ggplot(jobs, aes(x = log10(numbytescomp)))+ ggtitle("Backup Size Distribution")+ geom_density(aes(fill=factor(data_sp)))
-multiplot(m1,p0,p1,p2,t1,t2,t3,g0, cols=2)
+#multiplot(p0,cols=2)
+  multiplot(m1,p0,p1,p2,t1,t2,t3,g0, cols=2)
 }
 
 #########################################################################
@@ -48,7 +51,7 @@ multiplot(m1,p0,p1,p2,t1,t2,t3,g0, cols=2)
 #######################################################################
 
 
-CleanDBData<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/test.csv',MAgent='all',hour=0){
+CleanDBData<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/CS907jobs1310.csv',MAgent='all',hour=0){
 #                        c(18,19,20,12,21,23)){
 #  1,2,3,4,5,6,7,8,9,
 #Read the big File
@@ -60,7 +63,7 @@ CleanDBData<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/test.csv',MAgent
   
   if(file!='ODBC'){  
     jobs <- read.csv(file)
-    #View(jobs)
+    View(jobs)
     jobs$day<-substr(jobs$startdate,1,2)
     jobs$Month<-substr(jobs$startdate,4,5)
     jobs$year<-substr(jobs$startdate,7,10)
@@ -312,9 +315,6 @@ plot(jobs.stl)
 
 
 
-
-
-
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   require(grid)
   
@@ -350,7 +350,6 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
     }
   }
 }
-
 
 ########################################################################################
 ############  INDEX CACHE###############################################################
@@ -429,7 +428,7 @@ CleanDBDataAll<-function(Mo=6,file='C:/Users/enzo7311/Desktop/test_/backupinfo.c
   
   
   View(jobs)
-  return (jobs)
+#  return (jobs)
 }
 
 
