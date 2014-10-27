@@ -1,5 +1,5 @@
 
-AUXDataAnalysis<-function(Mo=10,file='C:/Users/enzo7311/Desktop/dati/AUXCS499_10_26.csv',hour=0,Day=0,SP='all'){
+AUXDataAnalysis<-function(Mo=10,file='C:/Users/enzo7311/Desktop/dati/AUXCS499_10_27.csv',hour=0,Day=0,SP='all'){
   #                        c(18,19,20,12,21,23)){
   #  1,2,3,4,5,6,7,8,9,
   #Read the big File
@@ -47,7 +47,7 @@ AUXDataAnalysis<-function(Mo=10,file='C:/Users/enzo7311/Desktop/dati/AUXCS499_10
   boxplot(complessive$DataWritten~complessive$storagepolicy,las=2,par(mar = c(12, 5, 4, 2)+ 0.3))
   multiplot(p1,t0,p3,p2, cols=2)
 }
-AUXJOBsDataAnalysis<-function(Mo=10,fileJOB='C:/Users/enzo7311/Desktop/dati/cs499jobs2610.csv',fileAUX='C:/Users/enzo7311/Desktop/dati/AUXCS499_10_26.csv',hour=0,Day=0,SP='all'){
+AUXJOBsDataAnalysis<-function(Mo=10,fileJOB='C:/Users/enzo7311/Desktop/dati/cs499jobs2710.csv',fileAUX='C:/Users/enzo7311/Desktop/dati/AUXCS499_10_27.csv',hour=0,Day=0,SP='all'){
   #                        c(18,19,20,12,21,23)){
   #  1,2,3,4,5,6,7,8,9,
   #Read the big File
@@ -66,18 +66,23 @@ AUXJOBsDataAnalysis<-function(Mo=10,fileJOB='C:/Users/enzo7311/Desktop/dati/cs49
   if(SP!='all'){
     jobs<-subset(jobs,grepl(SP,jobs$data_sp ))
   }
+  ####################################################################
+  ##On the AUX copy we have to consider the end time of the backups...
+  ###################################################################
+  
+  jobs$day<-substr(jobs$enddate,1,2)
+  jobs$day<-as.numeric(jobs$day)
   
   
-  
-  
-  alpha<-aggregate(numbytescomp~Start_Time+data_sp,sum,data=jobs) 
-  alpha$Start_Time<-ymd_hms(alpha$Start_Time)
+  alpha<-aggregate(numbytescomp~enddate+data_sp,sum,data=jobs) 
+  alpha$enddate<-dmy_hm(alpha$enddate)
   
   View(alpha)
   alphaDay<-aggregate(numbytescomp~day+data_sp,sum,data=jobs) 
   
-  j0<-ggplot(alpha, aes(x=Start_Time,y=numbytescomp)) + ggtitle("Backup Size over Time ") + geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
-  j1<-ggplot(alphaDay, aes(x=day,y=numbytescomp)) + ggtitle("Backup Size over Time Aggregate per Days") + geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth(aes(colour=factor(data_sp)))
+  j0<-ggplot(alpha, aes(x=enddate,y=numbytescomp)) + ggtitle("Backup Size over Time ") + geom_point(aes(colour=factor(data_sp))) +geom_line(aes(colour=factor(data_sp)))+ stat_smooth()
+  j1<-ggplot(alphaDay, aes(x=day,y=numbytescomp)) + ggtitle("Backup Size over Time Aggregate per Days")+ geom_line(aes(colour=factor(data_sp))) + geom_point(aes(colour=factor(data_sp))) + stat_smooth()
+  View(alphaDay)
   AUX<-CleanAUXData(Mo=10,fileAUX,hour,Day)
   
   ########################################################################### 
@@ -103,9 +108,15 @@ AUXJOBsDataAnalysis<-function(Mo=10,fileJOB='C:/Users/enzo7311/Desktop/dati/cs49
   AUX2$DataWritten<-(AUX2$DataWritten/(1024))
   
   p3<-ggplot(AUX2, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line(aes(colour=factor(storagepolicy)))+ stat_smooth()
+  #########Test.....
+  AUX$truput<-(AUX$DataWritten*3600/AUX$ElapsedTime)
+  AUXTru<-aggregate(truput~day+storagepolicy, mean,data=AUX)
   
+  p6<-ggplot(AUXTru, aes(y=truput,x=day)) +  geom_point()  + geom_line(aes(colour=factor(storagepolicy)))+ stat_smooth() 
+  View(AUXTru)
+  #a<-coef(lm(mio$durationunixhours~mio$numbytescomp+mio$numobjects))
   
-  multiplot(j0,j1,p1,t0,p3,p2, cols=2)
+  multiplot(j0,j1,p1,t0,p3,p6, cols=2)
 }
 
 

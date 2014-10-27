@@ -1,7 +1,7 @@
 
 
 #######################################################
-#FOR ANALISIS of insert tim eduring the hour of the day
+#FOR ANALISIS of insert time during the hour of the day
 #######################################################
 
 DDB_Analysis_hour<-function(sidb=2,Mo=c(7,8,9,10),file='C:/Users/enzo7311/Desktop/Dati/cs404ddb1109.csv',hour=0){
