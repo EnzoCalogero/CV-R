@@ -4,7 +4,7 @@
 #FOR ANALISIS of insert time during the hour of the day
 #######################################################
 
-DDB_Analysis_hour<-function(sidb=2,Mo=c(7,8,9,10),file='C:/Users/enzo7311/Desktop/Dati/cs404ddb1109.csv',hour=0){
+DDB_Analysis_hour<-function(sidb=0,Mo=c(9,10),file='C:/Users/enzo7311/Desktop/Dati/cs901ddb1007.csv',hour=0){
   library(ggplot2)
   library(doBy)
   DDB<-DedupRead(file,sidb,Mo)
@@ -12,11 +12,22 @@ DDB_Analysis_hour<-function(sidb=2,Mo=c(7,8,9,10),file='C:/Users/enzo7311/Deskto
   #print(file)
   print(sidb)
   View(DDB)
+  ###Basic
+  mean(DDB$AvgQITime)
+  print(cor(DDB$AvgQITime,log(DDB$ZeroRefCount+1)))
   
-  
+  ###
+  DDB$AvgQITime
+  DDB2<-subset(DDB,DDB$ZeroRefCount ==0)
+  DDB3<-subset(DDB,DDB$ZeroRefCount > 1)
+  print("Filtered")
+  mean(DDB2$AvgQITime)
+  print(cor(DDB2$AvgQITime,log(DDB2$ZeroRefCount+1)))
   
   m1 <- ggplot(DDB, aes(x = log10(AvgQITime)))+ geom_density(aes(fill=factor(SIDBStoreId)))
   m2 <- ggplot(DDB, aes(x = log10(AvgQITime)))+ geom_density()+ facet_grid(hour ~.)
+  m3 <- ggplot(DDB2, aes(x = log10(AvgQITime)))+ geom_density()+ facet_grid(hour ~.)
+  m4 <- ggplot(DDB3, aes(x = log10(AvgQITime)))+ geom_density()+ facet_grid(hour ~.)
   
   DDB<-subset(DDB,DDB$AvgQITime >0) #& DDB$AvgQITime <10000)
   t0<- ggplot(DDB, aes(x=Date,y=AvgQITime))+ facet_grid(SIDBStoreId ~. ) + ylim(0,10000) + geom_point()+ stat_smooth()
@@ -27,7 +38,7 @@ DDB_Analysis_hour<-function(sidb=2,Mo=c(7,8,9,10),file='C:/Users/enzo7311/Deskto
   t5<- ggplot(DDB, aes(x=Date,y=PrimaryEntries))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
   t6<- ggplot(DDB, aes(x=Date,y=SecondaryEntries))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
   #t2
-   multiplot(m2, cols=2)
+   multiplot(m3,m4, cols=2)
   #multiplot(t0,t5, cols=2)
 }
 
