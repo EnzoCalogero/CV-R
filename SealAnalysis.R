@@ -1,8 +1,43 @@
 ###################
 ##Sealing Analysis#
 ###################
- 
+##############################
+##Macro pruning###############
+##############################
 
+#DDB_Analysis2(sidb=c(10,15),file='C:/Users/enzo7311/Desktop/Dati/cs403ddb2211.csv',Mo=11)
+DDB_Analysis2<-function(sidb=0,Mo=c(7,8,9,10,11),file='C:/Users/enzo7311/Desktop/Dati/cs907DDB2110.csv',Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=0){
+  library(ggplot2)
+  library(doBy)
+  DDB<-DedupRead(file,sidb,Mo,Days)
+  
+  #print(file)
+  print(sidb)
+  
+  DDBSeal<-subset(DDB,DDB$SIDBStoreId==10)
+  DDBNew<-subset(DDB,DDB$SIDBStoreId==15)
+  Prim<-mean(DDBSeal$PrimaryEntries)
+  Sec<-mean(DDBSeal$SecondaryEntries)
+  print(Prim)
+  
+  DDBNew$AggPri<-DDBNew$PrimaryEntries+Prim
+  DDBNew$AggSec<-DDBNew$SecondaryEntries+Sec
+  
+  # DDB<-subset(DDB,DDB$AvgQITime >0) #& DDB$AvgQITime <10000)
+  
+  t5<- ggplot(DDB, aes(x=Date,y=PrimaryEntries))+geom_abline(intercept =Prim,slope=0, colour=1 )+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
+  t6<- ggplot(DDB, ) +ylab("Primary and Seconday Records")+ geom_point(aes(x=Date,y=PrimaryEntries,colour="Primary"))+(facet_grid(SIDBStoreId ~. )) +  geom_point(aes(x=Date,y=SecondaryEntries,colour="Secondary"))+  ggtitle("Original Sealed and New DDB")
+  #
+  t7<-ggplot(DDBNew, aes(x=Date,y=AggPri,color="Primary"))+ylab("Primary and Seconday Records")+geom_abline(intercept =Sec,slope=0, colour=1 )+geom_abline(intercept =Prim,slope=0, colour=1 )+  geom_point(aes(x=Date,y=AggSec,colour="Secondary"))+  ggtitle("Agregate Sealed and New DDB")+ geom_point() + ylab("Aggregate Records")
+  
+  DDB$Date<-round(DDB$Date,"hour")
+  View(DDB)
+  multiplot(t5,t6,t7, cols=1)
+}
+
+
+
+##Micro rpuning################
 SealRead<-function(file='C:/Users/enzo7311/Desktop/Dati/a.csv'){
   library(ggplot2)
   library(gcookbook)
@@ -43,11 +78,14 @@ SealRead<-function(file='C:/Users/enzo7311/Desktop/Dati/a.csv'){
   
   p3<-ggplot(Final,aes(Group.1 ))+ggtitle("Secondary & Primary Record Aggregate of the Sealed and New DDB")+ xlab("Day of the Month") +ylab("Primary & Secondary Records")+geom_abline(intercept =maxvalue,slope=0, colour=1 ) +geom_abline(intercept =2*maxvalue,slope=0 ,colour=2)+geom_point(aes(y=Number.of.Unique.Blocks,colour='yellow'))+geom_point(aes(y=PrimaryEntries,colour='blue'))+ geom_point(aes(y=SOMMAPrim, colour='green')) + geom_point(aes(y=SOMMASEC,colour='black'))
 
-  p4<-ggplot(Final,aes(Group.1 ))+geom_point(aes(y=Ratio,colour=3)) +geom_point(aes(y=IndexSEC,colour=2))+geom_point(aes(y=IndexPrim))
+  p4<-ggplot(Final,aes(Group.1 ))+geom_point(aes(y=Ratio,colour=3)) +geom_point(aes(y=IndexSEC,colour=2))#+geom_point(aes(y=IndexPrim))
   
   
   agg1$ratio<-agg1[,3]/agg1[,2]
   Final$SOMMAPrim<-ts(Final$SOMMAPrim)
+ Ratio<-ts(Final$Ratio[Final$Ratio > 0])
+View(Ratio)
+ DRatio<-ts((lag(Ratio,1)-Ratio))
   #agg1$Number.of.Secondary.Blocks<-ts(agg1$Number.of.Secondary.Blocks)
 
   #agg2<-names("X1")
@@ -55,18 +93,21 @@ SealRead<-function(file='C:/Users/enzo7311/Desktop/Dati/a.csv'){
   
   DUNIQU<-ts((lag(Final$SOMMAPrim,1)-Final$SOMMAPrim)/10^6)
   DDUnique<-ts((lag(DUNIQU,1)-DUNIQU))
-  View(DUNIQU)
-  #View(prima)
- #plot.ts(DUNIQU)
+ 
+  #View(DUNIQU)
+  View(DRatio)
+ plot.ts(DRatio)
  #View(DDUnique)
  #View(prima)
  #plot.ts(DDUnique)
  
   
   #
-#multiplot(p1,p2,p3,p4, cols=2)
+multiplot(p1,p2,p3,p4, cols=2)
+
 # multiplot(p1,p11, cols=2)
 multiplot(p3, cols=2)
+multiplot(p4,col=1)
 }
 
 coefDDB<-function(file='C:/Users/enzo7311/Desktop/sealing/coeff2.csv'){

@@ -1,4 +1,4 @@
-DDB_Analysis<-function(sidb=c(23,24,32),Mo=c(7,8,9,10),file='C:/Users/enzo7311/Desktop/Dati/cs907DDB2110.csv',Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=0){
+DDB_Analysis<-function(sidb=0,Mo=c(10,11),file='C:/Users/enzo7311/Desktop/Dati/cs903ddb11_28.csv',Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=0){
   library(ggplot2)
   library(doBy)
   DDB<-DedupRead(file,sidb,Mo,Days)
@@ -20,12 +20,12 @@ DDB_Analysis<-function(sidb=c(23,24,32),Mo=c(7,8,9,10),file='C:/Users/enzo7311/D
   t5<- ggplot(DDB, aes(x=Date,y=PrimaryEntries))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
   t6<- ggplot(DDB, aes(x=Date,y=SecondaryEntries))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()
   #t2
-  multiplot(m1,t0,t1,t4,t5,t6, cols=2)
-# multiplot(t0,t5, cols=2)
+ multiplot(m1,t0,t1,t4,t5,t6, cols=2)
+# multiplot(t6,t5, cols=2)
 }
 
 
-DedupRead<-function(file='C:/Users/enzo7311/Desktop/Dati/cs404ddb1109.csv', sidb=0,Mo=0,Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=c(18,19,20,12,21,23)){
+DedupRead<-function(file='C:/Users/enzo7311/Desktop/Dati/cs403ddb11_28.csv', sidb=0,Mo=0,Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=c(18,19,20,12,21,23)){
   library(ggplot2)
   library(gcookbook)
   library(lubridate) #Date management
@@ -44,7 +44,7 @@ DedupRead<-function(file='C:/Users/enzo7311/Desktop/Dati/cs404ddb1109.csv', sidb
     }  
   
 #  DDB <- read.csv(file)
-  View(DDB)
+#  View(DDB)
   ##########Focus on the sidb##########
   if(sidb!=0){
      DDB<-subset(DDB,DDB$SIDBStoreId %in% sidb)
@@ -54,10 +54,11 @@ DedupRead<-function(file='C:/Users/enzo7311/Desktop/Dati/cs404ddb1109.csv', sidb
  # val <- 1352068320
 #  as.POSIXct(val, origin="1970-01-01")
   #[1] "2012-11-04 22:32:00 CST"
- # R> as.Date(as.POSIXct(val, origin="1970-01-01"))
+# as.Date(as.POSIXct(val, origin="1970-01-01"))
   #[1] "2012-11-05" 
 #############################
-  
+
+DDB$Date<-as.Date(as.POSIXct(DDB$ModifiedTime, origin="1970-01-01")) 
   #DDB<-subset(DDB,DDB$AvgQITime > 0 & DDB$NumOfConnections > 0)
 DDB$trughput<-(128/(DDB$AvgQITime/100000))/1024##mg/sec 
 DDB$Date<-as.POSIXct(DDB$ModifiedTime, origin="1970-01-01")

@@ -1,6 +1,6 @@
-prune_Analysis<-function(sidb=0,Mo=c(11),file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS903_20_11.csv',hour=0){
+prune_Analysis<-function(sidb=0,Mo=c(11),file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS903_28_11.csv',hour=0){
   library(ggplot2)
-  library(doBy)
+  library(doBy)  
   library(lubridate)
   #DDB<-DedupRead(file,sidb,Mo)
   AFID <- read.csv(file)
@@ -16,25 +16,25 @@ prune_Analysis<-function(sidb=0,Mo=c(11),file='C:/Users/enzo7311/Desktop/sealing
   AFID$Time.Hours<-(AFID$TimeSec/(60*60))
   AFID$timeHs<-as.integer(hour(AFID$Date1))
  ####DDB filter
-# AFID<-subset(AFID,DDBID==sidb)
+ AFID<-subset(AFID,DDBID==sidb)
  ####Time Filter
  AFID<-subset(AFID,month(Date1)==Mo)
- AFID<-subset(AFID,day(Date1)>14)
- View(AFID)
+ AFID<-subset(AFID,day(Date1)>1)
+ #View(AFID)
  #AUXDay<-aggregate(DataWritten~day, sum,data=AUX)
  AFID17<-subset(AFID, timeHs ==17 )
- View(AFID17)
+ #View(AFID17)
  #days<-c("2014-11-13 18:00:00","2014-11-12 18:00:00","2014-11-14 18:00:00")
  m17 <- ggplot(AFID17, aes(x = Date1,y=AFID))+ geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID Pending at 17 low impact")
  AFID$days<-mday(AFID$Date1)
  DDBAggr2<-aggregate(AFID~Date2+DDBID, max,data=AFID)
- View(DDBAggr2)
+ #View(DDBAggr2)
  DDBAggr3<-aggregate(AFID~Date2+DDBID, min,data=AFID)
- View(DDBAggr3)
+ #View(DDBAggr3)
  mio <- merge(DDBAggr2,DDBAggr3, by=c("Date2","DDBID"))
 
  mio$AFPerHora<-mio$AFID.x-mio$AFID.y
- View(mio) 
+ #View(mio) 
  m23 <- ggplot(AFID, aes(x = Date1,y=AFID))+  geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID pending Trend")
  
  m22 <- ggplot(mio, aes(x = Date2,y=AFPerHora))+  geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID pruned Per hours")
@@ -65,9 +65,11 @@ prune_Analysis<-function(sidb=0,Mo=c(11),file='C:/Users/enzo7311/Desktop/sealing
  m4 <- ggplot(AFID00, aes(x = Date1,y=AFID))+  geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID Pending at 24!!!!!!!!!!!!!!!!")
  
  
- #multiplot(m21,m22, cols=3)
+ multiplot(m21,m22, cols=3)
  multiplot(m23, cols=3)
- 
+multiplot(m1, cols=3)
+multiplot(m3, cols=3)
  #multiplot(m17,m1,m2,m3,m4, cols=3)
+return(AFID)
   }
 
