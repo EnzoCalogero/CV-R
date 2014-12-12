@@ -66,3 +66,8 @@ AUXCOPY
 SELECT *  FROM [commserv].[dbo].[CommCellAuxCopyInfo] where startdate >'2014-06-01'
 then modified the cells format into
  dd/mm/yyyy hh:mm
+
+##################################################
+Chunks
+
+select * from archChunkMapping

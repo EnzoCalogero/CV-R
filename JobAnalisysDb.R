@@ -1,5 +1,3 @@
-
-
 ############  JOB Analysis #########################
 JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/cs499jobs2710.csv',MAgent='all',SP='all'){
   library(ggplot2)

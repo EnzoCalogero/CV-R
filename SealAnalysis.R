@@ -30,7 +30,7 @@ DDB_Analysis2<-function(sidb=0,Mo=c(7,8,9,10,11),file='C:/Users/enzo7311/Desktop
   #
   t7<-ggplot(DDBNew, aes(x=Date,y=AggPri,color="Primary"))+ylab("Primary and Seconday Records")+geom_abline(intercept =Sec,slope=0, colour=1 )+geom_abline(intercept =Prim,slope=0, colour=1 )+  geom_point(aes(x=Date,y=AggSec,colour="Secondary"))+  ggtitle("Agregate Sealed and New DDB")+ geom_point() + ylab("Aggregate Records")
   
-  DDB$Date<-round(DDB$Date,"hour")
+  #DDB$Date<-round(DDB$Date,"hour")
   View(DDB)
   multiplot(t5,t6,t7, cols=1)
 }
@@ -74,12 +74,14 @@ SealRead<-function(file='C:/Users/enzo7311/Desktop/Dati/a.csv'){
   Final$IndexSEC<-Final$SecondaryEntries/(Final$Number.of.Secondary.Blocks+Final$SecondaryEntries)
   Final$IndexPrim<-Final$PrimaryEntries/(Final$Number.of.Unique.Blocks+Final$PrimaryEntries)
   Final$Ratio<-Final$SOMMASEC/Final$SOMMAPrim
-  #View(Final) 
+  Final$Size<-((15*Final$SOMMASEC + 128*Final$SOMMAPrim))/1024^2
+
+  View(Final) 
   
   p3<-ggplot(Final,aes(Group.1 ))+ggtitle("Secondary & Primary Record Aggregate of the Sealed and New DDB")+ xlab("Day of the Month") +ylab("Primary & Secondary Records")+geom_abline(intercept =maxvalue,slope=0, colour=1 ) +geom_abline(intercept =2*maxvalue,slope=0 ,colour=2)+geom_point(aes(y=Number.of.Unique.Blocks,colour='yellow'))+geom_point(aes(y=PrimaryEntries,colour='blue'))+ geom_point(aes(y=SOMMAPrim, colour='green')) + geom_point(aes(y=SOMMASEC,colour='black'))
 
   p4<-ggplot(Final,aes(Group.1 ))+geom_point(aes(y=Ratio,colour=3)) +geom_point(aes(y=IndexSEC,colour=2))#+geom_point(aes(y=IndexPrim))
-  
+  devi_fare_il_grafico
   
   agg1$ratio<-agg1[,3]/agg1[,2]
   Final$SOMMAPrim<-ts(Final$SOMMAPrim)

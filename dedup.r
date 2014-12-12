@@ -30,8 +30,14 @@ DedupRead<-function(file='C:/Users/enzo7311/Desktop/Dati/cs403ddb11_28.csv', sid
   library(gcookbook)
   library(lubridate) #Date management
   #Read the big File######
+
   
- #  file<-'ODBC'
+#  Local_tz<-"Europe/London"
+  Local_tz<-"America/Chicago"
+ 
+
+
+#  file<-'ODBC'
   #Type of query
   
   #### FROM [commserv].[dbo].[CommCellBackupInfo] 
@@ -44,26 +50,21 @@ DedupRead<-function(file='C:/Users/enzo7311/Desktop/Dati/cs403ddb11_28.csv', sid
     }  
   
 #  DDB <- read.csv(file)
-#  View(DDB)
+  View(DDB)
   ##########Focus on the sidb##########
   if(sidb!=0){
      DDB<-subset(DDB,DDB$SIDBStoreId %in% sidb)
    }
   
-  ##############################
- # val <- 1352068320
-#  as.POSIXct(val, origin="1970-01-01")
-  #[1] "2012-11-04 22:32:00 CST"
-# as.Date(as.POSIXct(val, origin="1970-01-01"))
-  #[1] "2012-11-05" 
-#############################
 
 DDB$Date<-as.Date(as.POSIXct(DDB$ModifiedTime, origin="1970-01-01")) 
   #DDB<-subset(DDB,DDB$AvgQITime > 0 & DDB$NumOfConnections > 0)
 DDB$trughput<-(128/(DDB$AvgQITime/100000))/1024##mg/sec 
 DDB$Date<-as.POSIXct(DDB$ModifiedTime, origin="1970-01-01")
-  
- DDB$day<-substr(DDB$Date,9,10)
+###Modify for the time zone
+DDB$Date<-format(DDB$Date, tz=Local_tz,usetz=TRUE)
+
+DDB$day<-substr(DDB$Date,9,10)
  DDB$Month<-substr(DDB$Date,6,7)
  DDB$year<-substr(DDB$Date,2,4)
  DDB$hour<-substr(DDB$Date,12,13)

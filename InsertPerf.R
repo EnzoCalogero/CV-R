@@ -1,4 +1,5 @@
-prune_Analysis<-function(sidb=0,Mo=c(11),file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS903_28_11.csv',hour=0){
+#CS903_28_11.csv
+prune_Analysis<-function(sidb=c(77,63,70,68),Mo=c(11,12),file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS901_09_12.csv',hour=0){
   library(ggplot2)
   library(doBy)  
   library(lubridate)
@@ -6,7 +7,7 @@ prune_Analysis<-function(sidb=0,Mo=c(11),file='C:/Users/enzo7311/Desktop/sealing
   AFID <- read.csv(file)
   #print(file)
   print(sidb)
- 
+  View(AFID)
  
   ###Basic
   
@@ -17,9 +18,11 @@ prune_Analysis<-function(sidb=0,Mo=c(11),file='C:/Users/enzo7311/Desktop/sealing
   AFID$timeHs<-as.integer(hour(AFID$Date1))
  ####DDB filter
  AFID<-subset(AFID,DDBID==sidb)
+ 
+ 
  ####Time Filter
- AFID<-subset(AFID,month(Date1)==Mo)
- AFID<-subset(AFID,day(Date1)>1)
+ AFID<-subset(AFID,(month(Date1)==11)&(day(Date1)>20)|((month(Date1)==12)))
+ #AFID<-subset(AFID,day(Date1)>20)
  #View(AFID)
  #AUXDay<-aggregate(DataWritten~day, sum,data=AUX)
  AFID17<-subset(AFID, timeHs ==17 )

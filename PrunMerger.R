@@ -4,14 +4,20 @@ PrunMerger<-function(sidb=62,Mo=c(11,10),fileDDB='C:/Users/enzo7311/Desktop/Dati
   library(lubridate)
   border=1000000
   DDB1<-DedupRead(file<-fileDDB,sidb,Mo=11)
-  DDB1$Date2<-as.POSIXct(DDB1$ModifiedTime, origin="1970-01-01",tz ="America/Chicago")
+  DDB1$Date2<-as.POSIXct(DDB1$ModifiedTime, origin="1970-01-01")
+  
+  ##Amend for teh time zone
+  
+  Local_tz<-"America/Chicago"
+  #DDB1$Date2<-format(DDB1$Date2, tz=Local_tz,usetz=TRUE)
+  
   AFID1<-prune_Analysis(sidb,Mo=c(11),file<-fileAF)
   
   AFID1<-subset(AFID1,DDBID==sidb)
- # DDB1<-subset(DDB1,(day>20)&(day<30))
+  DDB1<-subset(DDB1,(day>20)&(day<30))
   #DDB1<-subset(DDB1,(hour>17)|(hour<10))
-  
-  DDB1$Date2<-floor_date(DDB1$Date, "hour")
+  View(DDB1)
+  DDB1$Date2<-floor_date(DDB1$Date2, "hour")
   #print(file)
  # DDB1$Date2<-DDB1$Date2-hour(1)
   
