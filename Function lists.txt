@@ -1,0 +1,5 @@
+--> DDB_Compare()
+compareDDB
+
+IT is used to compare the same set of DDBs in two different time windows.
+(it uses DDB table).

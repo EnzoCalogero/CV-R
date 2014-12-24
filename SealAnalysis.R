@@ -81,9 +81,13 @@ SealRead<-function(file='C:/Users/enzo7311/Desktop/Dati/a.csv'){
   p3<-ggplot(Final,aes(Group.1 ))+ggtitle("Secondary & Primary Record Aggregate of the Sealed and New DDB")+ xlab("Day of the Month") +ylab("Primary & Secondary Records")+geom_abline(intercept =maxvalue,slope=0, colour=1 ) +geom_abline(intercept =2*maxvalue,slope=0 ,colour=2)+geom_point(aes(y=Number.of.Unique.Blocks,colour='yellow'))+geom_point(aes(y=PrimaryEntries,colour='blue'))+ geom_point(aes(y=SOMMAPrim, colour='green')) + geom_point(aes(y=SOMMASEC,colour='black'))
 
   p4<-ggplot(Final,aes(Group.1 ))+geom_point(aes(y=Ratio,colour=3)) +geom_point(aes(y=IndexSEC,colour=2))#+geom_point(aes(y=IndexPrim))
-  devi_fare_il_grafico
-  
-  agg1$ratio<-agg1[,3]/agg1[,2]
+
+p5<-ggplot(Final,aes(Group.1 ))+geom_point(aes(y=Size, colour='Global size')) +geom_point(aes(y=(15*SOMMASEC/1024^2),colour='Secondari record contribution'))
+p5<-p5 +ggtitle("Estimate size on Disk")
+p5<-p5+geom_point(aes(y=(128*SOMMAPrim/1024^2),colour = 'Primari record contribution', )) 
+p5<-p5+ xlab("Day of the Month") +ylab("Estimate Size")
+
+agg1$ratio<-agg1[,3]/agg1[,2]
   Final$SOMMAPrim<-ts(Final$SOMMAPrim)
  Ratio<-ts(Final$Ratio[Final$Ratio > 0])
 View(Ratio)
@@ -97,8 +101,8 @@ View(Ratio)
   DDUnique<-ts((lag(DUNIQU,1)-DUNIQU))
  
   #View(DUNIQU)
-  View(DRatio)
- plot.ts(DRatio)
+#  View(DRatio)
+# plot.ts(DRatio)
  #View(DDUnique)
  #View(prima)
  #plot.ts(DDUnique)
@@ -110,6 +114,7 @@ multiplot(p1,p2,p3,p4, cols=2)
 # multiplot(p1,p11, cols=2)
 multiplot(p3, cols=2)
 multiplot(p4,col=1)
+plot(p5)
 }
 
 coefDDB<-function(file='C:/Users/enzo7311/Desktop/sealing/coeff2.csv'){

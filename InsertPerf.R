@@ -1,5 +1,5 @@
 #CS903_28_11.csv
-prune_Analysis<-function(sidb=c(77,63,70,68),Mo=c(11,12),file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS901_09_12.csv',hour=0){
+prune_Analysis<-function(sidb=c(77,63),Mo=c(11),file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS901_23_12.csv',hour=0){
   library(ggplot2)
   library(doBy)  
   library(lubridate)
@@ -19,7 +19,7 @@ prune_Analysis<-function(sidb=c(77,63,70,68),Mo=c(11,12),file='C:/Users/enzo7311
  ####DDB filter
  AFID<-subset(AFID,DDBID==sidb)
  
- 
+ AFID<-subset(AFID,year(Date1)==2014)
  ####Time Filter
  AFID<-subset(AFID,(month(Date1)==11)&(day(Date1)>20)|((month(Date1)==12)))
  #AFID<-subset(AFID,day(Date1)>20)
@@ -71,7 +71,7 @@ prune_Analysis<-function(sidb=c(77,63,70,68),Mo=c(11,12),file='C:/Users/enzo7311
  multiplot(m21,m22, cols=3)
  multiplot(m23, cols=3)
 multiplot(m1, cols=3)
-multiplot(m3, cols=3)
+#multiplot(m3, cols=3)
  #multiplot(m17,m1,m2,m3,m4, cols=3)
 return(AFID)
   }
