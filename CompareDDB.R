@@ -14,17 +14,19 @@ DDB_Compare<-function(sidb=c(63,77,70,68),Mo=c(12,11),file='C:/Users/enzo7311/De
   library(ggplot2)
   library(doBy)
   DDB<-DedupRead(file,sidb,Mo,Days)
-  #DDB<-subset(DDB,(day>15))
+ # DDB<-subset(DDB,(day>15))
   
   ###Filter 
   
   DDB<-subset(DDB,(HistoryType==0))
-  DDB<-subset(DDB,DDB$day >3)
-  #DDB<-subset(DDB,(DDB$hour >17)|(DDB$hour <10))
-  DDB_After<-subset(DDB,(DDB$day<15)&(DDB$Month==12))
+  DDB<-subset(DDB,DDB$day >5)
+  
+  DDB<-subset(DDB,(DDB$hour >17)|(DDB$hour <10))
+  
+  DDB_After<-subset(DDB,(DDB$day<21)&(DDB$Month==12))
   DDB_Before<-subset(DDB,(DDB$day>15)&(DDB$Month==11))
   
-  #DDB<-subset(DDB,((DDB$day>15)&(DDB$Month==11))|(DDB$Month==12))
+  DDB<-subset(DDB,((DDB$day>15)&(DDB$Month==11))|(DDB$Month==12))
   
   
   #print(file)
@@ -80,8 +82,8 @@ DDB_Compare<-function(sidb=c(63,77,70,68),Mo=c(12,11),file='C:/Users/enzo7311/De
   t1bf<- ggplot(DDB_Before, aes(x=Date,y=(ZeroRefCount)))+ facet_grid(SIDBStoreId ~. )+ geom_point()+ stat_smooth()+ggtitle("ZeroRef Before")
   
   multiplot(m1b,m1a, cols=2)
-  multiplot(p1b,p1a, cols=2)
+ # multiplot(p1b,p1a, cols=2)
   multiplot(t0bf,t0AF, cols=2)
   multiplot(t1bf,t1AF, cols=2)
-  multiplot(c0bf,c0AF, cols=2)
+#  multiplot(c0bf,c0AF, cols=2)
 }

@@ -1,5 +1,5 @@
 #CS903_28_11.csv
-prune_Analysis<-function(sidb=c(77,63),Mo=c(11),file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS901_23_12.csv',hour=0){
+prune_Analysis<-function(sidb=c(72,60),Mo=c(11,12),file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS901_23_12.csv',hour=0){
   library(ggplot2)
   library(doBy)  
   library(lubridate)
@@ -8,7 +8,7 @@ prune_Analysis<-function(sidb=c(77,63),Mo=c(11),file='C:/Users/enzo7311/Desktop/
   #print(file)
   print(sidb)
   View(AFID)
- 
+# return(AFID)
   ###Basic
   
   AFID$Date1<-mdy_hms(AFID$Date)
@@ -18,10 +18,11 @@ prune_Analysis<-function(sidb=c(77,63),Mo=c(11),file='C:/Users/enzo7311/Desktop/
   AFID$timeHs<-as.integer(hour(AFID$Date1))
  ####DDB filter
  AFID<-subset(AFID,DDBID==sidb)
- 
+AFID<-subset(AFID,day(Date1) >3 |day(Date1)<24 )
  AFID<-subset(AFID,year(Date1)==2014)
  ####Time Filter
- AFID<-subset(AFID,(month(Date1)==11)&(day(Date1)>20)|((month(Date1)==12)))
+ #AFID<-subset(AFID,(month(Date1)==11)&(day(Date1)>15)|((month(Date1)==12)))
+AFID<-subset(AFID,(((month(Date1)==12))))
  #AFID<-subset(AFID,day(Date1)>20)
  #View(AFID)
  #AUXDay<-aggregate(DataWritten~day, sum,data=AUX)
@@ -47,9 +48,9 @@ prune_Analysis<-function(sidb=c(77,63),Mo=c(11),file='C:/Users/enzo7311/Desktop/
  
  
  AFID18<-subset(AFID, timeHs ==18 )
- #View(AFID18)
+ View(AFID18)
  
- m1 <- ggplot(AFID18, aes(x = Date1,y=AFID))+  geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID Pending at 18 low impact")
+ m18 <- ggplot(AFID18, aes(x = Date1,y=AFID))+  geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID Pending at 18 low impact")
  
  AFID21<-subset(AFID, timeHs ==21 )
  #View(AFID21)
@@ -70,9 +71,12 @@ prune_Analysis<-function(sidb=c(77,63),Mo=c(11),file='C:/Users/enzo7311/Desktop/
  
  multiplot(m21,m22, cols=3)
  multiplot(m23, cols=3)
-multiplot(m1, cols=3)
+#multiplot(m18, cols=3)
+
+
+
 #multiplot(m3, cols=3)
  #multiplot(m17,m1,m2,m3,m4, cols=3)
-return(AFID)
+#return(AFID)
   }
 
