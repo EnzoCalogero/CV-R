@@ -62,9 +62,9 @@ if __name__ == '__main__':
     main()
 inizialeDay=15
 inizialeMonth=10
-matrice= [[1 for j in range(24)] for i in range(7)]
-
-
+matriceTime= [[1 for j in range(24)] for i in range(7)]
+matriceNumJob= [[1 for j in range(24)] for i in range(7)]
+timezone=-1  #-1-->UK
 
 #Definizioni iniziali...
 # Create a database in RAM
@@ -80,21 +80,29 @@ with open(csv_path, "rb") as f_obj:
  for day in range(0,7):
      for hour in range(24):
         #print(day*24+hour)
-        matrice[day][hour]=day*24+hour
-        print("ora")
-        print(hour)
-        print("day")
-        print(day+inizialeDay)
-        print(24* (day+inizialeDay)+hour)
-        print "\nResults from a LIKE query:\n"
-        sql = "SELECT * FROM Jobs where startSTANDART<="+ str(24* (day+inizialeDay)+hour) + " and endSTANDART>="
-        sql =sql+ str( 24*(day+inizialeDay)+hour)+ " and startdateMese=" + str((inizialeMonth))
+        matriceTime[day][hour]=day*24+hour
+        #print("ora")
+        #print(hour)
+        #print("day")
+        #print(day+inizialeDay)
+        #print(24* (day+inizialeDay)+hour)
+        #print "\nResults from a LIKE query:\n"
+        sql = "SELECT count (*) FROM Jobs where startSTANDART<="+ str(24* (day+inizialeDay)+hour+timezone) + " and endSTANDART>="
+        sql =sql+ str( 24*(day+inizialeDay)+hour+timezone)+ " and startdateMese=" + str((inizialeMonth))
 
 
-        cursor.execute(sql)
-        print cursor.fetchall()
-
-
-
-#print(matrice)
-
+        ai=cursor.execute(sql)
+        #ai=cursor.fetchall()
+        #print(ai)
+        print("day -->"+ str(day))
+        print("hour -->"+ str(hour))
+        for row in ai:
+            a=row[0]
+            print(a)
+            matriceNumJob[day][hour]=a
+print("matrice")
+print("############")
+#for row in ai:
+#        a=row[0]
+print(matriceNumJob)
+#print(ai[0;0])
