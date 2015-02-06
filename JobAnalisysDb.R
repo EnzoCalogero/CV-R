@@ -1,5 +1,5 @@
 ############  JOB Analysis #########################
-JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/cs499jobs2710.csv',MAgent='all',SP='all'){
+JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/cs404jobs2001.csv',MAgent='all',SP='all'){
   library(ggplot2)
   library(gcookbook)
   library(lubridate)
@@ -42,6 +42,7 @@ JOBAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/cs499jobs2710.cs
   m1 <- ggplot(jobs, aes(x = log10(numbytescomp)))+ ggtitle("Backup Size Distribution")+ geom_density(aes(fill=factor(data_sp)))
 #multiplot(p0,cols=2)
   multiplot(m1,p0,p1,p2,t1,t2,t3,g0, cols=2)
+  multiplot(p0, cols=2)
 }
 
 #########################################################################

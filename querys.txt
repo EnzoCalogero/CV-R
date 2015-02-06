@@ -71,3 +71,5 @@ then modified the cells format into
 Chunks
 
 select * from archChunkMapping
+
+SELECT *  FROM [commserv].[dbo].[archChunkMapping]where physicalSize > 17179869184

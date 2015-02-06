@@ -1,5 +1,5 @@
 
-AUXDataAnalysis<-function(Mo=10,file='C:/Users/enzo7311/Desktop/dati/AUXCS499_11_04.csv',hour=0,Day=0,SP='all'){
+AUXDataAnalysis<-function(Mo=1,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_20_01.csv',hour=0,Day=0,SP='all'){
   #                        c(18,19,20,12,21,23)){
   #  1,2,3,4,5,6,7,8,9,
   #Read the big File
@@ -9,16 +9,16 @@ AUXDataAnalysis<-function(Mo=10,file='C:/Users/enzo7311/Desktop/dati/AUXCS499_11
   library(gcookbook)
   library(lubridate)
   #### FROM [commserv].[dbo].[CommCellBackupInfo] 
-  AUX<-CleanAUXData(Mo=10,file,hour,Day)
+  AUX<-CleanAUXData(Mo=1,file,hour,Day)
     
   
   
   print ("here")
   View(AUX)
-  AUXDay<-aggregate(DataWritten~day, sum,data=AUX)
-  AUXDay$DataWritten<-(AUXDay$DataWritten/(1024))
+  AUXDay<-aggregate(ApplicationSize~day, sum,data=AUX)
+  AUXDay$DataWritten<-(AUXDay$ApplicationSize/(1024))
   View(AUXDay)
-  p1<-ggplot(AUXDay, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line() + stat_smooth()
+  p1<-ggplot(AUXDay, aes(y=ApplicationSize,x=day)) +  geom_point()  + geom_line() + stat_smooth()
   ### Here for not touch teh global value...#
   if(SP!='all'){
     AUX<-subset(AUX,grepl(SP,AUX$storagepolicy))
@@ -45,9 +45,11 @@ AUXDataAnalysis<-function(Mo=10,file='C:/Users/enzo7311/Desktop/dati/AUXCS499_11
   # abline(h=mean(finale$DataWritten))
   #  print(finale)
   boxplot(complessive$DataWritten~complessive$storagepolicy,las=2,par(mar = c(12, 5, 4, 2)+ 0.3))
-  multiplot(p1,t0,p3,p2, cols=2)
+  
+#  multiplot(p1,t0,p3,p2, cols=2)
+multiplot(t0, cols=2)
 }
-AUXJOBsDataAnalysis<-function(Mo=c(10),fileJOB='C:/Users/enzo7311/Desktop/dati/cs499jobs0411.csv',fileAUX='C:/Users/enzo7311/Desktop/dati/AUXCS499_11_04.csv',hour=0,Day=0,SP='52WeekOffsite_MA02_A'){
+AUXJOBsDataAnalysis<-function(Mo=1,fileJOB='C:/Users/enzo7311/Desktop/dati/cs404jobs2001.csv',fileAUX='C:/Users/enzo7311/Desktop/dati/AUXCS404_20_01.csv',hour=0,Day=0,SP='MA7'){
   #                        c(18,19,20,12,21,23)){
   #  1,2,3,4,5,6,7,8,9,
   #Read the big File
@@ -57,7 +59,7 @@ AUXJOBsDataAnalysis<-function(Mo=c(10),fileJOB='C:/Users/enzo7311/Desktop/dati/c
   library(gcookbook)
   library(lubridate)
   ############################
-  # JOBAnalysis<-function(Mo=0,fileJOB='C:/Users/enzo7311/Desktop/dati/cs499jobs2610.csv',MAgent='all',SP='all'){
+  # JOBAnalysis<-function(Mo=0,fileJOB='C:/Users/enzo7311/Desktop/dati/cs404jobs2001.csv',MAgent='all',SP='all'){
   
   jobs <- CleanDBData(Mo,fileJOB)
   
@@ -92,6 +94,8 @@ AUXJOBsDataAnalysis<-function(Mo=c(10),fileJOB='C:/Users/enzo7311/Desktop/dati/c
   AUXDay<-aggregate(DataWritten~day, sum,data=AUX)
   AUXDay$DataWritten<-(AUXDay$DataWritten/(1024))
   View(AUXDay)
+  boxplot(AUX$NWTransBytes~AUX$storagepolicy,las=2,par(mar = c(12, 5, 4, 2)+ 0.3))
+  
   p1<-ggplot(AUXDay, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line() + stat_smooth()
   ### Here for not touch teh global value...#
   if(SP!='all'){
@@ -116,7 +120,7 @@ AUXJOBsDataAnalysis<-function(Mo=c(10),fileJOB='C:/Users/enzo7311/Desktop/dati/c
   View(AUXTru)
   #a<-coef(lm(mio$durationunixhours~mio$numbytescomp+mio$numobjects))
   
-  multiplot(j0,j1,p1,t0,p3,p6, cols=2)
+  multiplot(j0,j1,p1,p3, cols=2)
 }
 
 

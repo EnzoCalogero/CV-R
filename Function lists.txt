@@ -10,4 +10,5 @@ insertPerf.R
 it analyses the logical pruning performance on the Media Agent.
 (it use teh siddbengine extract files)
 
- 
+--> Animator_Analysis()
+to be Used as a template for animation creations... 

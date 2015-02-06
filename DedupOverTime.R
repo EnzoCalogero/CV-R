@@ -18,6 +18,7 @@ dedupOvertime<-function(sidb=0,Mo=c(12,9,10,11),file='C:/Users/enzo7311/Desktop/
 DDB_Analysis_hourMod<-function(sidb=12,Mo=c(11,10),file='C:/Users/enzo7311/Desktop/Dati/CS903ddb2312.csv',hour=0){
   library(ggplot2)
   library(doBy)
+  #The border is where to define pending records relevant
   border=100000
   DDB<-DedupRead(file,sidb,Mo)
   

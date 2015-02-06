@@ -60,8 +60,11 @@ def main():
     pass
 if __name__ == '__main__':
     main()
+# range of query.
 inizialeDay=15
 inizialeMonth=10
+matriceTimeStampDay=[8]
+matriceTimeStampMese=[8]
 matriceTime= [[1 for j in range(24)] for i in range(7)]
 matriceNumJob= [[1 for j in range(24)] for i in range(7)]
 timezone=-1  #-1-->UK
@@ -79,19 +82,20 @@ with open(csv_path, "rb") as f_obj:
 
  for day in range(0,7):
      for hour in range(24):
-        #print(day*24+hour)
         matriceTime[day][hour]=day*24+hour
-        #print("ora")
-        #print(hour)
-        #print("day")
-        #print(day+inizialeDay)
-        #print(24* (day+inizialeDay)+hour)
-        #print "\nResults from a LIKE query:\n"
+
         sql = "SELECT count (*) FROM Jobs where startSTANDART<="+ str(24* (day+inizialeDay)+hour+timezone) + " and endSTANDART>="
         sql =sql+ str( 24*(day+inizialeDay)+hour+timezone)+ " and startdateMese=" + str((inizialeMonth))
 
-
         ai=cursor.execute(sql)
+        if(hour==1):
+            sql = "SELECT  startdateDay FROM Jobs where startSTANDART=="+ str(24* (day+inizialeDay)+hour+timezone)
+            timestamp=cursor.execute(sql)
+            for row in timestamp:
+                print(row)
+                matriceTimeStampDay[day]=row
+            #timestamp=cursor.fetchall()
+            #print(timestamp)
         #ai=cursor.fetchall()
         #print(ai)
         print("day -->"+ str(day))
@@ -102,7 +106,13 @@ with open(csv_path, "rb") as f_obj:
             matriceNumJob[day][hour]=a
 print("matrice")
 print("############")
-#for row in ai:
-#        a=row[0]
 print(matriceNumJob)
-#print(ai[0;0])
+
+fout=open('C:\Users\enzo7311\Desktop\dati\headMapMatrix.cvs','w')
+
+fout.write("test")
+for d in range(0,7):
+      fout.write('\n')
+      for h in range(0,23):
+           fout.write(str(matriceNumJob[d][h]))
+fout.close()
