@@ -63,8 +63,8 @@ if __name__ == '__main__':
 # range of query.
 inizialeDay=15
 inizialeMonth=10
-matriceTimeStampDay=[8]
-matriceTimeStampMese=[8]
+matriceTimeStampDay=[1 for j in range(7)]
+matriceTimeStampMese=[1 for j in range(7)]
 matriceTime= [[1 for j in range(24)] for i in range(7)]
 matriceNumJob= [[1 for j in range(24)] for i in range(7)]
 timezone=-1  #-1-->UK
@@ -116,3 +116,4 @@ for d in range(0,7):
       for h in range(0,23):
            fout.write(str(matriceNumJob[d][h]))
 fout.close()
+print(matriceTimeStampDay)
