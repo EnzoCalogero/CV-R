@@ -5,12 +5,20 @@
 ## MM_final --> aggregate all the file  on the list on a single file.
 ## MMAFDeleted_TimeAnalysis --> time analysis of new AFids
 ############################################################################################
-MMAFDeleted_TimeAnalysis<-function(day=0,file='C:/Users/enzo7311/Desktop/cs406DAIssue/afdelete5_02.csv'){
+MMAFDeleted_TimeAnalysis<-function(day=0,file='C:/Users/enzo7311/Desktop/dati/mmdelete404_17_02.csv'){
   library(ggplot2)
   library(doBy)  
   library(lubridate)
   #DDB<-DedupRead(file,sidb,Mo)
   AFDEL <- read.csv(file)
+  
+  nome<-c("archFileId","VolumeId","Status","Retry","copyId","cclip")
+  nome<-c(nome,"CapacityFreedBytes","ArchChunkId","MountPathId","SIDBStoreId")
+  nome<-c(nome,"CommCellId","DeletedTime","FailureErrorCode","subStoreBitField")
+  nome<-c(nome,"sidbPruningFlag","appSizeFreedBytes","reserveInt")
+  names(AFDEL)<-nome
+  
+  
   AFDEL$CapacityFreedBytes<-(AFDEL$CapacityFreedBytes)/(1024^4)
   AFDEL$appSizeFreedBytes<-(AFDEL$appSizeFreedBytes)/(1024^4)
   AFDEL$DeletedTime<-as.POSIXct(AFDEL$DeletedTime,origin="1970-01-01")
@@ -20,6 +28,8 @@ MMAFDeleted_TimeAnalysis<-function(day=0,file='C:/Users/enzo7311/Desktop/cs406DA
  
   AFIDAggr<-aggregate(CapacityFreedBytes~DeletedTime+SIDBStoreId, sum,data= AFDEL)
   View(AFIDAggr)
+  AFIDAggrCurrent<-aggregate(CapacityFreedBytes~SIDBStoreId, sum,data= AFDEL)
+  View(AFIDAggrCurrent)
   AFIDAggr<-AFIDAggr[AFIDAggr$SIDBStoreId!=20,]
   t1<-ggplot(AFIDAggr,)+ geom_point(aes(x=DeletedTime,y=CapacityFreedBytes,ylim=25))   + facet_grid(SIDBStoreId  ~. )
   multiplot(t1, cols=1)
@@ -56,6 +66,9 @@ MMAFDeleted_Analysis<-function(day=0,file='C:/Users/enzo7311/Desktop/cs406DAIssu
 }
 
 MM_final<-function(){
+  library(doBy)  
+  library(lubridate)
+  
 #  AFSummary<--10000
   ### couple of days and associated files
   Current_folder<-'C:/Users/enzo7311/Desktop/cs406DAIssue/'
@@ -69,7 +82,10 @@ MM_final<-function(){
                   c(day=8,file="afdelete7_02.csv"),
                   c(day=9,file="afdelete8_02.csv"),
                   c(day=10,file="afdelete9_02.csv"),
-                  c(day=11,file="afdelete10_02.csv"))
+                  c(day=11,file="afdelete10_02.csv"),
+                  c(day=12,file="afdelete11_02.csv"),
+                  c(day=13,file="afdelete12_02.csv"),
+                  c(day=14,file="afdelete13_02.csv"))
   #listFiles<-list(c(day=1,file="afdelete8_02.csv"),c(day=2,file="afdelete7_02.csv"))#,c(day=3,file="afdelete8_02.csv"))
  
   
@@ -88,7 +104,8 @@ MM_final<-function(){
 }
 
 MMAFDeleted_cond<-function(day=0,file='C:/Users/enzo7311/Desktop/cs406DAIssue/afdelete2_02.csv'){
-
+  library(doBy)  
+  library(lubridate)
   print(paste("day ", day,sep="->"))
   AFDEL <- read.csv(file)
  nome<-c("archFileId","VolumeId","Status","Retry","copyId","cclip")

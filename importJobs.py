@@ -1,6 +1,8 @@
 #-------------------------------------------------------------------------------
 # Name:        Import Jobs
-# Purpose:
+#
+# Purpose: estract the number of running jobs on a CommCell for each hour of one week.
+#          Then create a csv file with the matix + time of this information.
 #
 # Author:      enzo7311
 #
@@ -63,10 +65,10 @@ if __name__ == '__main__':
 # range of query.
 inizialeDay=15
 inizialeMonth=10
-matriceTimeStampDay=[1 for j in range(7)]
-matriceTimeStampMese=[1 for j in range(7)]
+#matriceTimeStampDay=[1 for j in range(7)]
+#matriceTimeStampMese=[1 for j in range(7)]
 matriceTime= [[1 for j in range(24)] for i in range(7)]
-matriceNumJob= [[1 for j in range(24)] for i in range(7)]
+matriceNumJob= [[1 for j in range(25)] for i in range(7)]
 timezone=-1  #-1-->UK
 
 #Definizioni iniziali...
@@ -88,12 +90,16 @@ with open(csv_path, "rb") as f_obj:
         sql =sql+ str( 24*(day+inizialeDay)+hour+timezone)+ " and startdateMese=" + str((inizialeMonth))
 
         ai=cursor.execute(sql)
+##   Popolate the time
         if(hour==1):
-            sql = "SELECT  startdateDay FROM Jobs where startSTANDART=="+ str(24* (day+inizialeDay)+hour+timezone)
+            sql = "SELECT  startdateDay,startdateMese,startdateAnno FROM Jobs where startSTANDART=="+ str(24* (day+inizialeDay)+hour+timezone)
             timestamp=cursor.execute(sql)
             for row in timestamp:
                 print(row)
-                matriceTimeStampDay[day]=row
+                #matriceTimeStampDay[day]=row
+
+                matriceNumJob[day][24]=row
+
             #timestamp=cursor.fetchall()
             #print(timestamp)
         #ai=cursor.fetchall()
@@ -108,12 +114,13 @@ print("matrice")
 print("############")
 print(matriceNumJob)
 
-fout=open('C:\Users\enzo7311\Desktop\dati\headMapMatrix.cvs','w')
-
-fout.write("test")
+fout=open('C:\Users\enzo7311\Desktop\dati\headMapMatrix.csv','w')
+fout.write("h_12, h_1, h_2, h_3,h_4,h_5,h_6,h_7,h_8,h_9,h_10,h_11,h_12,h_13,h_14,h_15,h_16,h_17,h_18,h_19,h_20,h_21,h_22,h_23,day, month,year")
+#fout.write("test")
 for d in range(0,7):
       fout.write('\n')
-      for h in range(0,23):
+      for h in range(0,25):
+           if(h>0) :fout.write(",")
            fout.write(str(matriceNumJob[d][h]))
 fout.close()
-print(matriceTimeStampDay)
+#print(matriceTimeStampDay)

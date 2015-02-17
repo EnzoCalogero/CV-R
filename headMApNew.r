@@ -1,3 +1,6 @@
+## This function is for create a head map of teh ddb insert time 
+## For each hour of a given week
+##
 headMAp<-function(sidb=0,Mo=c(10,11),file='C:/Users/enzo7311/Desktop/Dati/cs403ddb11_28.csv',Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=0){
   library(ggplot2)
   library(heatmap.plus)
