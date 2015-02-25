@@ -73,3 +73,16 @@ Chunks
 select * from archChunkMapping
 
 SELECT *  FROM [commserv].[dbo].[archChunkMapping]where physicalSize > 17179869184
+
+
+
+##################################################
+Identify unfriendly dedup backup clients:
+
+CommCellClientLevelBkpJobSummary
+
+
+##################################################
+Identify number of tapes used
+
+CommCellClientLevelBkpJobSummary

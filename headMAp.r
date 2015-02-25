@@ -1,14 +1,9 @@
 headMAp_DDB<-function(sidb=0,Mo=c(10,11),file='C:/Users/enzo7311/Desktop/Dati/cs403ddb11_28.csv',Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=0){
   library(ggplot2)
   library(doBy)
-  if (!require("gplots")) {
-    install.packages("gplots", dependencies = TRUE)
-    library(gplots)
-  }
-  if (!require("RColorBrewer")) {
-    install.packages("RColorBrewer", dependencies = TRUE)
-    library(RColorBrewer)
-  }
+  library(gplots)
+  library(RColorBrewer)
+
   DDB<-DedupRead(file,sidb,Mo,Days)
   
   DDB$days<-wday(DDB$Date)
@@ -35,7 +30,7 @@ headMAp_DDB<-function(sidb=0,Mo=c(10,11),file='C:/Users/enzo7311/Desktop/Dati/cs
        A[day,Hour]=temp
       
   }}
-  print(A)  
+  View(A)  
 A<-log10(A)
 # creates a own color palette from red to green
 my_palette <- colorRampPalette(c( "green", "red"))(n = 255)
@@ -45,17 +40,17 @@ col_breaks = c(seq(0,1000,length=1000),      # for red
                seq(2000,1001,length=1000),              # for yellow
                seq(5000,2001,length=1000))              # for green
 
-labelTitle<-"BBD Insert Time "#+as.character(sidb)
+labelTitle<-"DDB Insert Time "#+as.character(sidb)
 heatmap.2(A,
          # cellnote = A,  # same data set for cell labels
           main = labelTitle, # heat map title
           notecol="black",      # change font color of cell labels to black
-          density.info="density",  # turns off density plot inside color legend
+          #density.info="density",  # turns off density plot inside color legend
           trace="none",         # turns off trace lines inside the heat map
-         # margins =c(10,3),     # widens margins around plot
-          col=my_palette,       # use on color palette defined earlier 
+        #  margins =c(10,10),     # widens margins around plot
+        #  col=my_palette,       # use on color palette defined earlier 
          # breaks=col_breaks,    # enable color transition at specified limits
-          dendrogram="both",     # only draw a row dendrogram
+          dendrogram="none",     # only draw a row dendrogram
       #    Colv="NA")            # turn off column clustering
       xlab="Hours"
 )

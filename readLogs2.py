@@ -1,5 +1,6 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
+# Name:        Extract information from the sidbengine.log
+#               To anlyse the pruning trend
 # Purpose:
 #
 # Author:      Enzo
