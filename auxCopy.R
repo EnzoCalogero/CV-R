@@ -44,11 +44,12 @@ AUXDataAnalysis<-function(Mo=1,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_20_
   finale<-aggregate(DataWritten~storagepolicy, median,data=complessive)
   # abline(h=mean(finale$DataWritten))
   #  print(finale)
-  boxplot(complessive$DataWritten~complessive$storagepolicy,las=2,par(mar = c(12, 5, 4, 2)+ 0.3))
+  #boxplot(complessive$DataWritten~complessive$storagepolicy,las=2) #,par(mar = c(10, 5, 4, 2)+ 0.3))
   
-#  multiplot(p1,t0,p3,p2, cols=2)
+  multiplot(p1,t0,p3,p2, cols=2)
 multiplot(t0, cols=2)
 }
+
 AUXJOBsDataAnalysis<-function(Mo=1,fileJOB='C:/Users/enzo7311/Desktop/dati/cs404jobs2001.csv',fileAUX='C:/Users/enzo7311/Desktop/dati/AUXCS404_20_01.csv',hour=0,Day=0,SP='MA7'){
   #                        c(18,19,20,12,21,23)){
   #  1,2,3,4,5,6,7,8,9,

@@ -1,5 +1,5 @@
 #CS903_28_11.csv
-prune_Analysis<-function(sidb=0,Mo=11,file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS406_30_01.csv',hour=0){
+prune_Analysis<-function(sidb=0,Mo=11,file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS903_03_03.csv'){
   library(ggplot2)
   library(doBy)  
   library(lubridate)
@@ -7,7 +7,7 @@ prune_Analysis<-function(sidb=0,Mo=11,file='C:/Users/enzo7311/Desktop/sealing/si
   AFID <- read.csv(file)
   #print(file)
   print(sidb)
-  View(AFID)
+#  View(AFID)
 # return(AFID)
   ###Basic
   
@@ -18,8 +18,8 @@ prune_Analysis<-function(sidb=0,Mo=11,file='C:/Users/enzo7311/Desktop/sealing/si
   AFID$timeHs<-as.integer(hour(AFID$Date1))
  ####DDB filter
 # AFID<-subset(AFID,DDBID==sidb)
-AFID<-subset(AFID,month(Date1) ==1)# |day(Date1)<24 )
-#AFID<-subset(AFID,day(Date1) >19 )# |day(Date1)<24 )
+#AFID<-subset(AFID,month(Date1) ==1)# |day(Date1)<24 )
+AFID<-subset(AFID,day(Date1) >19  | day(Date1)<3 )
 # AFID<-subset(AFID,year(Date1)==2014)
  ####Time Filter
  #AFID<-subset(AFID,(month(Date1)==11)&(day(Date1)>15)|((month(Date1)==12)))

@@ -137,7 +137,7 @@ Cleaning function for the AUX DDB table for AUX analysis.
 ############################
 function --> AUXDataAnalysis
 
-Basic explorirg information on teh aux data
+Basic explorirg information on the AUX data
 
 ############################
 
