@@ -86,3 +86,10 @@ CommCellClientLevelBkpJobSummary
 Identify number of tapes used
 
 CommCellClientLevelBkpJobSummary
+#################################################
+
+ To convert a binary PerfMon log to a CSV file, use the command:
+
+relog logfile.blg -f csv -o logfile.csv
+
+

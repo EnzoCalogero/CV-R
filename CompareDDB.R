@@ -1,8 +1,12 @@
-roundDDB_Compare<-function(sidb=c(63,77,70,68)){
-  for (ddb in sidb ){
-    DDB_Compare(sidb=ddb)    
-  }
-}
+#########################################################################
+## Ddedup Analysis of DDB Comparing Two Different Time Interval #########
+#########################################################################
+
+#########################################################################
+### DDB_Compare() consider all the sidb on thesubject ###################
+#########################################################################
+### roundDDB_Compare() iterate the previous function to a given set #####
+#########################################################################
 
 roundDDB_Compare<-function(sidb=c(63,77,70,68)){
   for (ddb in sidb ){

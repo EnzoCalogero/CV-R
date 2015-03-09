@@ -12,14 +12,6 @@ headMAp_DDB<-function(sidb=0,Mo=c(10,11),file='C:/Users/enzo7311/Desktop/Dati/cs
   rownames(A)<-c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
   print(sidb)
   View(DDB)
- # A[1,1]="Sunday"
-#  A[2,1]="Monday"
-#  A[3,1]="Tuesday"
-#  A[4,1]="Wednesday"
-#  A[5,1]="Thursday"
-#  A[6,1]="Friday"
-#  A[7,1]="Saturday"
-#  A[3,3]=8
   
   mio<-aggregate(AvgQITime~days + hour, mean,data=DDB)
   View(mio)
@@ -40,18 +32,27 @@ col_breaks = c(seq(0,1000,length=1000),      # for red
                seq(2000,1001,length=1000),              # for yellow
                seq(5000,2001,length=1000))              # for green
 
+# creates a 5 x 5 inch image
+#png("h1_simple.png",
+#    width = 5*300, # 5 x 300 pixels
+#    height = 5*300,
+#    res = 300, # 300 pixels per inch
+#    pointsize = 8) # smaller font size
+
+
 labelTitle<-"DDB Insert Time "#+as.character(sidb)
 heatmap.2(A,
          # cellnote = A,  # same data set for cell labels
           main = labelTitle, # heat map title
           notecol="black",      # change font color of cell labels to black
-          #density.info="density",  # turns off density plot inside color legend
+          density.info="density",  # turns off density plot inside color legend
           trace="none",         # turns off trace lines inside the heat map
-        #  margins =c(10,10),     # widens margins around plot
+          margins =c(10,10),     # widens margins around plot
         #  col=my_palette,       # use on color palette defined earlier 
          # breaks=col_breaks,    # enable color transition at specified limits
-          dendrogram="none",     # only draw a row dendrogram
+          dendrogram="both",     # only draw a row dendrogram
       #    Colv="NA")            # turn off column clustering
       xlab="Hours"
 )
+#dev.off()
 }

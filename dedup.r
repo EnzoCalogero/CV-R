@@ -80,7 +80,7 @@ DDB$day<-substr(DDB$Date,9,10)
  #                Time filtering
  ########################################
  print(Mo)
-DDB<-subset(DDB,DDB$year == 14)
+DDB<-subset(DDB,DDB$year > 13)
 if(Mo!=0){
   DDB<-subset(DDB,DDB$Month == Mo)
 }

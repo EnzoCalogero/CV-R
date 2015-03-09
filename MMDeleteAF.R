@@ -5,7 +5,7 @@
 ## MM_final --> aggregate all the file  on the list on a single file.
 ## MMAFDeleted_TimeAnalysis --> time analysis of new AFids
 ############################################################################################
-MMAFDeleted_TimeAnalysis<-function(day=0,file='C:/Users/enzo7311/Desktop/Prune Impact/cs904/mmdeleteaf_03_03.csv'){
+MMAFDeleted_TimeAnalysis<-function(day=0,file='C:/Users/enzo7311/Desktop/Prune Impact/cs406/afdelete05_03.csv'){
   library(ggplot2)
   library(doBy)  
   library(lubridate)
@@ -30,7 +30,7 @@ MMAFDeleted_TimeAnalysis<-function(day=0,file='C:/Users/enzo7311/Desktop/Prune I
   View(AFIDAggr)
   AFIDAggrCurrent<-aggregate(CapacityFreedBytes~SIDBStoreId, sum,data= AFDEL)
   View(AFIDAggrCurrent)
-  AFIDAggr<-AFIDAggr[AFIDAggr$SIDBStoreId!=20,]
+  AFIDAggr<-AFIDAggr[AFIDAggr$SIDBStoreId!=12,]
   t1<-ggplot(AFIDAggr,)+ geom_point(aes(x=DeletedTime,y=CapacityFreedBytes,ylim=25))   + facet_grid(SIDBStoreId  ~. )
   multiplot(t1, cols=1)
   

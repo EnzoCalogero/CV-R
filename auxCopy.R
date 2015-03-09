@@ -1,29 +1,43 @@
+############################################################################################################
+### AUXDataAnalysis--> use only the AUX query###############################################################
+############################################################################################################
 
-AUXDataAnalysis<-function(Mo=1,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_20_01.csv',hour=0,Day=0,SP='all'){
-  #                        c(18,19,20,12,21,23)){
-  #  1,2,3,4,5,6,7,8,9,
+
+AUXDataAnalysis<-function(Mo=2,file='C:/Users/enzo7311/Desktop/dati/CS404AUX_06_03.csv',SP='all'){
+  
   #Read the big File
   
-  #Type of query
   library(ggplot2)
   library(gcookbook)
   library(lubridate)
-  #### FROM [commserv].[dbo].[CommCellBackupInfo] 
-  AUX<-CleanAUXData(Mo=1,file,hour,Day)
-    
+
+  AUX<-CleanAUXData(Mo,file)
+   View(AUX)
+  #stop()
   
-  
-  print ("here")
+ 
   View(AUX)
+  #########################################################################################################
+  ########################            GLOBAL VIEW                  ########################################
+  #########################################################################################################
   AUXDay<-aggregate(ApplicationSize~day, sum,data=AUX)
-  AUXDay$DataWritten<-(AUXDay$ApplicationSize/(1024))
+  AUXDay$ApplicationSize<-(AUXDay$ApplicationSize/(1024))
   View(AUXDay)
-  p1<-ggplot(AUXDay, aes(y=ApplicationSize,x=day)) +  geom_point()  + geom_line() + stat_smooth()
-  ### Here for not touch teh global value...#
+  p1a<-ggplot(AUXDay, aes(y=ApplicationSize,x=day)) +  geom_point()  + geom_line() + stat_smooth()
+  
+  AUXDay<-aggregate(DataWritten~day, sum,data=AUX)
+  AUXDay$DataWritten<-(AUXDay$DataWritten/(1024))
+  View(AUXDay)
+  p1b<-ggplot(AUXDay, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line() + stat_smooth()
+  
+  
+  
+  
+  ### Here for not touch the global value...#
   if(SP!='all'){
     AUX<-subset(AUX,grepl(SP,AUX$storagepolicy))
   }
-  t0<- ggplot(AUX, aes(x=day+(hour/100),y=DataWritten))+ geom_line()+ facet_grid(storagepolicy ~. )  + geom_point()+ stat_smooth()
+  t0<- ggplot(AUX, aes(x=day,y=DataWritten))+ geom_line()+ facet_grid(storagepolicy ~. )  + geom_point()+ stat_smooth()
   
   
   
@@ -35,20 +49,14 @@ AUXDataAnalysis<-function(Mo=1,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_20_
   
   p3<-ggplot(AUX2, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line(aes(colour=factor(storagepolicy)))+ stat_smooth()
   
-  AUX_h<-aggregate(DataWritten~hour + storagepolicy, sum,data=AUX)
-  p4<-ggplot(AUX_h, aes(y=DataWritten,x=hour)) +  geom_point()  + geom_line(aes(colour=factor(storagepolicy)))+ stat_smooth()
+ 
   
-  #abline(coef(lm(mio$durationunixhours~mio$numbytescomp+mio$numobjects)))
-   
-  complessive<-aggregate(DataWritten~storagepolicy+day, median,data=AUX)
-  finale<-aggregate(DataWritten~storagepolicy, median,data=complessive)
-  # abline(h=mean(finale$DataWritten))
-  #  print(finale)
-  #boxplot(complessive$DataWritten~complessive$storagepolicy,las=2) #,par(mar = c(10, 5, 4, 2)+ 0.3))
+
   
-  multiplot(p1,t0,p3,p2, cols=2)
-multiplot(t0, cols=2)
+multiplot(p1a,p1b, cols=2)
+multiplot(t0,p3,p2, cols=2)
 }
+
 
 AUXJOBsDataAnalysis<-function(Mo=1,fileJOB='C:/Users/enzo7311/Desktop/dati/cs404jobs2001.csv',fileAUX='C:/Users/enzo7311/Desktop/dati/AUXCS404_20_01.csv',hour=0,Day=0,SP='MA7'){
   #                        c(18,19,20,12,21,23)){
@@ -222,20 +230,24 @@ print(p4)
 ################################################
 
 
-CleanAUXData<-function(Mo=7,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_11_07.csv',hour=0,Day=0){
-  #                        c(18,19,20,12,21,23)){
-  #  1,2,3,4,5,6,7,8,9,
+CleanAUXData_old<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/CS801_AUX06_03.csv'){
+  
+  
   #Read the big File
   
   #Type of query
-  library(ggplot2)
+ # library(ggplot2)
   #### FROM [commserv].[dbo].[CommCellBackupInfo] 
   
   AUX <- read.csv(file)
+ # View(AUX)
+ 
   ############## Time transformation##############
+  ##Check this
+  #names(AUX) <-c("auxcopyjobid","storagepolicy","sourcecopyid","sourcecopy","destcopyid","destcopy","jobinitfrom","jobstatus","startdateunixsec","enddateunixsec","startdate","enddate","ElapsedTime","bytesxferred","NWTransBytes","ApplicationSize","BackupSize","DataWritten")
   
   ###          FOR IMPUT TROUBLSHOOTING                  #############
-  #View(AUX)
+  
   AUX<-subset(AUX,AUX$sourcecopyid != 'NULL')
   
   AUX$day<-substr(AUX$enddate,1,2)
@@ -247,28 +259,16 @@ CleanAUXData<-function(Mo=7,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_11_07.
   AUX$Month<-as.numeric(AUX$Month)
   AUX$day<-as.numeric(AUX$day)
   AUX$hour<-as.numeric(AUX$hour)
-  #View(AUX)
+ 
   ##########################################
   ####SchedulerFilter####################
   print("Hour")
   print(hour)
-  #to be amend
-  # AUX<-subset(AUX,AUX$hour >17) 
-  #%in% hour)
   
   AUX$DataWritten<-AUX$DataWritten/(1024*1024*1024)
   AUX$nightImp<-AUX$day
   
   AUX$nightImp<-AUX$nightImp +  floor(AUX$hour/12)
-  #ifelse(AUX$hour>12, AUX$nightImp<-120,AUX$nightImp<-240)
-  # ifelse(AUX$hour>12, AUX$nightImp<-(1+AUX$day),AUX$nightImp<-AUX$day)
-  
-  #if(AUX$hour>12) AUX$nightImp<-10
-  #,AUX$nightImp<-20)
-  
-  #View(AUX)
-  
-  #AUX$startsimply<-AUX$year*1000000+AUX$Month*10000+AUX$day*100+AUX$hour
   AUX$startsimply<-AUX$Month*10000+AUX$day*100+AUX$hour  ###Simpolyfide
   
   ###########################################################
@@ -280,21 +280,34 @@ CleanAUXData<-function(Mo=7,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_11_07.
   if(Mo!=0){
     AUX<-subset(AUX,AUX$Month == Mo)
   }
-  # AUX<-subset(AUX,AUX$day<25)
-  
-  ######################################
-  ######################################
-  
-  #AUX2<-aggregate(DataWritten~day + storagepolicy, sum,data=AUX)
-  #p1<-ggplot(AUX2, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line(aes(colour=storagepolicy))
- 
-  #abline(coef(lm(mio$durationunixhours~mio$numbytescomp+mio$numobjects)))
-  #multiplot(p1, cols=2) 
-#  View(AUX)
- # View(AUX2)
+  View(AUX)
+
   return (AUX)
 }
 
+CleanAUXData<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/CS801_AUX06_03.csv'){
+  library(lubridate)
+  
+  AUX <- read.csv(file)
+  names(AUX) <-c("auxcopyjobid","storagepolicy","sourcecopyid","sourcecopy","destcopyid","destcopy","jobinitfrom","jobstatus","startdateunixsec","enddateunixsec","startdate","enddate","ElapsedTime","bytesxferred","NWTransBytes","ApplicationSize","BackupSize","DataWritten")
+  
+  AUX$startdateunixsec<-as.POSIXct(AUX$startdateunixsec,origin="1970-01-01")
+  AUX$enddateunixsec<-as.POSIXct(AUX$enddateunixsec,origin="1970-01-01")
+    
+  AUX<-subset(AUX,AUX$sourcecopyid != 'NULL')
+    
+  AUX$day<-floor_date(AUX$startdateunixsec, "day")
+  AUX$DataWritten<-AUX$DataWritten/(1024*1024*1024)
+  ###########################################################
+    
+ 
+  if(Mo!=0){
+    AUX<-subset(AUX,month(AUX$startdateunixsec) == Mo)
+  }
+  View(AUX)
+  
+  return (AUX)
+}
 
 
 

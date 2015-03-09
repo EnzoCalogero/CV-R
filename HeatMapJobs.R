@@ -51,8 +51,8 @@ heatmap.2(H21,
           dendrogram="both",     # only draw a row dendrogram
           #    Colv="NA",            # turn off column clustering
           #    Rowv="NA",
-          margins = c(10, 5),
-         cexCol=0.5,
+        #  margins = c(10, 5),
+        # cexCol=0.5,
           xlab="Storage Policy",ylab="Day"
 )
 
@@ -74,16 +74,6 @@ heatmap.2(H21,
           cexCol=0.5,
           xlab="Hours",ylab="Day"
 )
-
-
-
-
-
-
-
-
-
-
 return(H21)
 }
 
@@ -95,9 +85,9 @@ headMAp_SingleFilejobs<-function(file='C:/Users/enzo7311/Desktop/dati/heatmap/CS
   
   library(heatmap.plus)
   
-  library(ggplot2)
+ # library(ggplot2)
   library(doBy)
-  library(gplots)
+ # library(gplots)
   library(RColorBrewer)
   
   
@@ -131,7 +121,7 @@ headMAp_SingleFilejobs<-function(file='C:/Users/enzo7311/Desktop/dati/heatmap/CS
             notecol="black",      # change font color of cell labels to black
             density.info="density",  # turns off density plot inside color legend
             trace="none",         # turns off trace lines inside the heat map
-           # margins =c(10,3),     # widens margins around plot
+          #  margins =c(10,3),     # widens margins around plot
             col=my_palette,       # use on color palette defined earlier 
             #breaks=col_breaks,    # enable color transition at specified limits
             dendrogram="both",     # only draw a row dendrogram
