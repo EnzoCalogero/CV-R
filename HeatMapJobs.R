@@ -1,6 +1,4 @@
-## This function is for create a head map of the ddb insert time 
-## For each hour of a given week
-##
+
 headMAp_collect<-function(file='C:/Users/enzo7311/Desktop/dati/heatmap/CS499/15_10_2014/'){
   
   H21<-data.frame(DAYS=c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"))
@@ -85,9 +83,9 @@ headMAp_SingleFilejobs<-function(file='C:/Users/enzo7311/Desktop/dati/heatmap/CS
   
   library(heatmap.plus)
   
- # library(ggplot2)
+  library(ggplot2)
   library(doBy)
- # library(gplots)
+  library(gplots)
   library(RColorBrewer)
   
   

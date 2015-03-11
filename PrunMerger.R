@@ -12,8 +12,9 @@ PrunMerger<-function(sidb=62,Mo=c(11,10),fileDDB='C:/Users/enzo7311/Desktop/Dati
   #DDB1$Date2<-format(DDB1$Date2, tz=Local_tz,usetz=TRUE)
   
   AFID1<-prune_Analysis(sidb,Mo=c(11),file<-fileAF)
+  #filter for a sidb
+  #AFID1<-subset(AFID1,DDBID==sidb)
   
-  AFID1<-subset(AFID1,DDBID==sidb)
   DDB1<-subset(DDB1,(day>20)&(day<30))
   #DDB1<-subset(DDB1,(hour>17)|(hour<10))
   View(DDB1)
