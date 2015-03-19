@@ -1,5 +1,5 @@
 
-headMAp_collect<-function(file='C:/Users/enzo7311/Desktop/dati/heatmap/CS499/15_10_2014/'){
+heatMAp_collect<-function(hh=21,file='C:/Users/enzo7311/Desktop/dati/heatmap/CS404/15_10_2014/'){
   
   H21<-data.frame(DAYS=c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"))
   files = list.files(path=file,pattern="*.csv")
@@ -9,9 +9,12 @@ headMAp_collect<-function(file='C:/Users/enzo7311/Desktop/dati/heatmap/CS499/15_
        finale<-paste(file,f,sep="")
     
         print( f)
-        temp<-headMAp_jobs(finale)
+        temp<-heatMAp_jobs(finale)
        
-       TempH_21<-data.frame(temp[,22])
+       TempH_21<-data.frame(temp[,hh+1])
+       f<-gsub(".csv", "", f)
+       f<-gsub("z_", "", f)
+       f<-gsub("Z_", "", f)
        names(TempH_21)<-f
        #TempH_21$name<-row.names(TempH_21$f)
     
@@ -19,9 +22,9 @@ headMAp_collect<-function(file='C:/Users/enzo7311/Desktop/dati/heatmap/CS499/15_
        TempH_21$DAYS <- rownames(TempH_21) 
        
        View(temp)
-       View(TempH_21)
+      # View(TempH_21)
     
-       print (flag)
+       #print (flag)
     #   print(TempH_21)
        if (flag > 1) {
          #H21$DAYS <- rownames(temp)
@@ -36,7 +39,7 @@ View(H21)
 H21<-as.matrix(H21[-1])
 rownames(H21)<- rownames(TempH_21)
 my_palette <- colorRampPalette(c( "green","yellow", "red","black"))(n = 255)
-labelTitle<-"jobs per Storage Policy at 21, Order by Euclidea Distance"
+labelTitle<-paste("jobs per Storage Policy at",hh," Order by Euclidea Distance")
 heatmap.2(H21,
           # cellnote = A,  # same data set for cell labels
           main = labelTitle, # heat map title
@@ -49,8 +52,8 @@ heatmap.2(H21,
           dendrogram="both",     # only draw a row dendrogram
           #    Colv="NA",            # turn off column clustering
           #    Rowv="NA",
-        #  margins = c(10, 5),
-        # cexCol=0.5,
+          margins = c(11, 6),
+          cexCol=0.7,
           xlab="Storage Policy",ylab="Day"
 )
 
@@ -68,18 +71,35 @@ heatmap.2(H21,
           dendrogram="none",     # only draw a row dendrogram
           Colv="NA",            # turn off column clustering
           Rowv="NA",
-          margins = c(10, 5),
-          cexCol=0.5,
+          margins = c(11, 6),
+          cexCol=0.7,
           xlab="Hours",ylab="Day"
 )
 return(H21)
+}
+#Function needed to create a matrix for each storage Policy...
+
+
+heatMAp_jobs<-function(file='C:/Users/enzo7311/Desktop/dati/heatmap/CS499/15_10_2014/52WeekOffsite_MA02_A.csv'){
+  
+  library(doBy)
+  jobs<-read.csv(file)
+  A<-matrix(data = NA, nrow = 7, ncol =24)
+#  View(jobs)
+  A<-jobs[,1:24]
+  
+  A<-as.matrix(A)
+  rownames(A)<-c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+  
+ # View(A)  
+  
+  return(A)
 }
 
 
 
 
-
-headMAp_SingleFilejobs<-function(file='C:/Users/enzo7311/Desktop/dati/heatmap/CS499/15_10_2014/52WeekOffsite_MA02_A.csv'){
+heatMAp_SingleFilejobs<-function(file='C:/Users/enzo7311/Desktop/dati/heatmap/CS499/15_10_2014/52WeekOffsite_MA02_A.csv'){
   
   library(heatmap.plus)
   

@@ -15,7 +15,8 @@ import sqlite3
 def writeAll(Ppath,CS, DAY, month, year):
 
     path=Ppath +"\\"+ CS +"\\"+ str(DAY) +"_"+ str(month) +"_"+ str(year) +"\\"+ "All.csv"
-    print(Ppath)
+   # path.replace(" ", "_")
+    print(path)
     fout=open(path,'w')
     fout.write("h_24, h_1, h_2, h_3,h_4,h_5,h_6,h_7,h_8,h_9,h_10,h_11,h_12,h_13,h_14,h_15,h_16,h_17,h_18,h_19,h_20,h_21,h_22,h_23,day, month,year")
     #fout.write("test")
@@ -31,9 +32,14 @@ def writeAll(Ppath,CS, DAY, month, year):
 
 
 def writeSP(Ppath,CS, DAY, month, year,StoragePolicy):
-
-    path=Ppath +"\\"+ CS +"\\"+ str(DAY) +"_"+ str(month) +"_"+ str(year) +"\\"+ StoragePolicy + ".csv"
-    print(Ppath)
+    SP=str(StoragePolicy)
+    SP=SP.replace(" ", "")
+    SP=SP.replace("/", "_")
+    path=Ppath +"\\"+ CS +"\\"+ str(DAY) +"_"+ str(month) +"_"+ str(year) +"\\"+ SP + ".csv"
+#    path+str(path)
+#    path.replace(" ", "k")
+    print(path)
+ #   stop()
     fout=open(path,'w')
     fout.write("h_24, h_1, h_2, h_3,h_4,h_5,h_6,h_7,h_8,h_9,h_10,h_11,h_12,h_13,h_14,h_15,h_16,h_17,h_18,h_19,h_20,h_21,h_22,h_23,day, month,year")
     #fout.write("test")
@@ -145,7 +151,7 @@ if __name__ == '__main__':
 #Definizioni iniziali...
 inizialeDay=15
 inizialeMonth=10
-CS='CS499'
+CS='CS404'
 DAY=inizialeDay
 month=inizialeMonth
 year=2014
@@ -168,7 +174,7 @@ cursor = db.cursor()
 ##################################
 ##Open Source File################
 ##################################
-csv_path = "C:\Users\enzo7311\Desktop\dati\cs499jobs0411.csv"
+csv_path = "C:\Users\enzo7311\Desktop\dati\cs404jobs2610.csv"
 with open(csv_path, "rb") as f_obj:
    csv_reader(f_obj)
 
@@ -182,6 +188,10 @@ for SPolicy in SP:
     #SPolicy='52WeekOffsite_MA02_A'
     matriceNumJob=readDB(SPolicy)
     writeSP(Ppath,CS,DAY,month,year,SPolicy)
-print("~~~~~~~~~~~~~~~~~~~~ECOCI ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+#####################################################################
+## To create the file for all the storagr policies aggregated....####
+## in case it is needed un-comment the following 2 lines...##########
+#####################################################################
+#print("~~~~~~~~~~~~~~~~~~~~ECOCI ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 matriceNumJob=readDB("All")
 writeAll(Ppath,CS,DAY,month,year)

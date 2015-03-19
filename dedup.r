@@ -73,7 +73,7 @@ DDB$day<-substr(DDB$Date,9,10)
  DDB$Month<-as.numeric(DDB$Month)
  DDB$day<-as.numeric(DDB$day)
  DDB$hour<-as.numeric(DDB$hour)
- DDB$WDay<-wday(DDB$Date,label = TRUE, abbr = FALSE)
+# DDB$WDay<-wday(DDB$Date,label = TRUE, abbr = FALSE)
 #View(DDB)
 #return(DDB)
  ################################################

@@ -92,4 +92,17 @@ CommCellClientLevelBkpJobSummary
 
 relog logfile.blg -f csv -o logfile.csv
 
+#####################################################
+Size of a ddb on teh disk...
+#####################################################
 
+select SUM(physicalbytesmb)as Size from MMVolume where SIDBStoreId=7
+
+
+....
+
+to be tested
+for the MountPath + sidbstore
+select sum (physicalbytesMB) from MMVolume where sidbstoreid = 12 and currmountpathid=2
+
+select sum (physicalbytesMB) from MMVolume where sidbstoreid = 12 and currmountpathid=2
