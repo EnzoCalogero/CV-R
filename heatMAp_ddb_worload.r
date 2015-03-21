@@ -1,11 +1,13 @@
-heatMAp_DDB_worload<-function(sidb=0,Mo=c(10,11),file='C:/Users/enzo7311/Desktop/Dati/cs403ddb11_28.csv',Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=0){
+heatMAp_DDB_worload<-function(sidb="All",Mo=c(10,11),file='C:/Users/enzo7311/Desktop/Dati/cs403ddb11_28.csv',Days=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),hour=0){
   library(ggplot2)
   library(doBy)
   library(lubridate)
   library(gplots)
   library(RColorBrewer)
 
-  DDB<-DedupRead_worload(file)
+  DDB<-DedupRead_workload(file)
+  
+  
   
   DDB$days<-wday(DDB$Date)
   DDB$hour[DDB$hour==0]<-24
@@ -59,46 +61,44 @@ heatmap.2(A,
 }
 
 
-DedupRead_worload<-function(file='C:/Users/enzo7311/Desktop/Dati/cs403ddb11_28.csv', sidb=0,Mo=0){
+DedupRead_workload<-function(file='C:/Users/enzo7311/Desktop/Dati/cs403ddb11_28.csv', sidb=0,Mo=0){
 #  library(ggplot2)
   library(gcookbook)
   library(dplyr)
   library(lubridate) #Date management
   #Read the big File######
-  
-  
+    
   Local_tz<-"Europe/London"
   #  Local_tz<-"America/Chicago"
   
   
   
-  #  file<-'ODBC'
-  #Type of query
-  
-  #### FROM [commserv].[dbo].[CommCellBackupInfo] 
-  
-  if(file!='ODBC'){  
-    DDB <- read.csv(file)
-  }
-  if(file=='ODBC'){  
-    DDB <- Read_ODBC_DDB()
-  }  
-  
-  #  DDB <- read.csv(file)
-  View(DDB)
+  DDB <- read.csv(file)
+  #View(DDB)
   ##########Focus on the sidb##########
   if(sidb!=0){
     DDB<-subset(DDB,DDB$SIDBStoreId %in% sidb)
   }
-  
-  
+  ###################
+  #~New Add...
+  ##################
   DDB$Date<-as.Date(as.POSIXct(DDB$ModifiedTime, origin="1970-01-01")) 
   #DDB<-subset(DDB,DDB$AvgQITime > 0 & DDB$NumOfConnections > 0)
 #  DDB$trughput<-(128/(DDB$AvgQITime/100000))/1024##mg/sec 
   DDB$Date<-as.POSIXct(DDB$ModifiedTime, origin="1970-01-01")
   ###Modify for the time zone
   DDB$Date<-format(DDB$Date, tz=Local_tz,usetz=TRUE)
-  
+######added from here  
+#DDB$date1<-floor_date(Date$date,"hour")
+#View(DDB)
+#DDB$date1<-ymd_hms(DDB$date)
+View(DDB)
+#stop()
+#  DDB$day<-day(DDB$date)
+
+View(DDB)
+#######Added stops here  
+#############Replace Here################
   DDB$day<-substr(DDB$Date,9,10)
   DDB$Month<-substr(DDB$Date,6,7)
   DDB$year<-substr(DDB$Date,2,4)
@@ -108,10 +108,11 @@ DedupRead_worload<-function(file='C:/Users/enzo7311/Desktop/Dati/cs403ddb11_28.c
   DDB$Month<-as.numeric(DDB$Month)
   DDB$day<-as.numeric(DDB$day)
   DDB$hour<-as.numeric(DDB$hour)
-  # DDB$WDay<-wday(DDB$Date,label = TRUE, abbr = FALSE)
-  #View(DDB)
-  #return(DDB)
-  ################################################
+###########replace stpo here##############
+
+
+
+################################################
   #                Time filtering
   ########################################
   print(Mo)

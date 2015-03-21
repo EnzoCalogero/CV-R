@@ -7,6 +7,7 @@ heatMAp_DDB<-function(sidb=0,Mo=c(10,11),file='C:/Users/enzo7311/Desktop/Dati/cs
 
   DDB<-DedupRead(file,sidb,Mo,Days)
   
+  
   DDB$days<-wday(DDB$Date)
   DDB$hour[DDB$hour==0]<-24
   A<-matrix(data = NA, nrow = 7, ncol =24)

@@ -27,6 +27,7 @@ folder="AuxCopyMgr"
 
 inputFile=[folder+".log",folder+"_1.log",folder+"_2.log",folder+"_3.log",folder+"_4.log",folder+"_5.log",folder+"_6.log",folder+"_7.log",folder+"_8.log",folder+"_9.log",folder+"_10.log",folder+"_11.log"]
 inputFile=inputFile+[folder+"_12.log",folder+"_13.log",folder+"_14.log",folder+"_15.log",folder+"_16.log",folder+"_17.log",folder+"_18.log",folder+"_19.log",folder+"_20.log",folder+"_21.log",folder+"_22.log",folder+"_23.log"]
+inputFile=inputFile+[folder+"_24.log",folder+"_25.log",folder+"_26.log",folder+"_27.log",folder+"_28.log",folder+"_29.log",folder+"_30.log"]
 
 jobid_SP={} # ....define the dictionaries to associates the jobid to the storage policy.....
 jobid_MA={} # ....define the dictionaries to associates the jobid to the Media Agent.....
@@ -109,7 +110,7 @@ print(jobid_MA)
 ###We craete the date jobid storage policy table########################################
 ########################################################################################
 text_fileOut = open("C:\Users\enzo7311\Desktop\AUXA\\auxcopySourceDest.csv", "w")
-text_fileOut.writelines("date,jobid,Storage_Policy,MediaAget,source,target,Bytes,time\n")
+text_fileOut.writelines("date,jobid,Storage_Policy,MediaAgent,source,target,Bytes,time\n")
 print("\nLooping through the file, line by line.")
 #print(inputFile)
 for a in inputFile:
