@@ -1,22 +1,17 @@
-############################################################################################################
-### AUXDataAnalysis--> use only the AUX query###############################################################
-############################################################################################################
-
-
-AUXDataAnalysis<-function(Mo=2,file='C:/Users/enzo7311/Desktop/dati/cs404jobs2403.csv',SP='all'){
+AUXDataAnalysis<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_24_03.csv',SP='all'){
   
   #Read the big File
-  
+  library(dplyr)
   library(ggplot2)
   library(gcookbook)
   library(lubridate)
-
-  AUX<-CleanAUXData(Mo,file)
-   View(AUX)
-  #stop()
   
- 
+  AUX<-CleanAUXData(Mo,file)
   View(AUX)
+  
+  
+  
+  
   #########################################################################################################
   ########################            GLOBAL VIEW                  ########################################
   #########################################################################################################
@@ -37,7 +32,7 @@ AUXDataAnalysis<-function(Mo=2,file='C:/Users/enzo7311/Desktop/dati/cs404jobs240
   if(SP!='all'){
     AUX<-subset(AUX,grepl(SP,AUX$storagepolicy))
   }
-  t0<- ggplot(AUX, aes(x=day,y=DataWritten))+ geom_line()+ facet_grid(storagepolicy ~. )  + geom_point()+ stat_smooth()
+ # t0<- ggplot(AUX, aes(x=day,y=DataWritten))+ geom_line()+ facet_grid(storagepolicy ~. )  + geom_point()+ stat_smooth()
   
   
   
@@ -49,24 +44,58 @@ AUXDataAnalysis<-function(Mo=2,file='C:/Users/enzo7311/Desktop/dati/cs404jobs240
   
   p3<-ggplot(AUX2, aes(y=DataWritten,x=day)) +  geom_point()  + geom_line(aes(colour=factor(storagepolicy)))+ stat_smooth()
   
- 
   
-
   
-multiplot(p1a,p1b, cols=2)
-multiplot(t0,p3,p2, cols=2)
+  
+  
+  multiplot(p1a,p1b, cols=2)
+  multiplot(p3, cols=1)
 }
 
 
-AUXJOBsDataAnalysis<-function(Mo=1,fileJOB='C:/Users/enzo7311/Desktop/dati/cs404jobs2001.csv',fileAUX='C:/Users/enzo7311/Desktop/dati/AUXCS404_20_01.csv',hour=0,Day=0,SP='MA7'){
+CleanAUXData<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/AUXCS404_24_03.csv'){
+  library(lubridate)
+  
+  AUX <- read.csv(file)
+  names(AUX) <-c("auxcopyjobid","storagepolicy","sourcecopyid","sourcecopy","destcopyid","destcopy","jobinitfrom","jobstatus","startdateunixsec","enddateunixsec","startdate","enddate","ElapsedTime","bytesxferred","NWTransBytes","ApplicationSize","BackupSize","DataWritten")
+  
+  AUX$startdateunixsec<-as.POSIXct(AUX$startdateunixsec,origin="1970-01-01")
+  AUX$enddateunixsec<-as.POSIXct(AUX$enddateunixsec,origin="1970-01-01")
+  
+  AUX<-subset(AUX,AUX$sourcecopyid != 'NULL')
+  
+  AUX$day<-floor_date(AUX$startdateunixsec, "day")
+  AUX$DataWritten<-AUX$DataWritten/(1024*1024*1024)
+  ###########################################################
+  
+  
+  if(Mo!=0){
+    AUX<-subset(AUX,month(AUX$startdateunixsec) == Mo)
+  }
+  View(AUX)
+  
+  return (AUX)
+}
+
+
+
+
+############################################################################################################
+### AUXDataAnalysis--> use only the AUX query###############################################################
+############################################################################################################
+
+###fix AUX than jobs...
+
+AUXJOBsDataAnalysis<-function(Mo=1,fileJOB='C:/Users/enzo7311/Desktop/dati/AUXCS404_24_03_24.csv',fileAUX='C:/Users/enzo7311/Desktop/dati/AUXCS404_20_01.csv',hour=0,Day=0,SP='MA7'){
   #                        c(18,19,20,12,21,23)){
   #  1,2,3,4,5,6,7,8,9,
   #Read the big File
   
   #Type of query
   library(ggplot2)
-  library(gcookbook)
+#  library(gcookbook)
   library(lubridate)
+  library(dplyr)
   ############################
   # JOBAnalysis<-function(Mo=0,fileJOB='C:/Users/enzo7311/Desktop/dati/cs404jobs2001.csv',MAgent='all',SP='all'){
   
@@ -131,6 +160,7 @@ AUXJOBsDataAnalysis<-function(Mo=1,fileJOB='C:/Users/enzo7311/Desktop/dati/cs404
   
   multiplot(j0,j1,p1,p3, cols=2)
 }
+
 
 
 
@@ -231,76 +261,7 @@ print(p4)
 
 
 
-CleanAUXData<-function(Mo=0,file='C:/Users/enzo7311/Desktop/dati/CS801_AUX06_03.csv'){
-  library(lubridate)
-  
-  AUX <- read.csv(file)
-  names(AUX) <-c("auxcopyjobid","storagepolicy","sourcecopyid","sourcecopy","destcopyid","destcopy","jobinitfrom","jobstatus","startdateunixsec","enddateunixsec","startdate","enddate","ElapsedTime","bytesxferred","NWTransBytes","ApplicationSize","BackupSize","DataWritten")
-  
-  AUX$startdateunixsec<-as.POSIXct(AUX$startdateunixsec,origin="1970-01-01")
-  AUX$enddateunixsec<-as.POSIXct(AUX$enddateunixsec,origin="1970-01-01")
-    
-  AUX<-subset(AUX,AUX$sourcecopyid != 'NULL')
-    
-  AUX$day<-floor_date(AUX$startdateunixsec, "day")
-  AUX$DataWritten<-AUX$DataWritten/(1024*1024*1024)
-  ###########################################################
-    
- 
-  if(Mo!=0){
-    AUX<-subset(AUX,month(AUX$startdateunixsec) == Mo)
-  }
-  View(AUX)
-  
-  return (AUX)
-}
 
 
 
 
-
-#############################
-##Visualizzation#############
-#############################
-
-
-
-
-
-
-
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  require(grid)
-  
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-  
-  numPlots = length(plots)
-  
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                     ncol = cols, nrow = ceiling(numPlots/cols))
-  }
-  
-  if (numPlots==1) {
-    print(plots[[1]])
-    
-  } else {
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-    
-    # Make each plot, in the correct location
-    for (i in 1:numPlots) {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-      
-      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                      layout.pos.col = matchidx$col))
-    }
-  }
-}

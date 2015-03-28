@@ -1,4 +1,4 @@
-AUX_Read_Logs<-function(file='C:/Users/enzo7311/Desktop/AUXA/auxcopySourceDest.csv',SP='all',MAgent='all'){
+AUX_Read_Logs<-function(file='C:/Users/enzo7311/Desktop/AUXA/auxcopySourceDest.csv',SP='52',MAgent='all'){
   library(lubridate)
   library(data.table)
   library(bit64)
