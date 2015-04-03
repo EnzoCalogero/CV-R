@@ -47,6 +47,20 @@ col_breaks = c(seq(-100000000,-1,length=1000),      # for red
 #    pointsize = 8) # smaller font size
 
 
+
+#   .....    example   ....
+# following code limits the lowest and highest color to 5%, and 95% of your range, respectively
+quantile.range <- quantile(random.matrix, probs = seq(0, 1, 0.01))
+palette.breaks <- seq(quantile.range["5%"], quantile.range["95%"], 0.1)
+
+# use http://colorbrewer2.org/ to find optimal divergent color palette (or set own)
+color.palette  <- colorRampPalette(c("#FC8D59", "#FFFFBF", "#91CF60"))(length(palette.breaks) - 1)
+
+
+#   .....    example   ....
+
+
+
 labelTitle<-"DDB Insert Time "#+as.character(sidb)
 heatmap.2(A,
          # cellnote = A,  # same data set for cell labels

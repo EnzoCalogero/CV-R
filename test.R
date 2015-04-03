@@ -16,5 +16,5 @@ heatmap.2(x, srtCol=315, adjCol = c(0,1)   )
 heatmap.2(x, srtCol=360, adjCol = c(0.5,1) )
 
 heatmap.2(x, srtRow=45, adjRow=c(0, 1) )
-heatmap.2(x, srtRow=45, adjRow=c(0, 1), srtCol=45, adjCol=c(1,1) )
+heatmap.2(x, srtRow=45, adjRow=c(0, 1), srtCol=45, adjCol=c(1,2) )
 heatmap.2(x, srtRow=45, adjRow=c(0, 1), srtCol=270, adjCol=c(0,0.5) )
