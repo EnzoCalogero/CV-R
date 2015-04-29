@@ -1,0 +1,24 @@
+
+############################
+capacity for clients:
+
+
+
+
+SELECT  [SurveyResultId]
+      ,[ClientId]
+      ,[ClientName]
+      ,[AgentTypeId]
+      ,[AgentName]
+      ,[InstanceId]
+      ,[InstanceName]
+      ,[BackupsetId]
+      ,[BackupsetName]
+      ,[AppId]
+      ,[SubclientName]
+      ,[FrontEndSize]
+      ,[DataProtected]
+      ,[DataWritten]
+  FROM [CVCloud].[dbo].[cf_SurveyClientCapacityUsage]
+
+capacity for clients

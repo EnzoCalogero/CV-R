@@ -106,3 +106,15 @@ for the MountPath + sidbstore
 select sum (physicalbytesMB) from MMVolume where sidbstoreid = 12 and currmountpathid=2
 
 select sum (physicalbytesMB) from MMVolume where sidbstoreid = 12 and currmountpathid=2
+
+
+
+############################################################
+
+survey data analisis
+
+###########################################################
+~Dedup perfform test version 1...
+
+select * from [CVCloud].[dbo].[cf_SurveyDDBPerformance]as DDB,[CVCloud].[dbo].[cf_CommcellIdNameMap] as COMMCELL where DDB.CommServUniqueId =COMMCELL.ID
+
