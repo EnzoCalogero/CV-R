@@ -260,7 +260,7 @@ cursor = db.cursor()
 ##################################
 ##Open Source File################
 ##################################
-csv_path = "C:\Users\enzo7311\Desktop\dati\cs404jobs2610.csv"
+csv_path = "C:\\Users\\enzo7311\\Desktop\\dati\\cs404jobs2610.csv"
 with open(csv_path, "rb") as f_obj:
    csv_reader(f_obj)
 

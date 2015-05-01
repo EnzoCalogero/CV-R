@@ -1,6 +1,6 @@
 
 
-jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/beta.csv', SP="all",Mo=3){
+jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs411_29_04.csv', SP="all"){
   #  library(ggplot2)
 #  library(xts)
   library(dplyr)
@@ -18,14 +18,16 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/beta.csv', SP=
   jobs <- read.csv(file)
   #View(jobs)
   
-  jobs$Start.Time<-mdy_hm(jobs$Start.Time)
-  jobs$End.Time<-mdy_hm(jobs$End.Time)
+  jobs$Start.Time<-dmy_hm(jobs$Start.Time)
+  jobs$End.Time<-dmy_hm(jobs$End.Time)
   jobs$Duration<-jobs$End.Time - jobs$Start.Time
   jobs$Duration<as.numeric(jobs$Duration)
   
-  jobs$DurationOver<-(jobs$Duration  -3600)
+  jobs$DurationOver<-((jobs$Duration/3600)-3)
   jobs$DurationOver[jobs$DurationOver<0]<-0
   
+  jobs$DurationOverCount<-0
+  jobs$DurationOverCount[jobs$DurationOver >0]<-1  
   ##filter for the storag epolicy
   if(SP!='all'){
     jobs<-subset(jobs,grepl(SP,jobs$data_sp))
@@ -38,7 +40,7 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/beta.csv', SP=
   jobs<-subset(jobs,year(jobs$Start.Time) == 2015)
   
   jobs<-subset(jobs,month(jobs$Start.Time) == 4)
-  jobs<-subset(jobs,(day(jobs$Start.Time)  >= InitialDAY) & day(jobs$Start.Time) <=(InitialDAY +7))
+  jobs<-subset(jobs,(day(jobs$Start.Time)  >= InitialDAY) & day(jobs$Start.Time) <=(InitialDAY +numberdays))
  #View(jobs)
 
   #start to work on the date set 
@@ -50,22 +52,32 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/beta.csv', SP=
   
   
   View(jobs)
-  jobs_<-jobs%>%group_by(ScheduleTime,Policy.Name)%>%summarise(DurationOver=sum(DurationOver),Duration=sum(Duration),Data.Written=sum(Data.Written),application_Size=sum(Size.of.Application),Data.Transferred=sum(Data.Transferred))
+  jobs_<-jobs%>%group_by(ScheduleTime,Policy.Name)%>%summarise(clientOver3H=sum(DurationOverCount),DurationOver=sum(DurationOver),Duration=sum(Duration),Data.Written=sum(Data.Written),Size.of.Application=sum(Size.of.Application),Data.Transferred=sum(Data.Transferred))
   
 #  View(jobs_)
 jobs_$Day<-wday(jobs_$ScheduleTime,label=TRUE)
 jobs_$Duration<-as.numeric(jobs_$Duration)
 jobs_$DurationOver<-as.numeric(jobs_$DurationOver)
-jobs_$ratioDedup<-jobs_$application_Size/jobs_$Data.Written
-jobs_$GlobalTroughput<-jobs_$Data.Written/jobs_$Duration
 
+jobs_$ratioDedup<-jobs_$Size.of.Application/jobs_$Data.Written
+jobs_$Data.Written<-(jobs_$Data.Written/1024^3)
+
+jobs_$Size.of.Application<-(jobs_$Size.of.Application/1024^3)
+jobs_$Data.Transferred<-(jobs_$Data.Transferred/1024^3)
+
+
+
+jobs_$dedup<-100*(1-1/jobs_$ratioDedup)
+
+jobs_$GlobalTroughput_DW<-3600*jobs_$Data.Written/jobs_$Duration
+jobs_$GlobalTroughput_AS<-3600*jobs_$Size.of.Application/jobs_$Duration
 View(jobs_)
 write.csv(jobs_, file = "C:/Users/enzo7311/Desktop/ipotesi/Output.csv")
 
 #ggplot(jobs_, aes(x = ScheduleTime,y=Data.Written))+ geom_point()+ facet_grid(Policy.Name ~.) +ggtitle("Data written per Schedule")
 ggplot(jobs_, aes(x = ScheduleTime,y=Data.Written))+ geom_point(aes(colour=factor(Policy.Name))) +ggtitle("Data written per Schedule")+ geom_line(aes(colour=factor(Policy.Name)))
 #ggplot(jobs_, aes(x = ScheduleTime,y=Duration))+ geom_point(aes(colour=factor(Policy.Name))) +ggtitle("Duration Over per Schedule")+ geom_line(aes(colour=factor(Policy.Name)))
-ggplot(jobs_, aes(x = GlobalTroughput))+ geom_density()+ facet_grid(Policy.Name ~.)
+ggplot(jobs_, aes(x = GlobalTroughput_DW))+ geom_density()+ facet_grid(Policy.Name ~.)
 #ggplot(jobs_, aes(x = GlobalTroughput))+ geom_density()
 }
 
