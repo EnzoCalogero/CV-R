@@ -15,6 +15,7 @@
 
 import re
 import os
+
 def get_subdirectories(a_dir):
     return [name for name in os.listdir(a_dir)
             if os.path.isdir(os.path.join(a_dir, name))]
@@ -26,8 +27,8 @@ if __name__ == '__main__':
     main()
 #folder="C:\Users\enzo7311\Desktop\sealing\sidengine\SIDBEngine"
 #inputFile=[folder+".log",folder+"_1.log",folder+"_2.log",folder+"_3.log",folder+"_4.log",folder+"_5.log",folder+"_6.log",folder+"_7.log",folder+"_8.log",folder+"_9.log",folder+"_10.log"]
-folder1="C:\Users\enzo7311\Desktop\Prune Impact\903\\20_11\logs_1416477732\\"
-#folder1="C:\Users\enzo7311\Desktop\Prune Impact\cs404\logs_1415968039\\"
+#folder1="C:\\Users\\enzo7311\\Desktop\\cs901\\"#logs_1431092557/"
+folder1="C:/Users/enzo7311/Desktop/PruneImpact\cs901\logs_1431092557\\"
 folder="SIDBEngine"
 
 imputfolder=get_subdirectories(folder1)
@@ -38,7 +39,7 @@ inputFile=[folder+".log",folder+"_1.log",folder+"_2.log",folder+"_3.log",folder+
 
 print("Creating a text file with the write() method.")
 #text_fileOut = open("C:\Users\enzo7311\Desktop\sealing\sidengine\CS903_15_11.csv", "w")
-text_fileOut = open("C:\Users\enzo7311\Desktop\sealing\sidengine\CS903_20_11.csv", "w")
+text_fileOut = open("C:\Users\enzo7311\Desktop\sealing\sidengine\CS901_05.csv", "w")
 
 
 

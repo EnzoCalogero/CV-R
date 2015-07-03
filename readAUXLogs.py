@@ -39,7 +39,7 @@ print("....Starts.....")
 ###We craete the date jobid storag epolicy table########################################
 ########################################################################################
 text_fileOut = open("C:\Users\enzo7311\Desktop\AUXA\\auxcopyST_POL.csv", "w")
-text_fileOut.writelines("Date,jobid, Storage Policy\n")
+text_fileOut.writelines("Date;jobid; Storage Policy\n")
 print("\nLooping through the file, line by line.")
 #print(inputFile)
 for a in inputFile:
@@ -53,14 +53,14 @@ for a in inputFile:
                      if(re.search( r"AuxCopyReserve::getJobParameters.Copy properties", line, re.M|re.I)):
                               # print(line)
                                #text_fileOut.write(line)
-                               date=line[12:17]+"/2014 "+line[18:26]
+                               date=line[12:17]+"-2014 "+line[18:23]
                               # print(date)
                                jobid=line[27:34]
                               # print(jobid)
 
                                m = re.search(r'.Policy.\[(.+?)\]', line,re.M|re.I)
                                if m:
-                                   STPol=m.group(1)
+                                   STPol=m.group(1)#.ount()
                                #    print(m.group(1))
 
                                text_fileOut.writelines(date+", "+jobid + ", " +  STPol+"\n")
@@ -72,10 +72,10 @@ text_fileOut.close()
 print(jobid_SP)
 
 ########################################################################################
-###We craete the date jobid Media agents table########################################
+# We create the date jobid Media agents table ########################################
 ########################################################################################
 text_fileOut = open("C:\Users\enzo7311\Desktop\AUXA\\auxMediaAgents_POL.csv", "w")
-text_fileOut.writelines("Date,jobid, Media Agent\n")
+text_fileOut.writelines("Date;jobid; Media Agent\n")
 print("\nLooping through the file, line by line.")
 #print(inputFile)
 for a in inputFile:
@@ -99,7 +99,7 @@ for a in inputFile:
                                    MAgent=m.group(1)
                                #    print(m.group(1))
 
-                               text_fileOut.writelines(date+", "+jobid + ", " +  MAgent+"\n")
+                               text_fileOut.writelines(date+"; "+jobid + "; " +  MAgent+"\n")
                                jobid_MA[jobid]=MAgent
                 text_fileIn.close()
 
@@ -111,7 +111,7 @@ print(jobid_MA)
 ###We craete the date jobid storage policy table########################################
 ########################################################################################
 text_fileOut = open("C:\Users\enzo7311\Desktop\AUXA\\auxcopySourceDest.csv", "w")
-text_fileOut.writelines("date,jobid,Storage_Policy,MediaAgent,source,target,Bytes,time\n")
+text_fileOut.writelines("date;jobid;Storage_Policy;MediaAgent;source;target;Bytes;time\n")
 print("\nLooping through the file, line by line.")
 #print(inputFile)
 for a in inputFile:
@@ -125,7 +125,7 @@ for a in inputFile:
                      if(re.search( r"AuxCopyManager::updateProgressToJM.", line, re.M|re.I)):
                               # print(line)
                                #text_fileOut.write(line)
-                               date=line[12:17]+"/2014 "+line[18:26]
+                               date=line[15:17]+"-"+line[12:14]+"-2015 "+line[18:23]
                                #print(date)
                                jobid=line[27:34]
                                #print(jobid)
@@ -150,7 +150,7 @@ for a in inputFile:
                                   if(not(jobid_MA.has_key(jobid))):
                                        jobid_MA[jobid]="noAvailable"
 
-                                  text_fileOut.writelines(date + ", "+jobid + ", " + jobid_SP[jobid]+ ", " + jobid_MA[jobid]+ ", "+  source+", " + target+", " +Bytes+", " + time +"\n")
+                                  text_fileOut.writelines(date + "; "+jobid + "; " + jobid_SP[jobid]+ "; " + jobid_MA[jobid]+ "; "+  source+"; " + target+"; " +Bytes+"; " + time +"\n")
 
                 text_fileIn.close()
 

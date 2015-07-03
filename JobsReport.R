@@ -1,6 +1,6 @@
 
 
-jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs411_29_04.csv', SP="all"){
+jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs901_08_05.csv', SP="all"){
   #  library(ggplot2)
 #  library(xts)
   library(dplyr)
@@ -10,7 +10,7 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs411_29_04.cs
   ####  temporal limits  ##################################
   #########################################################
   
-  InitialDAY=15
+  InitialDAY=0
   numberdays=99999
   
   #########################################################
@@ -25,8 +25,8 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs411_29_04.cs
   
   ##import the file
   jobs <- read.csv(file)
-  #View(jobs)
-  
+  View(jobs)
+
   jobs$Start.Time<-dmy_hm(jobs$Start.Time)
   jobs$End.Time<-dmy_hm(jobs$End.Time)
   jobs$Duration<-jobs$End.Time - jobs$Start.Time
@@ -42,7 +42,7 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs411_29_04.cs
   if(SP!='all'){
     jobs<-subset(jobs,grepl(SP,jobs$data_sp))
   }
-  
+
   ######################################################
   ####  Filter for the month of interest ###############
   ######################################################
@@ -52,8 +52,8 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs411_29_04.cs
   jobs<-subset(jobs,month(jobs$Start.Time) == 4)
   jobs<-subset(jobs,(day(jobs$Start.Time)  >= InitialDAY) & day(jobs$Start.Time) <=(InitialDAY +numberdays))
   
-  #View(jobs)
-
+  View(jobs)
+ #stop()
   #start to work on the date set 
   
  
@@ -65,8 +65,9 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs411_29_04.cs
   View(jobs)
   jobs_<-jobs%>%group_by(ScheduleTime,Policy.Name)%>%summarise(clientOver3H=sum(DurationOverCount),DurationOver=sum(DurationOver),Duration=sum(Duration),Data.Written=sum(Data.Written),Size.of.Application=sum(Size.of.Application),Data.Transferred=sum(Data.Transferred))
   
-#  View(jobs_)
-jobs_$Day<-wday(jobs_$ScheduleTime,label=TRUE)
+  View(jobs_)
+#stop()
+  jobs_$Day<-wday(jobs_$ScheduleTime,label=TRUE)
 jobs_$Duration<-as.numeric(jobs_$Duration)
 jobs_$DurationOver<-as.numeric(jobs_$DurationOver)
 
