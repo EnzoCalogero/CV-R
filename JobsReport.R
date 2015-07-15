@@ -1,7 +1,5 @@
 
-
 jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs901_08_05.csv', SP="all"){
-  #  library(ggplot2)
 #  library(xts)
   library(dplyr)
   library(lubridate) #Date management
@@ -26,7 +24,7 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs901_08_05.cs
   ##import the file
   jobs <- read.csv(file)
   View(jobs)
-
+  
   jobs$Start.Time<-dmy_hm(jobs$Start.Time)
   jobs$End.Time<-dmy_hm(jobs$End.Time)
   jobs$Duration<-jobs$End.Time - jobs$Start.Time
@@ -88,7 +86,17 @@ jobs_$MA<-regexpr("M",jobs_$Policy.Name)
 
 jobs_$MA<-substr(jobs_$Policy.Name,jobs_$MA,jobs_$MA+3)
 jobs_$scheduleTIME<-hour(jobs_$ScheduleTime)
+
+
+
+
+#jobs_$CompressData<-  jobs_$Size.of.Application*(100-jobs_$Compression.Rate)/100
 View(jobs_)
+
+
+
+
+
 write.csv(jobs_, file = "C:/Users/enzo7311/Desktop/ipotesi/Output.csv")
 
 jobs_MA<-jobs_%>%group_by(ScheduleTime,MA)%>%summarise(clientOver3H=sum(clientOver3H),DurationOver=sum(DurationOver),Duration=sum(Duration),Data.Written=sum(Data.Written),Size.of.Application=sum(Size.of.Application),Data.Transferred=sum(Data.Transferred))
@@ -107,6 +115,7 @@ jobs_MA$dedup<-100*(1-1/jobs_MA$ratioDedup)
 
 jobs_MA$GlobalTroughput_DW<-3600*jobs_MA$Data.Written/jobs_MA$Duration
 jobs_MA$GlobalTroughput_AS<-3600*jobs_MA$Size.of.Application/jobs_MA$Duration
+
 write.csv(jobs_MA, file = "C:/Users/enzo7311/Desktop/ipotesi/OutputMA.csv")
 
 
