@@ -1,5 +1,5 @@
 
-jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs901_08_05.csv', SP="all"){
+jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs901_08_05_temp.csv', SP="all"){
 #  library(xts)
   library(dplyr)
   library(lubridate) #Date management
@@ -23,7 +23,7 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs901_08_05.cs
   
   ##import the file
   jobs <- read.csv(file)
-  View(jobs)
+#  View(jobs)
   
   jobs$Start.Time<-dmy_hm(jobs$Start.Time)
   jobs$End.Time<-dmy_hm(jobs$End.Time)
@@ -50,18 +50,46 @@ jobsRead_Report<-function(file='C:/Users/enzo7311/Desktop/ipotesi/cs901_08_05.cs
   jobs<-subset(jobs,month(jobs$Start.Time) == 4)
   jobs<-subset(jobs,(day(jobs$Start.Time)  >= InitialDAY) & day(jobs$Start.Time) <=(InitialDAY +numberdays))
   
-  View(jobs)
+ # View(jobs)
  #stop()
   #start to work on the date set 
   
  
   jobs$ScheduleTime<-floor_date(jobs$Start.Time, "hour")
   jobs$day<-floor_date(jobs$Start.Time, "day")
+
+
+
+
+
+##### Dedup compression analysis ########################################
+jobs$Size.of.Application<-as.character(jobs$Size.of.Application)
+jobs$Size.of.Application<-as.numeric(jobs$Size.of.Application)
+
+jobs$Compression.Rate<-as.character(jobs$Compression.Rate)
+jobs$Compression.Rate<-as.numeric(jobs$Compression.Rate)
+
+
+jobs$Space.Savings<-as.character(jobs$Space.Savings)
+jobs$Space.Savings<-as.numeric(jobs$Space.Savings)
+
+jobs$deltaDedup<-(1-jobs$Space.Savings)*jobs$Size.of.Application
+jobs$deltacompress<-(1-jobs$Compression.Rate)*jobs$Size.of.Application
   
+ 
+ 
+ 
+########################################################################
+ 
   
   
   View(jobs)
-  jobs_<-jobs%>%group_by(ScheduleTime,Policy.Name)%>%summarise(clientOver3H=sum(DurationOverCount),DurationOver=sum(DurationOver),Duration=sum(Duration),Data.Written=sum(Data.Written),Size.of.Application=sum(Size.of.Application),Data.Transferred=sum(Data.Transferred))
+ 
+ 
+ 
+ 
+ stop()
+  jobs_<-jobs%>%group_by(ScheduleTime,Policy.Name)%>%summarise(clientOver3H=sum(DurationOverCount),compressData=sum(jobs$deltacompress),DurationOver=sum(DurationOver),Duration=sum(Duration),Data.Written=sum(Data.Written),Size.of.Application=sum(Size.of.Application),Data.Transferred=sum(Data.Transferred))
   
   View(jobs_)
 #stop()
@@ -88,14 +116,7 @@ jobs_$MA<-substr(jobs_$Policy.Name,jobs_$MA,jobs_$MA+3)
 jobs_$scheduleTIME<-hour(jobs_$ScheduleTime)
 
 
-
-
-#jobs_$CompressData<-  jobs_$Size.of.Application*(100-jobs_$Compression.Rate)/100
 View(jobs_)
-
-
-
-
 
 write.csv(jobs_, file = "C:/Users/enzo7311/Desktop/ipotesi/Output.csv")
 
