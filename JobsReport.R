@@ -75,6 +75,8 @@ jobs$Space.Savings<-as.numeric(jobs$Space.Savings)
 
 jobs$deltaDedup<-(1-jobs$Space.Savings)*jobs$Size.of.Application
 jobs$deltacompress<-(1-jobs$Compression.Rate)*jobs$Size.of.Application
+jobs$deltacompressUPLIMIT<-(1-(jobs$Compression.Rate - 0.0001))*jobs$Size.of.Application
+
   
  
  
@@ -88,12 +90,12 @@ jobs$deltacompress<-(1-jobs$Compression.Rate)*jobs$Size.of.Application
  
  
  
- stop()
-  jobs_<-jobs%>%group_by(ScheduleTime,Policy.Name)%>%summarise(clientOver3H=sum(DurationOverCount),compressData=sum(jobs$deltacompress),DurationOver=sum(DurationOver),Duration=sum(Duration),Data.Written=sum(Data.Written),Size.of.Application=sum(Size.of.Application),Data.Transferred=sum(Data.Transferred))
+ #stop()
+  jobs_<-jobs%>%group_by(ScheduleTime,Policy.Name)%>%summarise(clientOver3H=sum(DurationOverCount),compressData=sum(deltacompress),deltacompressUPLIMIT=sum(deltacompressUPLIMIT),DurationOver=sum(DurationOver),Duration=sum(Duration),Data.Written=sum(Data.Written),Size.of.Application=sum(Size.of.Application),Data.Transferred=sum(Data.Transferred))
   
-  View(jobs_)
-#stop()
-  jobs_$Day<-wday(jobs_$ScheduleTime,label=TRUE)
+ # View(jobs_)
+
+jobs_$Day<-wday(jobs_$ScheduleTime,label=TRUE)
 jobs_$Duration<-as.numeric(jobs_$Duration)
 jobs_$DurationOver<-as.numeric(jobs_$DurationOver)
 
@@ -102,6 +104,9 @@ jobs_$Data.Written<-(jobs_$Data.Written/1024^3)
 
 jobs_$Size.of.Application<-(jobs_$Size.of.Application/1024^3)
 jobs_$Data.Transferred<-(jobs_$Data.Transferred/1024^3)
+#View(jobs_)
+
+
 
 
 
@@ -119,7 +124,7 @@ jobs_$scheduleTIME<-hour(jobs_$ScheduleTime)
 View(jobs_)
 
 write.csv(jobs_, file = "C:/Users/enzo7311/Desktop/ipotesi/Output.csv")
-
+stop()
 jobs_MA<-jobs_%>%group_by(ScheduleTime,MA)%>%summarise(clientOver3H=sum(clientOver3H),DurationOver=sum(DurationOver),Duration=sum(Duration),Data.Written=sum(Data.Written),Size.of.Application=sum(Size.of.Application),Data.Transferred=sum(Data.Transferred))
 jobs_MA$Day<-wday(jobs_MA$ScheduleTime,label=TRUE)
 jobs_MA$Duration<-as.numeric(jobs_MA$Duration)

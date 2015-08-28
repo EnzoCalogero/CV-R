@@ -93,7 +93,7 @@ CommCellClientLevelBkpJobSummary
 relog logfile.blg -f csv -o logfile.csv
 
 #####################################################
-Size of a ddb on teh disk...
+Size of a ddb on the disk...
 #####################################################
 
 select SUM(physicalbytesmb)as Size from MMVolume where SIDBStoreId=7
@@ -117,4 +117,19 @@ survey data analisis
 ~Dedup perfform test version 1...
 
 select * from [CVCloud].[dbo].[cf_SurveyDDBPerformance]as DDB,[CVCloud].[dbo].[cf_CommcellIdNameMap] as COMMCELL where DDB.CommServUniqueId =COMMCELL.ID
+
+############################################################
+tapes analysis
+
+
+SELECT  
+      [mediabarcode]
+      ,[usedspaceMB]
+      ,[lastwritetime]
+      ,[storagepolicy]
+      ,[storagepolicycopy]
+      
+  FROM [commserv].[dbo].[CommCellMediaInfo] where mediabarcode != 'CV_MAGNETIC' and lastwritetime >'2015-07-01 00:00:00.000'
+
+###############################################################
 

@@ -4,13 +4,13 @@
 ## MMAFDeleted_cond --> connected to MM_final analysed file by file 
 ## MM_final --> aggregate all the file  on the list on a single file.
 ## MMAFDeleted_TimeAnalysis --> time analysis of new AFids
-############################################################################################
-MMAFDeleted_TimeAnalysis<-function(day=0,file='C:/Users/enzo7311/Desktop/dati/mmdelete08_05.csv'){
+#############################################################################################MMDELcs904_08_04.csv'){
+MMAFDeleted_TimeAnalysis<-function(day=0,file='C:/Users/enzo7311/Desktop/dati/cs902mmdeleted_21_08_2015.csv'){ 
   library(ggplot2)
   library(doBy)  
   library(lubridate)
   #DDB<-DedupRead(file,sidb,Mo)
-  AFDEL <- read.csv(file)
+  AFDEL <- read.csv(file,sep=";")
   
   nome<-c("archFileId","VolumeId","Status","Retry","copyId","cclip")
   nome<-c(nome,"CapacityFreedBytes","ArchChunkId","MountPathId","SIDBStoreId")
