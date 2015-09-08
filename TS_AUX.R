@@ -13,7 +13,7 @@ TS_AUX<-function(file='C:/Users/enzo7311/Desktop/timeseries/TSCS404Test.csv', SP
   View(AUX_RAW)
   AUX_Aggregate<-AUX_RAW%>%group_by(Date.and.Time)%>%summarise(Residual.Size=sum(Residual.Size))
   View(AUX_Aggregate)
-  ts_AUX_AGG<-ts(AUX_Aggregate$Residual.Size, frequency=7)
+  ts_AUX_AGG<-ts(AUX_Aggregate$Residual.Size, frequency=30,start = c(3, 17))
    fit<-stl(ts_AUX_AGG,s.window="periodic")
    plot(fit)
   
