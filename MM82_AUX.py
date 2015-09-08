@@ -23,11 +23,11 @@ def main():
 
 if __name__ == '__main__':
     main()
-text_fileOut = open("C:/Users/enzo7311/Desktop/timeseries/Daily_Report_1055_old0109.csv", "w")
+text_fileOut = open("C:/Users/enzo7311/Desktop/timeseries/MM82_cs499.csv", "w")
 text_fileOut.writelines("Date and Time"+", "+"Storage Policy" + ", " + "Copy"+ ", "+ "Residual Size"+"\n")
 
 
-inputFile="C:/Users/enzo7311/Desktop/timeseries/Daily_Report_1055._0901.txt"
+inputFile="C:/Users/enzo7311/Desktop/timeseries/MM82-cs499.txt"
 #inputFile="C:/Users/enzo7311/Desktop/timeseries/Daily_Report_1055_old.csv"
 print("\nLooping through the file, line by line.")
 
