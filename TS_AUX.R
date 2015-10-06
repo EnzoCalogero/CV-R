@@ -1,4 +1,4 @@
-TS_AUX<-function(file='C:/Users/enzo7311/Desktop/timeseries/TSCS404Test.csv', SP="all"){   #file='C:/Users/enzo7311/Desktop/AUXA/jobs/cs404_Jobs_20_7.csv', SP="all"){
+TS_AUX<-function(file='C:/Users/enzo7311/Desktop/timeseries/MM82_cs404_2509.csv', SP="all"){   #file='C:/Users/enzo7311/Desktop/AUXA/jobs/cs404_Jobs_20_7.csv', SP="all"){
   #  library(xts)
   library(dplyr)
   library(xts)
@@ -15,7 +15,7 @@ TS_AUX<-function(file='C:/Users/enzo7311/Desktop/timeseries/TSCS404Test.csv', SP
   AUX_Aggregate<-AUX_RAW%>%group_by(Date.and.Time)%>%summarise(Residual.Size=sum(Residual.Size))
   View(AUX_Aggregate)
   xts_AUX_AGG<-xts(AUX_Aggregate$Residual.Size,order.by=AUX_Aggregate$Date.and.Time)#, start = c(3, 17))#frequency=30
-  ts_AUX_AGG<-ts(AUX_Aggregate$Residual.Size, start = c(3, 17),frequency=7)
+  ts_AUX_AGG<-ts(AUX_Aggregate$Residual.Size, start = c(3, 17),frequency=84)
   
   fit<-stl(ts_AUX_AGG,s.window="periodic")
   summary(fit)
@@ -37,9 +37,9 @@ for (i in SPolicy){
   print(i)
   print(length(AUX_RAW_temp[,1]))
   print(length(AUX_RAW_temp[,1])>20)      
-  if(length(AUX_RAW_temp[,1])>20){
+  if(length(AUX_RAW_temp[,1])>170){
    #View(AUX_RAW_temp)
-   ts_AUX_AGG<-ts(AUX_RAW_temp$Residual.Size, start = c(3, 17),frequency=7)
+   ts_AUX_AGG<-ts(AUX_RAW_temp$Residual.Size, start = c(3, 17),frequency=84)
    fit<-stl(ts_AUX_AGG,s.window="periodic")
    plot(fit, main=i)
   }

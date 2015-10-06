@@ -24,7 +24,7 @@ def main():
 if __name__ == '__main__':
     main()
     inputFile="C:/Users/enzo7311/Desktop/timeseries/Daily_Report.txt"
-text_fileOut = open("C:/Users/enzo7311/Desktop/timeseries/MM82_cs404_1709.csv", "w")
+text_fileOut = open("C:/Users/enzo7311/Desktop/timeseries/MM82_cs404_2509.csv", "w")
 
 
 
