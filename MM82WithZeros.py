@@ -30,11 +30,11 @@ if __name__ == '__main__':
 
 
 
-text_fileOut = open("C:/Users/enzo7311/Desktop/timeseries/temp.csv", "w")
+text_fileOut = open("C:/dati/timeseries/temp.csv", "w")
 text_fileOut.writelines("Date and Time"+", "+"Storage Policy" + ", " + "Status"+ ", "+ "Number"+"\n")
 
 
-inputFile="C:/Users/enzo7311/Desktop/timeseries/mm82.txt"
+inputFile="C:/dati/timeseries/mm82.txt"
 
 print("\nLooping through the file, line by line.")
 #filin=codecs.open(inputFile, encoding='utf-8')

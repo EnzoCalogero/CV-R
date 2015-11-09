@@ -46,24 +46,24 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 ```
-The objective of this experiment is to identify the impact of enabling the cache on the controller for the C: drive on  Media Agents and  CommServer. 
+The objective of this experiment is to identify the impact of enabling the cache on the C: drive controller for the Media Agents and  CommServer. 
 
 ## Result Summary
 
 #### Media Agents
-The change of configuration improved the performance of  Media Agents on the backup Index phase.
-The configuration has little impact on the  Operating System Activity or other CommVault Operations.
+The change of configuration improved the performance of  Media Agents mainly on the backup Index phase.
+The configuration has little impact on the  Operating System or CommVault Operations.
 
 
 #### CommServer
-The change of configuration does not bring any improvement and, occasionally, decreases the performance of the  Operating System ,Microsoft SQL server and CommVault slightly.
+The change of configuration does not bring any improvement and, occasionally, **decreases** the performance of the  Operating System ,Microsoft SQL server and CommVault slightly.
 
 
 ## Experiment Description
 
 
 ### Data descriptions  
-For defining impact of the configuration change on performance the following has been collected and analysed.
+For defining the configuration change impact the following has been collected and analysed.
 
 1. 3 counters were take into account from  Microsoft Performance Monitor.
     + **"PhysicalDisk -- Disk Transfer/Sec"**       --> has an estimator of the IOPS
@@ -75,19 +75,20 @@ For defining impact of the configuration change on performance the following has
     + Data set **"Skipped"** from 23/09 00:00 to 23/09 23:59 (Day of the change, NOT considered for the analysis);
     + Data Set **"After"** from 24/09 00:00 to 30/09 23:59.
         
-3.  The three counters have a sampling span time of 15 seconds. In other words we have a 4 records for each minutes, and its the sampled average of the 15 seconds interval.
+3.  The three counters have a sampling span time of 15 seconds. In other words we have a 4 records for each minute, and its the sampled average of the 15 seconds interval.
 
 ###Motivation for the selected counters and modelling used
 
-The aim of the experiment is to identify the performance impact of the configuration change. The main challenge is to use the production workload, and NOT a predefined workload (like in a lab controlled environment).
+The main challenge on this analysis is to use the production workload, and NOT a predefined workload (like in a lab controlled environment).
 
-Therefore we need to identify a comparative model and identify the key elements.
-Since it is known that the Response Time or latency is workload depended, we need to identify the relation between the workload and the performance in the two scenarios (cache on/Off) and establish which is the better one.  
+Therefore we need to identify a comparative model and identify its key elements.
+Since it is known that the Response Time or latency is workload depended, we need to identify the relation between the workload and the performance in the two scenarios (cache on/Off) and establish which is improving the performance.  
 
 
 $$Performance=f_{Status\ Cache}(Worload)$$
 
 The best and reliable function that links the IOPS with performance is the evergreen **Little Law Theorem**, where 
+
   + the length of the Queue can be considerate the "Stress" of the system or the degradation of the performance.
   + The response time could be considered an indicator of performance.
   + IOPS could be considered an indicator of workload.
@@ -95,7 +96,7 @@ The best and reliable function that links the IOPS with performance is the everg
 $$Queue=Response\ Time \bullet IOPS$$
 
 note: 
-The formula was used to validate the data $\frac{Queue}{Response\ Time \cdot IOPS}\cong 1$ and it holds for each record used in the analysis.
+The formula was used to validate the data $\frac{Queue}{Response\ Time \cdot IOPS}\cong 1$ and it is verified for each record used.
 
 To be more precise in the analysis was included the *Service time* as well, since it is independent from the queue, it provides an additional information for the performance analysis:
 
@@ -119,7 +120,8 @@ The picture below shows the counters trend during 15 days of the experiment.
 
 !["Media Agent Trend From Performance Monitor"](C:\Users\enzo7311\Desktop\Sandeep_CWS403\MA4\2WeeksTrend.png)
 
-From the graph we can see that the queue length is generally less intense on the right side (when the cache was enabled) , but unfortunately the IOPS (~ the workload) is not uniform in the two weeks, therefore this graph can not be used to identify the  impact.
+Unfortunately this graph does not allow an easy interpretation.
+It can barely  see that the queue length is generally less intense on the right side (when the cache was enabled) , but unfortunately the IOPS (~ the workload) is not uniform in the two weeks, therefore this graph can have a misleading interpretation.
 
 ###CommServer
 !["CommServer Trend From Performance Monitor"](C:\Users\enzo7311\Desktop\Sandeep_CWS403\CS\2WeeksTrend.png)
@@ -130,11 +132,11 @@ From the graph the difference are not perceptible. The pattern of the two weeks 
 ##Statistics Overview
 
 
-For analyzing the impact three different analysis have been done.
+For analyzing the impact three different analysis have been carried out.
 
-1. Distribution analysis: the four metrics (IOPS, Response Time, Queue Length, Service Time) are compared before and after the modification.  Where  can be seen the general impact due to the modification.
-2. Variance of the Data by the Hour: For each hour of  day the median of each week is compared for the 4 metrics.  
-3. Time Series analysis decomposition: where the data has been decomposed into the  daily cycle, trend and uncorrelated error.
+1. **Distribution Analysis**: the four metrics (IOPS, Response Time, Queue Length, Service Time) are compared before and after the modification.
+2. **Variance of the Median by the Hour**: For each hour of  day the median of each week is compared for the four metrics.  
+3. **Time Series Analysis Decomposition**: where the data has been decomposed into the  daily cycle, trend and uncorrelated error.
 
 
 
@@ -166,15 +168,15 @@ dati$S<-dati$R/(dati$queue+1)
 
 ````
 
-All the metrics are plotted in log scale, to allow a  better graphical representation.
+For all the metrics are calculated the relative frequency of the metric value and plotted in a histogram. A log scale was  used for a better graphical representation.
 The following can be noted:
 
 
 1. It can be seen the **IOPS** (which in the context is the workload), in the two weeks (before and After) is similar but not identical.
     + In particular in the second week, the Workload was less that the first one.
-    + This increase the difficulty of the analysis, because we need to identify if the reduced workload is the reason for the change  on the performance metric.
+    + This increase the difficulty of the analysis, because we need to identify if the reduced workload is the reason for the change on the performance.
 
-2. **The Response Time, Service Time** Even if the two graphs have a similar pattern in the two weeks, they show a shift of the distributions to the left, which means a performance improvement. 
+2. **The Response Time, Service Time** Even if the two graphs have a similar pattern in the two weeks, they show a shift of the distributions to the left, which represents a performance improvement. 
 
   
 
@@ -186,16 +188,17 @@ ggplot(dati, aes(x=log(S))) + geom_density(color="blue", fill="lightblue") +ggti
 ```
 
 ###2. Variance of the Data by the Hour
-The following graphs show the variability for each  considered variable.
+The following graphs show the variability for each  metric.
+The blue point show the median value before the change and red the median after the change.
 
 1. The **IOPS-WOrkload** is extremely low for most of the day the increase of the load is from 9pm to 3am as expected.
     + the variability between the 2 weeks can be considerate low, which is expected as the two weeks should have the same load.
-2. The most relevant parameter for analyzing the performance is the Service time (response Time /Queue Length) as it rap present the amount of time taken on average for a single IOPS.
-    + we can see that nearly all the the hours considerate have an improvement (except the midnight one).
+2. The most relevant parameter for analyzing the performance is the **Service time** ( Which is $\frac{response Time}{Queue Length}$) as it represents the amount of time taken on average for a single IOPS.
+    + It can see that nearly all the the hours have an improvement.
     
-3. Consequentially the queue length is reduced for most of the hours (except the 10pm the 3 am and 1 pm).
+3. The **Queue Length** is reduced.
 
-4. the Response time is constantly improved in all the hours.
+4. The **Response Time** is improved in all the hours.
 
 ```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.width=13,fig.height=12}
 #Data Aggregation
@@ -211,7 +214,7 @@ p4<-ggplot(DatiAgg2, aes(factor(hour), medianS)) +ggtitle("Service Time ")+ylab(
 multiplot(p1,p2,p3,p4, cols=2)
 ```
 
-The aggregate values of the 4 counters during the 2 weeks of the experiment.
+Below the aggregate median table of the four counters during the two weeks of the experiment.
 
 ```{r,echo=FALSE,warning=FALSE}
 library(knitr)
@@ -227,10 +230,10 @@ kable(DatiAgg, format = "markdown")
 
 ##3. Time Series Analysis
 
-the time series (the value of the contaminator every 15 second) of the 4 metrics have been decomposed into the 3 temporal component 
-1. Daily cycle (the variation of the value of the metric due to the daily scheduling)
-2. The trend 
-3. The uncorrelated part of the time series(normally called noise).
+The time series (the value every 15 second of the four metrics) have been decomposed into the three temporal component
+  1. Daily cycle (the variation of the value of the metric due to the daily pattern)
+  2. The trend 
+  3. The uncorrelated part of the time series(normally called noise).
 
 
 All the graphs show a performance improvement in the second week.
@@ -308,7 +311,7 @@ Looking to each distribution of the variable:
 1. It can be seen the **IOPS** (which in the context is the workload), in the two weeks (before and After) is practically identical.
     
 
-2. **The Response Time, Service Time** graphs are extremely similar in the two weeks showing no impact on the second week.
+2. **The Response Time, Service Time** graphs are extremely similar in the two weeks, showing no improvement on the second week.
 
 
 ```{r,echo=FALSE,warning=FALSE}
@@ -319,16 +322,16 @@ ggplot(dati, aes(x=log(S))) + geom_density(color="blue", fill="lightblue") +ggti
 ```
 
 ###2. Variance of the Data by the Hour
-The following graphs show the variability for each  considered variable.
+The following graphs show the variability for each counter for each hour of the day.
 
 1. The **IOPS-WOrkload** is extremely low for most of the day the increase of the load is from 9pm to 6am as expected.
     + the variability between the 2 weeks can be considerate low, which is expected as the two weeks should have the same load.
-2. The most relevant parameter for analyzing the performance is the Service time (response Time /Queue Length) as it represent the amount of time taken on average for a single IOPS.
-    + we can see that there is no a clear improvement and in specif hour of the day, the second week has a worst performance.
+2. The most relevant parameter for analyzing the performance is the **Service time** ( Which is $\frac{response Time}{Queue Length}$) as it represent the amount of time taken on average for a single IOPS.
+    + we can see that there is no a clear improvement and in specif hour of the day, the second week has often the worst performance.
     
-3. The queue length does not show an improvement and often has a decrease of performance.
+3. The **Queue Length** does not show an improvement and often has a decrease of performance.
 
-4. the Response time does not show an improvement and often has a decrease of performance.
+4. the **Response Time** does not show an improvement and often has a decrease of performance.
 
 ```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.width=13,fig.height=12}
 #Data Aggregation
@@ -344,7 +347,7 @@ p4<-ggplot(DatiAgg2, aes(factor(hour), medianS)) +ggtitle("Service Time ")+ylab(
 multiplot(p1,p2,p3,p4, cols=2)
 ```
 
-The aggregate values of the 4 counters during the 2 weeks of the experiment.
+The table below is the aggregate median of the 4 counters during the 2 weeks of the experiment.
 
 ```{r,echo=FALSE,warning=FALSE}
 library(knitr)
@@ -360,13 +363,14 @@ kable(DatiAgg, format = "markdown")
 
 ##3. Time Series Analysis
 
-the time series (the value of the contaminator every 15 second) of the 4 metrics have been decomposed into the 3 temporal component 
-1. Daily cycle (the variation of the value of the metric due to the daily scheduling)
-2. The trend 
-3. The uncorrelated part of the time series( normally called noise).
+The time series (which is the value every 15 second of the 4 metrics) have been decomposed into the 3 temporal component 
+
+  1. Daily cycle (the variation of the value of the metric due to the daily pattern)
+  2. The trend 
+  3. The uncorrelated part of the time series( normally called noise).
 
 
-All the next analysis do not show an improvement in the second week...
+All the graphs do not show an improvement in the second week...
 ```{r, echo=FALSE,warning=FALSE,fig.width=7,fig.height=7}
   freq<-4*60*24
   dati<-read.csv(file,sep=';')

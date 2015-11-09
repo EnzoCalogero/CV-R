@@ -23,8 +23,8 @@ def main():
 
 if __name__ == '__main__':
     main()
-    inputFile="C:/Users/enzo7311/Desktop/timeseries/Daily_Report.txt"
-text_fileOut = open("C:/Users/enzo7311/Desktop/timeseries/MM82_cs404_2509.csv", "w")
+    inputFile="C:/dati/timeseries/cs499/MM82.txt"
+text_fileOut = open("C:/dati/timeseries/cs498/MM82_cs499.csv", "w")
 
 
 

@@ -1,5 +1,6 @@
 #CS903_28_11.csv
-prune_Analysis<-function(sidb=0,Mo=11,file='C:/Users/enzo7311/Desktop/sealing/sidengine/CS901_05.csv'){
+#C:/dati/sealing/sidengine/CS401_22_10.csv
+prune_Analysis<-function(sidb=0,Mo=10,file='C:/dati/sealing/sidengine/CS401_22_10.csv'){
   library(ggplot2)
   library(doBy)  
   library(lubridate)
@@ -45,11 +46,12 @@ prune_Analysis<-function(sidb=0,Mo=11,file='C:/Users/enzo7311/Desktop/sealing/si
  mio <- merge(DDBAggr2,DDBAggr3, by=c("Date2","DDBID"))
 
  mio$AFPerHora<-mio$AFID.x-mio$AFID.y
+mio$AFPerHora[mio$AFPerHora>200]<-0
  #View(mio) 
- m23 <- ggplot(AFID, aes(x = Date1,y=AFID))+  geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID pending Trend")
+ m23 <- ggplot(AFID, aes(x = Date1,y=AFID))+  geom_point() +geom_line() + facet_grid(DDBID  ~. )+ ggtitle("AFID pending Trend")
  
  m22 <- ggplot(mio, aes(x = Date2,y=AFPerHora))+  geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID pruned Per hours")
- m21 <- ggplot(mio, aes(x = Date2,y=AFID.x)) + geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID Pending per hours")
+ m21 <- ggplot(mio, aes(x = Date2,y=AFID.x)) + geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("D(AFID)/Dt per hours")
  
  #m21 <- ggplot(DDBAggr2, aes(x = Date2,y=AFID))+  geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID Pending Per hour")
  
@@ -75,15 +77,40 @@ prune_Analysis<-function(sidb=0,Mo=11,file='C:/Users/enzo7311/Desktop/sealing/si
  
  m4 <- ggplot(AFID00, aes(x = Date1,y=AFID))+  geom_point()  + facet_grid(DDBID  ~. )+ ggtitle("AFID Pending at 24!!!!!!!!!!!!!!!!")
  
- 
- multiplot(m21,m22, cols=3)
- multiplot(m23, cols=3)
-#multiplot(m18, cols=3)
+#Derivate Analysis
+
+AFID15<-subset(AFID, timeHs ==15)
+AFID18<-subset(AFID, timeHs ==18)
+#View(DDBAggr2)
+DDBAggr2<-aggregate(AFID~days+DDBID, max,data=AFID15)
+DDBAggr3<-aggregate(AFID~days+DDBID, max,data=AFID18)
+#View(DDBAggr3)
+Deltas <- merge(DDBAggr2,DDBAggr3, by=c("days","DDBID"))
+
+
+AFID21<-subset(AFID, timeHs ==21 )
+
+DDBAggr4<-aggregate(AFID~days+DDBID, max,data=AFID21)
+#View(DDBAggr3)
+Deltas <- merge(Deltas,DDBAggr4, by=c("days","DDBID"))
+
+Deltas$Deltas1<-Deltas$AFID.x-Deltas$AFID.y
+Deltas$Deltas2<-Deltas$AFID.y-Deltas$AFID
+
+
+View(Deltas)
+
+
+
+
+multiplot(m21,m22, cols=3)
+multiplot(m23, cols=3)
+multiplot(m18, cols=3)
 
 
 
 #multiplot(m3, cols=3)
- #multiplot(m17,m1,m2,m3,m4, cols=3)
+multiplot(m17,m2,m3,m4, cols=3)
 #return(AFID)
   }
 

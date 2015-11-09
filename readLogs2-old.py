@@ -36,8 +36,8 @@ text_fileOut = open("C:\Users\enzo7311\Desktop\sealing\sidengine\CS406_30_01.csv
 #folder1="C:\Users\enzo7311\Desktop\Prune Impact\cs903\logs_1417183912\\"
 #folder1="C:\Users\enzo7311\Desktop\Prune Impact\cs404\logs_1415968039\\"
 #folder1="C:\Users\enzo7311\Desktop\Prune Impact\cs901\logs_1419350644\\"
-folder1="C:\Users\enzo7311\Desktop\Prune Impact\cs406\day1\logs_1422651434\\"
-
+#folder1="C:\Users\enzo7311\Desktop\Prune Impact\cs406\day1\logs_1422651434\\"
+folder1="C:\Users\enzo7311\Desktop\Ipotesi\cs401\Ma07\lon301cs0401ma7\\"
 folder="SIDBEngine"
 
 imputfolder=get_subdirectories(folder1)
@@ -84,5 +84,5 @@ for b in imputfolder:
                                   # print Time
                              #  print( DDBID + "  "+ "  "+  AFID+ "  "+ Time)
                                text_fileOut.writelines(date+", "+DDBID + ", " +  AFID+ ", "+ Time+"\n")
-text_fileIn.close()
+#text_fileIn.close()
 text_fileOut.close()
