@@ -2,7 +2,10 @@
 #'C:/Users/enzo7311/Desktop/timeseries/ma04/Ma04.csv'
 #'C:/Users/enzo7311/Desktop/timeseries/ma05/Ma05.csv'
 #'C:/Users/enzo7311/Desktop/timeseries/ma06/Ma06.csv'
-SanDeep<-function(file='C:/Users/enzo7311/Desktop/timeseries/ma05/Ma05.csv'){
+#''C:/Users/enzo7311/Desktop/timeseries/ma05/Ma05.csv'
+#''C:/dati/timeseries/cs403/cs403V2.csv'
+#'Ma04V2
+SanDeep<-function(file='C:/dati/timeseries/cs403/cs403V2.csv'){
       #  library(xts)
   library(dplyr)
   library(lubridate) #Date management
@@ -21,10 +24,22 @@ SanDeep<-function(file='C:/Users/enzo7311/Desktop/timeseries/ma05/Ma05.csv'){
  # dati$verifica<-dati$R*dati$IOPS/dati$queue
   dati$S<-dati$R/(dati$queue+1)
   #dati<-subset(dati,dati$IOPS > 0)
+ dati$Time.Position<-factor(dati$Time.Position,level=c("BEFORE","AFTER1","AFTER2"))
  dati$Disk.Transfers.sec<-NULL
  dati$Avg..Disk.sec.Transfer<-NULL
  dati$Avg..Disk.Queue.Length<-NULL
   View(dati)
+ 
+ ##Test
+ 
+ p4<-ggplot(dati, aes(x=(IOPS),y=(queue))) +ggtitle("Scattrer Plot ") +geom_point(aes(colour = Time.Position))
+ 
+ multiplot(p4, cols=1)
+ 
+ p4<-ggplot(dati, aes(x=(IOPS),y=(R))) +ggtitle("Scattrer Plot ") +geom_point(aes(colour = Time.Position))
+ 
+ multiplot(p4, cols=1)
+ 
   DatiAgg<-dati %>% group_by(Time.Position) %>% summarise(medianQueue=median(queue),mediaQueue=mean(queue),sdQueue=sd(queue),medianR=median(R),mediaR=mean(R),sdR=sd(R),medianIOPS=median(IOPS),mediaIOPS=mean(IOPS),SdIOPS=sd(IOPS),medianS=median(S),mediaS=mean(S),sdS=sd(S))
   DatiAgg2<-dati %>% group_by(Time.Position,hour) %>% summarise(medianQueue=median(queue),mediaQueue=mean(queue),sdQueue=sd(queue),medianR=median(R),mediaR=mean(R),sdR=sd(R),medianIOPS=median(IOPS),mediaIOPS=mean(IOPS),SdIOPS=sd(IOPS),medianS=median(S),mediaS=mean(S),sdS=sd(S))
   
@@ -32,12 +47,12 @@ SanDeep<-function(file='C:/Users/enzo7311/Desktop/timeseries/ma05/Ma05.csv'){
   View(DatiAgg)
   View(DatiAgg2)
 
-dati$Time.Position<-factor(dati$Time.Position,level=c("Before","After"))
+dati$Time.Position<-factor(dati$Time.Position,level=c("BEFORE","AFTER1","AFTER2"))
 
-g1<-ggplot(dati, aes(x=log(R))) + geom_density(color="blue", fill="red") +ggtitle("Response Time ")+xlab("Response Time in log scale")+ facet_grid(.~ Time.Position )
-g2<-ggplot(dati, aes(x=log(queue))) + geom_density(color="blue", fill="green") +ggtitle("Queue Lenght")+xlab("Queue Lenght in log scale")+ facet_grid(.~ Time.Position )
-g3<-ggplot(dati, aes(x=log(IOPS))) + geom_density(color="blue", fill="yellow") +ggtitle("IOPS")+xlab("IOPS in log scale")+ facet_grid(.~ Time.Position )
-g4<-ggplot(dati, aes(x=log(S))) + geom_density(color="blue", fill="lightblue") +ggtitle("Service Time")+xlab("Service Time in log scale")+ facet_grid(.~ Time.Position )
+g1<-ggplot(dati, aes(x=log(R))) + geom_density(aes(color=Time.Position)) +ggtitle("Response Time ")+xlab("Response Time in log scale")#+ facet_grid(.~ Time.Position )
+g2<-ggplot(dati, aes(x=log10(queue))) + geom_density(aes(color=Time.Position)) +ggtitle("Queue Length")+xlab("Queue Length in log scale")#+ facet_grid(.~ Time.Position )
+g3<-ggplot(dati, aes(x=log(IOPS))) + geom_density(aes(color=Time.Position)) +ggtitle("IOPS")+xlab("IOPS in log scale")#+ facet_grid(.~ Time.Position )
+g4<-ggplot(dati, aes(x=log10(S))) + geom_density(aes(color=Time.Position)) +ggtitle("Service Time")+xlab("Service Time in log scale")#+ facet_grid(.~ Time.Position )
 
 
 
@@ -51,13 +66,14 @@ g4<-ggplot(dati, aes(x=log(S))) + geom_density(color="blue", fill="lightblue") +
 
 
 #boxplot(medianIOPS~hour+Time.Position,data=DatiAgg2)
-multiplot(g1,g2,g3,g4, cols=2)
-p1<-ggplot(DatiAgg2, aes(hour, medianQueue))+ggtitle("Queue Lenght ")+ylab("Median value for Queue Lenght ") + geom_boxplot()+ geom_point(size=5,aes(colour = Time.Position))
+multiplot(g3,g1,g2,g4, cols=2)
+
+p1<-ggplot(DatiAgg2, aes(hour, medianQueue))+ggtitle("Queue Length ")+ylab("Median value for Queue Length ") + geom_boxplot()+ geom_point(size=5,aes(colour = Time.Position))
 p2<-ggplot(DatiAgg2, aes(hour, medianIOPS))+ggtitle("IOPS- Workload ")+ylab("Median value for IOPS ") + geom_boxplot()+ geom_point(aes(colour = Time.Position),size=5)
 p3<-ggplot(DatiAgg2, aes(hour, medianR)) +ggtitle("Response Time ")+ylab("Median value for Response Time ")+ geom_boxplot()+ geom_point(aes(colour = Time.Position),size=5)
 p4<-ggplot(DatiAgg2, aes(hour, medianS)) +ggtitle("Service Time ")+ylab("Median value for Service Time ")+ geom_boxplot()+ geom_point(aes(colour = Time.Position),size=5)
 
-multiplot(p1,p2,p3,p4, cols=2)
+multiplot(p2,p1,p3,p4, cols=2)
 
 #l1<-ggplot(dati, aes(factor(hour), queue)) + geom_boxplot()+ geom_point(aes(colour = factor(Time.Position)))
 #l2<-ggplot(dati, aes(factor(hour), IOPS)) + geom_boxplot()+ geom_point(aes(colour = factor(Time.Position)))
