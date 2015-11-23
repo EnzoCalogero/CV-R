@@ -84,10 +84,6 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
     for(r in raw){
       if(as.character(substr(r,1,5))==CS){
         MAS<-c(MAS,as.character(substr(r,6,8)))
-        #print("CS")
-        #print(CS)
-        #print("MAS")
-        #print(MAS)
         ids<-c(ids,as.character(substr(r,15,20)))
       }
     }
@@ -99,8 +95,6 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
     
     for(r in raw){
       if(CS==substr(r,1,5)){
-        #print("first")
-        #print(c(substr(r,1,5),substr(r,6,8)))
         g<-g+edges(c(substr(r,1,5),substr(r,6,8)))
         g<-g+edges(c(substr(r,6,8),substr(r,15,21)))
       }
@@ -111,24 +105,29 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
     #V(g)[commCell]$shapes<-"rectangle"
     V(g)[CS]$color<-"blue"
     V(g)[CS]$size=25
-    
+    V(g)[CS]$label.color="black"
     for(ma in MAS){
-      V(g)[ma]$color<-"yellow"
+      V(g)[ma]$color<-"lightblue"
       V(g)[ma]$size=15
+      V(g)[ma]$label.color="black"
         } 
     
     
     for(id in ids){
       #########################
      rackPartial<-subset(RankALL,id == as.character(substr(RankALL$DDBID,15,20)))
+     
      V(g)[id]$color<-"green"
      V(g)[id]$size=10
+     V(g)[id]$label.color="black"
      #print(rackPartial)
      count18<-sum(rackPartial$AFID18>0,na.rm=TRUE)
      count21<-sum(rackPartial$AFID21>0,na.rm=TRUE)
     # print(count18)
      #print(count21)
-        if(count18>0){
+    
+    
+        if(count18>0 & count21==0){
            vertice<-paste("DDB-ID-",id,"-",count18,"/7 Days over 6pm")
            V(g)[id]$color<-"yellow"
         #   V(g)[id]$Size<-1
@@ -136,14 +135,24 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
           
            g<-g+edges(c(id,vertice))
         V(g)[vertice]$size=1
+        V(g)[vertice]$label.color="red"
          }
-    
+    if(count21>0){
+      vertice<-paste("DDB-ID-",id,"-",count18,"/7 Days over 9pm")
+      V(g)[id]$color<-"red"
+      #   V(g)[id]$Size<-1
+      g<-g+vertices(vertice)
+      
+      g<-g+edges(c(id,vertice))
+      V(g)[vertice]$size=1
+      V(g)[vertice]$label.color="red"
+    }
      # View(rackPartial)
       
       #######################
     }
-    V(g)$label.color="red"
-    plot.igraph(g,layout=layout.fruchterman.reingold)
+    
+    plot.igraph(g,edge.curved=FALSE, main=paste ("Critical Size Analysis for ",CS),layout=layout.fruchterman.reingold,edge.arrow.size=0.3,edge.arrow.width=0.3)
   }
   
   
