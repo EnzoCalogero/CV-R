@@ -14,9 +14,8 @@ import win32wnet
 # Hosts Dictionary
 #global RedoFiles
 #RedoFiles=list()
-LON3_={
-'CS904M08':'10.12.21.120'
-}
+
+
 ORD={
 #cs902
 'CS902M01':'10.12.21.16','CS902M02':'10.12.21.17','CS902M03':'10.12.21.18','CS902M04':'10.12.21.19','CS902M05':'10.12.21.20',
@@ -65,7 +64,6 @@ LON3={
 #CS498
 'CS498HC1':'10.9.10.143','CS498HC3':'10.9.10.142','CS498HC4':'10.9.10.21','CS498HC5':'10.9.10.72','CS498HC6':'10.9.10.83','CS498M01':'10.9.10.141',
 
-
 #CS499
 'CS499M02':'10.9.10.46','CS499M03':'10.9.10.90'
 
@@ -91,20 +89,21 @@ def copyFile(src, dest):
        # print("enzo--Eccomi2")
         print(src)
 
+print("\nLooping through the file, line by line.")
+#print(LON3)
 
 
 text_fileOut = open("C:/temp/lon3/temp.csv", "w")
 text_fileOut.writelines("Date"+", "+"DDBID" + ", " + "AFID"+ ", "+ "TimeSec"+", Host"+", DC"+ "\n")
 
-
+#print(Hosts.keys())
+#print(Hosts.get('CSITISM01'))
 folder='SIDBEngine'
 inputFile=[folder+".log",folder+"_1.log",folder+"_2.log",folder+"_3.log",folder+"_4.log",folder+"_5.log",folder+"_6.log",folder+"_7.log",folder+"_8.log",folder+"_9.log",folder+"_10.log"]
 
+DC='LON3'
 
-DC=LON3.copy()
-
-DC_NAME='LON3'
-for Host in DC:
+for Host in LON3:
     for logfile in inputFile:
         try:
             os.remove("c:/temp/lon3/"+logfile)
@@ -112,13 +111,13 @@ for Host in DC:
             pass
 
     print(Host)
-    print(DC.get(Host))
+    print(LON3.get(Host))
     try:
-           win32wnet.WNetAddConnection2(0, None, '\\\\'+ DC.get(Host), None, 'storage\enzo.calogero','N1cole83.')
+           win32wnet.WNetAddConnection2(0, None, '\\\\'+ LON3.get(Host), None, 'storage\enzo.calogero','N1cole83.')
     except OSError:
            print("Errore")
            print(Host)
-           print(DC.get(Host))
+           print(LON3.get(Host))
            #pass
     except IOError as e:
         print('Error: %s' % e.strerror)
@@ -127,10 +126,12 @@ for Host in DC:
  
     for logfile in inputFile:
         dest="C:/temp/lon3/"+logfile
-        src='\\'+'\\'+DC.get(Host)+'/c$/Program Files/CommVault/Simpana/Log Files/'+ logfile
+        src='\\'+'\\'+LON3.get(Host)+'/c$/Program Files/CommVault/Simpana/Log Files/'+ logfile
         print(dest)
  #       print(src)
         copyFile(src, dest)
+        #win32wnet.WNetCancelConnection2('\\\\'+Hosts.get(Host), 0, 0) # optional disconnect
+#        winCMD = 'Net use * /delete /y '
 
  #       try:
         if os.path.exists(dest):            
@@ -157,7 +158,7 @@ for Host in DC:
                                    #Time=float(Time)
                                   # print Time
                              #  print( DDBID + "  "+ "  "+  AFID+ "  "+ Time)
-                               text_fileOut.writelines(date+","+DDBID + "," +  AFID+ ","+ Time + ","+ Host +","+ DC_NAME +" \n")
+                               text_fileOut.writelines(date+","+DDBID + "," +  AFID+ ","+ Time + ","+ Host +","+ DC +" \n")
 #        except OSError:
 #            print("here I am")
 #            pass        

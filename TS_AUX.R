@@ -1,4 +1,5 @@
-TS_AUX<-function(file='C:/Users/enzo7311/Desktop/timeseries/MM82_cs404_2509.csv', SP="all"){   #file='C:/Users/enzo7311/Desktop/AUXA/jobs/cs404_Jobs_20_7.csv', SP="all"){
+TS_AUX<-function(file='C:/dati/XTS_81/test.csv'){
+  library(dygraphs)
   #  library(xts)
   library(dplyr)
   library(xts)
@@ -9,9 +10,41 @@ TS_AUX<-function(file='C:/Users/enzo7311/Desktop/timeseries/MM82_cs404_2509.csv'
   #  Local_tz<-"America/Chicago"
   
   ##import the file
-  AUX_RAW <- read.csv(file,sep=";")
+  Jobs_RAW <- read.csv(file,sep=",")
+  Jobs_RAW$Date.and.Time<-ymd_hms(Jobs_RAW$Date.and.Time)
+  #View(Jobs_RAW)
+  AUX_Aggregate<-Jobs_RAW%>%group_by(Date.and.Time,Status)%>%summarise(Number=sum(Number))
+  #View(AUX_Aggregate)
+  
+  Pending<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Pending")
+  #colnames(Pending$Number)<-"Pending"
+  #Pending$Number<-NULL
+  View(Pending)
+  
+  xts_Pending<-xts(Pending$Number,order.by=Pending$Date.and.Time)
+  #xts_Pending<-names("Pending")
+  View(xts_Pending)
+  plot(xts_Pending)
+  dygraph(xts_Pending)%>% dyRangeSelector()%>%
+    dySeries("V1", label = "LON404-Pending Jobs")
+}
+
+
+TS_AUX_<-function(file='C:/dati/XTS_81/test.csv', SP="all"){   #file='C:/Users/enzo7311/Desktop/AUXA/jobs/cs404_Jobs_20_7.csv', SP="all"){
+  #  library(xts)
+  library(dplyr)
+  library(xts)
+  library(lubridate) #Date management
+  library(ggplot2)
+  library(tidyr)
+  Local_tz<-"Europe/London"
+  #  Local_tz<-"America/Chicago"
+  
+  ##import the file
+  AUX_RAW <- read.csv(file,sep=",")
   AUX_RAW$Date.and.Time<-mdy_hm(AUX_RAW$Date.and.Time)
   View(AUX_RAW)
+  
   AUX_Aggregate<-AUX_RAW%>%group_by(Date.and.Time)%>%summarise(Residual.Size=sum(Residual.Size))
   View(AUX_Aggregate)
   xts_AUX_AGG<-xts(AUX_Aggregate$Residual.Size,order.by=AUX_Aggregate$Date.and.Time)#, start = c(3, 17))#frequency=30

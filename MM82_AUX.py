@@ -23,8 +23,8 @@ def main():
 
 if __name__ == '__main__':
     main()
-    inputFile="C:/dati/AUXA/cs301/MM82.txt"
-text_fileOut = open("C:/dati/AUXA/cs301/MM82_cs499.csv", "w")
+    inputFile="C:/dati/AUXA/csitis/MM82.txt"
+text_fileOut = open("C:/dati/AUXA/CSITIS/MM82_csitis.csv", "w")
 
 
 

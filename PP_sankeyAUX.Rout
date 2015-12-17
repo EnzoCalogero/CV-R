@@ -1,0 +1,84 @@
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:lubridate':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+
+Welcome to googleVis version 0.5.10
+
+Please read the Google API Terms of Use
+before you start using the package:
+https://developers.google.com/terms/
+
+Note, the plot method of googleVis will by default use
+the standard browser to display its output.
+
+See the googleVis package vignettes for more details,
+or visit http://github.com/mages/googleVis.
+
+To suppress this message use:
+suppressPackageStartupMessages(library(googleVis))
+
+[1] "Verifica"
+                                                 Storage.Policy    CS
+1                                12WeekOffsite_MA06-A - Primary CS404
+2                           4WeekOffSite (DiskD-MA12) - Primary CS404
+4                              z_12WeekOffsite_MA06-B - Primary CS404
+5               Z_1700246_HCO1_Lon5OffSite(disk) - Primary-LON5 CS404
+6  Z_1700246_HCO1_Lon5OffSite(disk) - Primary-MonthlyFulls-LON5 CS404
+7                         z_26328_4WeekOffSite_HC06-B - Primary CS404
+8                Z_26328_HC05_4Week(disk)_12WeekOffsi - Primary CS404
+9                Z_26328_HC06_4Week(disk)_12WeekOffsi - Primary CS404
+10               z_DoNotUse_4WeekOffSite (DiskB-MA10) - primary CS404
+11               z_DoNotUse_4WeekOffsite (DiskF-MA11) - Primary CS404
+12               z_DoNotUse_4WeekOffSite (DiskI-MA10) - Primary CS404
+13               z_DoNotUse_4WeekOffSite (DiskK-MA11) - Primary CS404
+15                          z4WeekOffSite (DiskE-MA8) - primary CS404
+17                          z4WeekOffsite (DiskH-MA9) - Primary CS404
+19  Z_1861184_HC01_LON3_2Wk/4Wk(disk)_52 - Primary-52Wk_Offsite CS498
+20   Z_1861184_HC01_LON3_2Wk/4Wk(disk)_52 - Primary-7Yr_Offsite CS498
+21   Z_1861184_HC04_LON5_2Wk/4Wk(disk)_52 - Primary-7Yr_Offsite CS498
+23                       Z_858926_4WeekOffSite_HC05-A - Primary CS498
+25                       Z_858926_4WeekOffSite_HC06-A - Primary CS498
+26                          52WeekOffsite_MA02_A - Primary-LON3 CS499
+27                          52WeekOffsite_MA02_A - Primary-LON5 CS499
+29                          12WeekOffsite (DiskA-MA1) - primary CSITS
+30                           7YearOffsite (DiskA-MA1) - primary CSITS
+   Residual.Size
+1         0.5025
+2         0.7455
+4         1.0710
+5         1.4845
+6         7.8645
+7         0.0535
+8         0.7930
+9         3.1050
+10        0.1390
+11        1.7775
+12        1.1285
+13        2.0710
+15        0.9920
+17        1.1840
+19        0.5010
+20        0.2550
+21        0.0000
+23        0.9880
+25        1.1900
+26        1.2010
+27        0.5932
+29        7.1590
+30        0.0230
+starting httpd help server ... done
+> proc.time()
+   user  system elapsed 
+   2.32    0.24    2.54 

@@ -28,11 +28,11 @@ TimeDList=[] # Date and time list
 if __name__ == '__main__':
     main()
 
-text_fileOut = open("C:/dati/network10GB/cs401/cs401.csv", "w")
+text_fileOut = open("C:/dati/XTS_81/test.csv", "w")
 text_fileOut.writelines("Date and Time"+", "+"Storage Policy" + ", " + "Status"+ ", "+ "Number"+"\n")
 
 
-inputFile="C:/dati/network10GB/cs401/mm81.txt"
+inputFile="C:/dati/XTS_81/mm81.txt"
 
 print("\nLooping through the file, line by line.")
 #filin=codecs.open(inputFile, encoding='utf-8')

@@ -1,20 +1,34 @@
-CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
+CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/lon3/temp.csv'){
   library(ggplot2)
   library(doBy)  
   library(lubridate)
   library(igraph)
   library(dplyr)
+  #library(data.table)
 
   AFID <- read.csv(file,sep=',')
+  #AFID<-fread(file)
+  View(AFID)
+  
+  
   AFID$DDBID<-paste(AFID$Host,"-ID-",AFID$DDBID)
   AFID$Date1<-mdy_hms(AFID$Date)
   
-  filterDate<-ymd_hms(now())-days(8)
-  print(filterDate)
-  AFID<-AFID[AFID$Date1 > filterDate,]
+  ##############################################################
+  ##       Time Filtering                                      #
+  ##############################################################
+  
+  
+  filterDate<-ymd_hms(now())-days(7)
+  #print(filterDate)
+  #print(now())
+  #View(AFID)
+  
+  AFID<-AFID[(AFID$Date1 > filterDate) &(AFID$Date1<=ymd_hms(now())),]
   
   AFID$Date2<-floor_date(AFID$Date1, "hour")
   AFID$Date3<-floor_date(AFID$Date1, "day")
+  
   # round_date
   AFID$Time.Hours<-(AFID$TimeSec/(60*60))
   AFID$timeHs<-as.integer(hour(AFID$Date1))
@@ -25,7 +39,7 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
   AFID$days<-mday(AFID$Date1)
   ######
   # Temp Out
-  #m1 <- ggplot(AFID, aes(x = Date1,y=AFID))+  geom_point() +geom_line() + facet_grid(DDBID  ~. )+ ggtitle("AFID pending Trend")
+ # m1 <- ggplot(AFID, aes(x = Date1,y=AFID))+  geom_point() +geom_line() + facet_grid(DDBID  ~. )+ ggtitle("AFID pending Trend")
   
   
   AFID18<-subset(AFID, timeHs >=18 )
@@ -35,11 +49,11 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
   Rank18<-aggregate(AFID~Date3+DDBID+Host, max,data=AFID18)
   Rank18$AFID18<-Rank18$AFID
   
-  View(RankALL)
-  View(Rank18)
+  #View(RankALL)
+  #View(Rank18)
   #View(AFID18)
   # Temp Out
-  #m2 <- ggplot(AFID18, aes(x = Date1,y=AFID))+  geom_point() +geom_line() + facet_grid(DDBID  ~. )+ ggtitle("AFID pending Trend After 18")
+  m2 <- ggplot(AFID18, aes(x = Date1,y=AFID))+  geom_point() +geom_line() + facet_grid(DDBID  ~. )+ ggtitle("AFID pending Trend After 18")
   AFID21<-subset(AFID, timeHs >=21 )
   Rank21<-aggregate(AFID~Date3+DDBID+Host, max,data=AFID21)
   Rank21$AFID21<-Rank21$AFID
@@ -51,15 +65,15 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
   
   
   #View(AFID21)
-  View(Rank21)
-  View(RankALL)
+  #View(Rank21)
+  #View(RankALL)
   
   # Temp Out
   #m3 <- ggplot(AFID21, aes(x = Date1,y=AFID))+  geom_point() +geom_line() + facet_grid(DDBID  ~. )+ ggtitle("AFID pending Trend After 21")
   
   # Temp Out
-  #multiplot(m1, cols=1)
-  #multiplot(m2, cols=1)
+#  multiplot(m1, cols=1)
+  multiplot(m2, cols=1)
   #multiplot(m3, cols=1)
 
   #########################################################
@@ -69,9 +83,11 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
   ####################################################################
   #lab11<-read.csv("C:/temp2/graphlab.csv",sep=';')
   raw<-unique(as.character(RankALL$DDBID))
-  View(raw)
-  
-  commCell<-as.character(substr(raw,1,5))
+  #View(raw)
+ 
+ gALL <- graph.empty()
+ 
+ commCell<-as.character(substr(raw,1,5))
   commCell<-unique(commCell)
   #ids<-as.character(substr(raw,15,20))
   #print("id")
@@ -112,7 +128,7 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
       V(g)[ma]$label.color="black"
         } 
     
-    
+    V(g)$status<-0
     for(id in ids){
       #########################
      rackPartial<-subset(RankALL,id == as.character(substr(RankALL$DDBID,15,20)))
@@ -120,6 +136,7 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
      V(g)[id]$color<-"green"
      V(g)[id]$size=10
      V(g)[id]$label.color="black"
+     #V(g)$status<-0
      #print(rackPartial)
      count18<-sum(rackPartial$AFID18>0,na.rm=TRUE)
      count21<-sum(rackPartial$AFID21>0,na.rm=TRUE)
@@ -137,23 +154,99 @@ CriticalSize<-function(sidb=0,Mo=10,file='C:/temp/temp.csv'){
         V(g)[vertice]$size=1
         V(g)[vertice]$label.color="red"
          }
+    
     if(count21>0){
       vertice<-paste("DDB-ID-",id,"-",count18,"/7 Days over 9pm")
       V(g)[id]$color<-"red"
+      V(g)[id]$status<-1
       #   V(g)[id]$Size<-1
       g<-g+vertices(vertice)
       
       g<-g+edges(c(id,vertice))
       V(g)[vertice]$size=1
       V(g)[vertice]$label.color="red"
-    }
+      ###Code Added
+      a<-ends(g,incident(g,V(g)[id]))
+      print("neigh")
+      print(get.vertex.attribute(g, "color", index=V(g)[a[[2]]]))
+      print(get.vertex.attribute(g, "status", index=V(g)[a[[2]]]))
+      
+      if(V(g)[a[[2]]]$status>0){
+        V(g)[a[[2]]]$color<-"red"
+      }
+      
+      V(g)[a[[2]]]$status<-1
+      ####Code Added
+        }
      # View(rackPartial)
       
       #######################
     }
+    gALL <- gALL +g
+    plot.igraph(g,edge.curved=FALSE, main=paste ("DDB Critical Size Analysis for ",CS),layout=layout.fruchterman.reingold,edge.arrow.size=0.1,edge.arrow.width=0.1)
+  }
+ plot.igraph(gALL,edge.curved=FALSE, main=paste ("DDB Critical Size Analysis for Global"),layout=layout.fruchterman.reingold,edge.arrow.size=0.1,edge.arrow.width=0.1)
+ 
+ #write.csv(RankALL, file = "C:/temp2/graphlab.csv",row.names=TRUE)
+ # return(RankALL)
+}
+
+
+CriticalSizeTrend<-function(sidb=0,Mo=10,file='C:/temp/lon3/temp.csv'){
+  library(ggplot2)
+  #library(doBy)  
+  library(lubridate)
+  #library(igraph)
+  library(dplyr)
+  #library(data.table)
+  
+  AFID <- read.csv(file,sep=',')
+  #AFID<-fread(file)
+  # View(AFID)
+  
+  
+  AFID$DDBID<-paste(AFID$Host,"-ID-",AFID$DDBID)
+  AFID$Date1<-mdy_hms(AFID$Date)
+  
+  filterDate<-ymd_hms(now())-days(15)
+  print(filterDate)
+  #View(AFID)
+  AFID<-AFID[AFID$Date1 > filterDate,]
+  AFID<-AFID[AFID$Date1 < ymd_hms(now()),]
+  
+  AFID$Date2<-floor_date(AFID$Date1, "hour")
+  AFID$Date3<-floor_date(AFID$Date1, "day")
+  # round_date
+  AFID$Time.Hours<-(AFID$TimeSec/(60*60))
+  AFID$timeHs<-as.integer(hour(AFID$Date1))
+  AFID$timeDay<-as.integer(day(AFID$Date3))
+  
+  
+  #View(AFID)
+  AFID$days<-mday(AFID$Date1)
+  ######
+
+  RankALL<-aggregate(timeHs~Date3+DDBID+Host, max,data=AFID)
+  RankALL$CS<-as.character(substr(RankALL$DDBID,1,5))
+  View(RankALL)
+
+  
+  
+  
+  m <- ggplot(RankALL, aes(x = Date3,y=timeHs))+  geom_point() +geom_line(aes(colour = DDBID)) + facet_grid(CS~.)+ ggtitle("AFID TREND OVER TIME2")
+  # Temp Out
+  multiplot(m, cols=1)
+  
+  CSs_<-unique(RankALL$CS)
+  for(cs in CSs_)
+  {
+   tempRank<- subset(RankALL,RankALL$CS==cs)
+   mt <- ggplot(tempRank, aes(x = Date3,y=timeHs))+  geom_point() +geom_line(aes(colour = DDBID)) + ggtitle(cs)
+   # Temp Out
+   multiplot(mt, cols=1)
     
-    plot.igraph(g,edge.curved=FALSE, main=paste ("Critical Size Analysis for ",CS),layout=layout.fruchterman.reingold,edge.arrow.size=0.3,edge.arrow.width=0.3)
+    
   }
   
-  
 }
+

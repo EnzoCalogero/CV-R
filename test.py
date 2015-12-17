@@ -14,67 +14,50 @@ import win32wnet
 # Hosts Dictionary
 #global RedoFiles
 #RedoFiles=list()
-LON3_={
-'CS904M08':'10.12.21.120'
-}
-ORD={
+Hosts={
 #cs902
-'CS902M01':'10.12.21.16','CS902M02':'10.12.21.17','CS902M03':'10.12.21.18','CS902M04':'10.12.21.19','CS902M05':'10.12.21.20',
+#'CS902M01':'10.12.21.16','CS902M02':'10.12.21.17','CS902M03':'10.12.21.18','CS902M04':'10.12.21.19','CS902M05':'10.12.21.20',
 #CS903
-'CS903M01':'10.12.21.121','CS903M02':'10.12.21.46','CS903M03':'10.12.21.37','CS903M04':'10.12.21.40','CS903M05':'10.12.21.41','CS903M06':'10.12.21.122',
-'CS903M07':'10.12.21.123','CS903M08':'10.12.21.146','CS903M09':'10.12.21.148',
+#'CS903M01':'10.12.21.121','CS903M02':'10.12.21.46','CS903M03':'10.12.21.37','CS903M04':'10.12.21.40','CS903M05':'10.12.21.41','CS903M06':'10.12.21.122',
+#'CS903M07':'10.12.21.123','CS903M08':'10.12.21.146','CS903M09':'10.12.21.148',
 
-############################}
-
-##################LON3={
-}
-LON3={
-
+#}
+#Hosts={
 #CSITIS
-'CSITSM01':'10.9.10.64',
+#'CSITISM01':'10.9.10.64',
 #CS411
-'CS411M07':'10.9.10.129','CS411M08':'10.9.10.113','CS411M01':'10.9.10.91','CS411M02':'10.9.10.92','CS411M03':'10.9.10.93','CS411M04':'10.9.10.94',
-'CS411M05':'10.9.10.48','CS411M06':'10.9.10.49',
+#'CS411M07':'10.9.10.129','CS411M08':'10.9.10.113','CS411M01':'10.9.10.91','CS411M02':'10.9.10.92','CS411M03':'10.9.10.93','CS411M04':'10.9.10.94',
+#'CS411M05':'10.9.10.48','CS411M06':'10.9.10.49',
 #CS401
-'CS401M03':'10.9.10.34','CS401M05':'10.9.10.54','CS401M06':'10.9.10.55','CS401M07':'10.9.10.56','CS401M08':'10.9.10.57',
-'CS401M09':'10.9.10.28','CS401M04':'10.9.10.16',
+#'CS401M03':'10.9.10.34','CS401M04':'10.9.10.16','CS401M05':'10.9.10.54','CS401M06':'10.9.10.55','CS401M07':'10.9.10.56','CS401M08':'10.9.10.57',
+#'CS401M09':'10.9.10.28',
 ##CS402
-'CS402M05':'10.9.10.66','CS402M06':'10.9.10.67','CS402M07':'10.9.10.68','CS402M08':'10.9.10.69','CS402M09':'10.9.10.52','CS402M10':'10.9.10.53',
-'CS402M04':'10.9.10.71',
+#'CS402M05':'10.9.10.66','CS402M06':'10.9.10.67','CS402M07':'10.9.10.68','CS402M08':'10.9.10.69','CS402M09':'10.9.10.52','CS402M10':'10.9.10.53',
+#'CS402M04':'10.9.10.71',
 #CS403
-'CS403M05':'10.9.10.86','CS403M06':'10.9.10.87','CS403M07':'10.9.10.88','CS403M08':'10.9.10.89',
+#'CS403M05':'10.9.10.86','CS403M06':'10.9.10.87','CS403M07':'10.9.10.88','CS403M08':'10.9.10.89',
 #CS404
 'CS404HC7':'10.9.10.74','CS404HC5':'10.9.10.78',
 'CS404HC6':'10.9.10.79','CS404M09':'10.9.10.15',
 'CS404M10':'10.9.10.20','CS404M11':'10.9.10.25','CS404M12':'10.9.10.62','CS404M13':'10.9.10.39','CS404M14':'10.9.10.44',
 'CS404M15':'10.9.10.47','CS404HC4':'10.9.10.132',
 'CS404HC3':'10.9.10.134','CS404M07':'10.9.10.17','CS404M08':'10.9.10.18','CS404HC1':'10.9.10.19','CS404HC2':'10.9.10.33',
-'CS404HC8':'10.9.10.35','CS404HC9':'10.9.10.36','CS404M06':'10.9.10.126',
+'CS404HC8':'10.9.10.35','CS404HC9':'10.9.10.36','CS404M06':'10.9.10.126'
 
 #cs406
-'CS406M11':'10.9.10.115','CS406M12':'10.9.10.116','CS406M13':'10.9.10.22','CS406M14':'10.9.10.23','CS406M15':'10.9.10.24','CS406M16':'10.9.10.27',
-'CS406M10':'10.9.10.114',
+#'CS406M10':'10.9.10.114','CS406M11':'10.9.10.115','CS406M12':'10.9.10.116','CS406M13':'10.9.10.22','CS406M14':'10.9.10.23','CS406M15':'10.9.10.24','CS406M16':'10.9.10.27',
 #CS410
-'CS410M01':'10.9.10.135','CS410M02':'10.9.10.137','CS410M03':'10.9.10.21','CS410M04':'10.9.10.32',
-
-
-#cs411
-'CS411M01':'10.9.10.91','CS411M02':'10.9.10.92','CS411M03':'10.9.10.93','CS411M04':'10.9.10.94','CS411M05':'10.9.10.48','CS411M06':'10.9.10.49',
-'CS411M07':'10.9.10.129','CS411M08':'10.9.10.113',
-
+#'CS410M01':'10.9.10.135','CS410M02':'10.9.10.137','CS410M03':'10.9.10.21','CS410M04':'10.9.10.32'
 #CS498
-'CS498HC1':'10.9.10.143','CS498HC3':'10.9.10.142','CS498HC4':'10.9.10.21','CS498HC5':'10.9.10.72','CS498HC6':'10.9.10.83','CS498M01':'10.9.10.141',
-
 
 #CS499
-'CS499M02':'10.9.10.46','CS499M03':'10.9.10.90'
+
 
 }
 
 
 
-
-src="C:/temp/lon3/lon3.txt"
+src="C:/temp/test.txt"
 dest="C:/temp2/"
 def copyFile(src, dest):
     try:
@@ -91,53 +74,51 @@ def copyFile(src, dest):
        # print("enzo--Eccomi2")
         print(src)
 
+print("\nLooping through the file, line by line.")
+text_fileOut = open("C:/temp/temp.csv", "w")
+text_fileOut.writelines("Date"+", "+"DDBID" + ", " + "AFID"+ ", "+ "TimeSec"+", Host"+"\n")
 
-
-text_fileOut = open("C:/temp/lon3/temp.csv", "w")
-text_fileOut.writelines("Date"+", "+"DDBID" + ", " + "AFID"+ ", "+ "TimeSec"+", Host"+", DC"+ "\n")
-
-
+#print(Hosts.keys())
+#print(Hosts.get('CSITISM01'))
 folder='SIDBEngine'
 inputFile=[folder+".log",folder+"_1.log",folder+"_2.log",folder+"_3.log",folder+"_4.log",folder+"_5.log",folder+"_6.log",folder+"_7.log",folder+"_8.log",folder+"_9.log",folder+"_10.log"]
 
 
-DC=LON3.copy()
 
-DC_NAME='LON3'
-for Host in DC:
+for Host in Hosts:
     for logfile in inputFile:
         try:
-            os.remove("c:/temp/lon3/"+logfile)
+            os.remove("c:/temp/"+logfile)
         except OSError:
             pass
+#    winCMD = 'NET USE * \delete \y'
+#    subprocess.Popen(winCMD, stdout=subprocess.PIPE, shell=True)  
+     
+#    winCMD = 'NET USE ' +'\\'+'\\'+ Hosts.get(Host)+'\\'+'c$' + ' /User:' + 'storage\cvadmin' + ' ' + 'G00dpa$$'
+   # print(winCMD)
+   # print(Host)
+   # print (Hosts.get(Host))
+#    subprocess.Popen(winCMD, stdout=subprocess.PIPE, shell=True)
 
-    print(Host)
-    print(DC.get(Host))
-    try:
-           win32wnet.WNetAddConnection2(0, None, '\\\\'+ DC.get(Host), None, 'storage\enzo.calogero','N1cole83.')
-    except OSError:
-           print("Errore")
-           print(Host)
-           print(DC.get(Host))
-           #pass
-    except IOError as e:
-        print('Error: %s' % e.strerror)
-        print("enzo--Eccomi2")
-        print(Host)   
- 
+
+
+
+    win32wnet.WNetAddConnection2(0, None, '\\\\'+ Hosts.get(Host), None, 'storage\cvadmin','G00dpa$$')
     for logfile in inputFile:
-        dest="C:/temp/lon3/"+logfile
-        src='\\'+'\\'+DC.get(Host)+'/c$/Program Files/CommVault/Simpana/Log Files/'+ logfile
-        print(dest)
+        dest="C:/temp/"+logfile
+        src='\\'+'\\'+Hosts.get(Host)+'/c$/Program Files/CommVault/Simpana/Log Files/'+ logfile
+       # print(dest)
  #       print(src)
         copyFile(src, dest)
+        #win32wnet.WNetCancelConnection2('\\\\'+Hosts.get(Host), 0, 0) # optional disconnect
+#        winCMD = 'Net use * /delete /y '
 
  #       try:
         if os.path.exists(dest):            
             text_fileIn = open(dest, "r")
             for line in text_fileIn:
                     if(re.search( r"from.pending.list.", line, re.M|re.I)):
-                              # print(Host)
+                             #  print(Host)
                             #   print(line)
                                #text_fileOut.write(line)
                                date=line[12:17]+"/2015 "+line[18:26]
@@ -157,7 +138,7 @@ for Host in DC:
                                    #Time=float(Time)
                                   # print Time
                              #  print( DDBID + "  "+ "  "+  AFID+ "  "+ Time)
-                               text_fileOut.writelines(date+","+DDBID + "," +  AFID+ ","+ Time + ","+ Host +","+ DC_NAME +" \n")
+                               text_fileOut.writelines(date+","+DDBID + "," +  AFID+ ","+ Time + ","+ Host + "\n")
 #        except OSError:
 #            print("here I am")
 #            pass        

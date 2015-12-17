@@ -1,0 +1,1 @@
+cmd.exe  /a /c TYPE C:\dati\temp\MM81.txt   >   C:\dati\temp\MM81Dopo.txt
