@@ -1,4 +1,4 @@
-TS_JobStatus<-function(file='C:/dati/XTS_81/test.csv'){
+TS_JobStatus<-function(file='C:/dati/Jobs_Analisis/globalJobs.csv'){
   library(dygraphs)
   #  library(xts)
   library(dplyr)
@@ -13,7 +13,7 @@ TS_JobStatus<-function(file='C:/dati/XTS_81/test.csv'){
   Jobs_RAW <- read.csv(file,sep=",")
   Jobs_RAW$Date.and.Time<-ymd_hms(Jobs_RAW$Date.and.Time)
   Jobs_RAW$Date.and.Time<-floor_date(Jobs_RAW$Date.and.Time, "hour")
-  #View(Jobs_RAW)
+  View(Jobs_RAW)
   AUX_Aggregate<-Jobs_RAW%>%group_by(Date.and.Time,Status)%>%summarise(Number=sum(Number))
   View(AUX_Aggregate)
   
@@ -34,8 +34,6 @@ TS_JobStatus<-function(file='C:/dati/XTS_81/test.csv'){
   Queued<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Queued")
   Queued$Status<-NULL
   names( Queued)[2]<-"Queued"
- 
-  
  
   View(Queued)
   Jobs<-full_join(Pending, Running, by = "Date.and.Time")

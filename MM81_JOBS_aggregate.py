@@ -179,10 +179,10 @@ for CS in CommCells:
     #populate with zero value
     for dt in TimeDList:
         for SP_ in SPLIST:
-           text_fileOut.writelines(dt+','+SP_+','+ "Running"+','+"0\n")
-           text_fileOut.writelines(dt+','+SP_+','+ "Pending"+','+"0\n")
-           text_fileOut.writelines(dt+','+SP_+','+ "Queued"+','+"0\n")
-           text_fileOut.writelines(dt+','+SP_+','+ "Waiting"+','+"0\n")
+           text_fileOut.writelines(dt+','+SP_+','+ "Running"+','+"0,"+CS+"\n")
+           text_fileOut.writelines(dt+','+SP_+','+ "Pending"+','+"0,"+CS+"\n")
+           text_fileOut.writelines(dt+','+SP_+','+ "Queued"+','+"0,"+CS+"\n")
+           text_fileOut.writelines(dt+','+SP_+','+ "Waiting"+','+"0,"+CS+"\n")
     
     
     filin.close()
