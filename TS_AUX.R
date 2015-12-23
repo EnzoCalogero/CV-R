@@ -1,4 +1,4 @@
-TS_AUX<-function(file='C:/dati/XTS_81/test.csv'){
+TS_JobStatus<-function(file='C:/dati/XTS_81/test.csv'){
   library(dygraphs)
   #  library(xts)
   library(dplyr)
