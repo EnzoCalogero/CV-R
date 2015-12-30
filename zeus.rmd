@@ -1,0 +1,22 @@
+---
+title: "Zeus Project"
+output: html_document
+---
+
+##AuxCopy
+
+**Current Status Analysis**
+
+[Lon3 Curent Status](http://10.2.210.104/lon3AUX.html)
+
+**Long term analysis**
+
+[Lon3 Long term analysis](http://10.2.210.104/trendAUX.html)
+
+##Job Analysis 
+
+[Lon3 Jobs analysis per Commcells](http://10.2.210.104/TS_LON3Jobs.html)
+
+##Pruning Analysis
+
+[Lon3 Prunning Current analysis -- Summary per Commcells](http://10.2.210.104/criticalSize.html)
