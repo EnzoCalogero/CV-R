@@ -3,11 +3,9 @@ title: "graph01"
 output: html_document
 ---
 
-bla bla
-
 ```{r,echo=FALSE,message=FALSE,fig.width=9,fig.height=9}
 library(ggplot2)
-
+library(plotly)
 library(lubridate)
 library(igraph)
 library(dplyr)
@@ -170,4 +168,13 @@ for(CS in commCell){
 
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r,echo=FALSE,message=FALSE,fig.width=9,fig.height=9}
+  
+  AFID$CS<-as.character(substr(AFID$DDBID,1,5))
+  m1 <- ggplot(AFID, aes(x = Date2,y=AFID))+  geom_point(aes(colour = DDBID))  + facet_grid(CS~.)+ ggtitle("AFID TREND OVER TIME2")
+  # Temp Out
+ # multiplot(m1, cols=1)
+  ggplotly(m1)
+ 
+
+```
