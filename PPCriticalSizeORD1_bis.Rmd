@@ -1,0 +1,67 @@
+---
+title: "Graph ORD1"
+output: html_document
+---
+
+```{r,echo=FALSE,message=FALSE,fig.width=9,fig.height=9}
+library(ggplot2)
+library(plotly)
+library(lubridate)
+library(igraph)
+library(dplyr)
+file<-'C:/temp/ord1/temp.csv'
+AFID <- read.csv(file,sep=',')
+
+
+AFID$DDBID<-paste(AFID$Host,"-ID-",AFID$DDBID)
+AFID$Date1<-mdy_hms(AFID$Date)
+
+##############################################################
+##       Time Filtering                                      #
+##############################################################
+
+
+#filterDate<-ymd_hms(now())-days(7)
+#AFID<-AFID[(AFID$Date1 < mdy_hms('01/14/2015 15:16:54'),]
+
+#old
+#AFID<-AFID[(AFID$Date1 > filterDate) &(AFID$Date1<=ymd_hms(now())),]
+
+AFID$Date2<-floor_date(AFID$Date1, "hour")
+AFID$Date3<-floor_date(AFID$Date1, "day")
+
+# round_date
+AFID$Time.Hours<-(AFID$TimeSec/(60*60))
+AFID$timeHs<-as.integer(hour(AFID$Date1))
+AFID$timeDay<-as.integer(day(AFID$Date3))
+
+
+
+AFID$days<-mday(AFID$Date1)
+AFID18<-subset(AFID, timeHs >=18 )
+
+
+RankALL<-aggregate(AFID~Date3+DDBID+Host, max,data=AFID)
+Rank18<-aggregate(AFID~Date3+DDBID+Host, max,data=AFID18)
+Rank18$AFID18<-Rank18$AFID
+
+AFID21<-subset(AFID, timeHs >=21 )
+
+Rank21<-aggregate(AFID~Date3+DDBID+Host, max,data=AFID21)
+Rank21$AFID21<-Rank21$AFID
+RankALL$AFID<-NULL
+RankALL<-left_join(RankALL, Rank18, by = c("Date3","DDBID","Host"))
+RankALL<-left_join(RankALL, Rank21, by = c("Date3","DDBID","Host"))
+RankALL$AFID.y<-NULL
+RankALL$AFID.x<-NULL
+
+
+  
+  AFID$CS<-as.character(substr(AFID$DDBID,1,5))
+  m1 <- ggplot(AFID, aes(x = Date2,y=AFID))+  geom_point(aes(colour = DDBID))  + facet_grid(CS~.)+ ggtitle("AFID TREND OVER TIME2")
+  # Temp Out
+ # multiplot(m1, cols=1)
+  ggplotly(m1)
+ 
+
+```

@@ -20,7 +20,7 @@ TS_JobStatus_SPs<-function(CS="CS404",Status="Running",filter='z_2Week_MA'){
   Jobs_RAW[,1:2]<-NULL
   Jobs_RAW$Date.and.Time<-floor_date(Jobs_RAW$Date.and.Time, "hour")
   #View(Jobs_RAW)
-  
+  save(Jobs_RAW,file="Jobs_RAW")
   Jobs_RAW<-subset(Jobs_RAW,Jobs_RAW$CS==CS)
   Jobs_RAW$CS<-NULL
   Jobs_RAW<-subset(Jobs_RAW,Jobs_RAW$Status==Status)
@@ -28,7 +28,7 @@ TS_JobStatus_SPs<-function(CS="CS404",Status="Running",filter='z_2Week_MA'){
   Jobs_RAW<-subset(Jobs_RAW,grepl(filter,Jobs_RAW$Storage.Policy))
   
   data_wide <- dcast(Jobs_RAW, Date.and.Time  ~ Storage.Policy, value.var="Number")
-  
+ # save(Jobs_RAW,file="Jobs_RAW")
   View(Jobs_RAW)
   View(data_wide)
   xts_Jobs_CS<-xts(data_wide[,-1],order.by=data_wide$Date.and.Time)

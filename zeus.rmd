@@ -1,5 +1,5 @@
 ---
-title: "Zeus Project LON3"
+title: "Zeus Project"
 output: html_document
 ---
 ##AuxCopy
@@ -12,11 +12,15 @@ img <- readJPEG("C:/dati/generic/Zeus-0.jpg")
 
 ###Current Status Analysis
 
-[Lon3 Curent Status](http://10.2.210.104/lon3AUX.html)
+[Lon3 Current Status](http://10.2.210.104/lon3AUX.html)
+
+[DFW1 Current Status](http://10.2.210.104/DFW1AUX.html)
 
 ###Long term analysis
 
 [Lon3 Long term analysis](http://10.2.210.104/trendAUX.html)
+
+[DFW1 Long term analysis](http://10.2.210.104/trendAUXDFW1.html)
 
 ##Job Analysis 
 ```{r fig.width=1, fig.height=1,echo=FALSE}
@@ -39,3 +43,4 @@ img <- readJPEG("C:/dati/generic/3.jpg")
 [Lon3 Prunning Current analysis -- Summary per Commcells](http://10.2.210.104/criticalSize.html)
 
 
+[math notes](https://www.tug.org/texshowcase/cheat.pdf)

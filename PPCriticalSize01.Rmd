@@ -3,9 +3,11 @@ title: "graph01"
 output: html_document
 ---
 
+bla bla
+
 ```{r,echo=FALSE,message=FALSE,fig.width=9,fig.height=9}
 library(ggplot2)
-library(plotly)
+
 library(lubridate)
 library(igraph)
 library(dplyr)
@@ -24,7 +26,7 @@ AFID$Date1<-mdy_hms(AFID$Date)
 filterDate<-ymd_hms(now())-days(7)
 
 
-AFID<-AFID[(AFID$Date1 > filterDate) &(AFID$Date1<=ymd_hms(now())),]
+#AFID<-AFID[(AFID$Date1 > filterDate) &(AFID$Date1<=ymd_hms(now())),]
 
 AFID$Date2<-floor_date(AFID$Date1, "hour")
 AFID$Date3<-floor_date(AFID$Date1, "day")
@@ -165,16 +167,5 @@ for(CS in commCell){
 
 #write.csv(RankALL, file = "C:/temp2/graphlab.csv",row.names=TRUE)
 # return(RankALL)
-
-```
-
-```{r,echo=FALSE,message=FALSE,fig.width=9,fig.height=9}
-  
-  AFID$CS<-as.character(substr(AFID$DDBID,1,5))
-  m1 <- ggplot(AFID, aes(x = Date2,y=AFID))+  geom_point(aes(colour = DDBID))  + facet_grid(CS~.)+ ggtitle("AFID TREND OVER TIME2")
-  # Temp Out
- # multiplot(m1, cols=1)
-  ggplotly(m1)
- 
 
 ```

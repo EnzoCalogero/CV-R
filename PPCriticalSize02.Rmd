@@ -24,7 +24,7 @@ AFID$Date1<-mdy_hms(AFID$Date)
 filterDate<-ymd_hms(now())-days(7)
 
 
-AFID<-AFID[(AFID$Date1 > filterDate) &(AFID$Date1<=ymd_hms(now())),]
+#AFID<-AFID[(AFID$Date1 > filterDate) &(AFID$Date1<=ymd_hms(now())),]
 
 AFID$Date2<-floor_date(AFID$Date1, "hour")
 #AFID$Date3<-floor_date(AFID$Date1, "day")

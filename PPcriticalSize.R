@@ -8,7 +8,7 @@ library(dplyr)
 file<-'C:/temp/lon3/temp.csv'
 AFID <- read.csv(file,sep=',')
 #AFID<-fread(file)
-#View(AFID)
+View(AFID)
 
 
 AFID$DDBID<-paste(AFID$Host,"-ID-",AFID$DDBID)

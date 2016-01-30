@@ -123,7 +123,7 @@ today()
   xts_Jobs_401<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
   rm(Jobs)
   dygraph(xts_Jobs_401,main="CS401",group = "LON3")%>% dyRangeSelector()%>%
-  dyEvent("2015-11-1", "10GB", labelLoc = "bottom") 
+  dyEvent("2015-11-1", "10GB", labelLoc = "top") 
  
 ```
 
@@ -193,8 +193,8 @@ today()
   rm(Queued)
   xts_Jobs_403<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
   rm(Jobs)
-  dygraph(xts_Jobs_403,main="CS403",group = "LON3")%>% dyRangeSelector()#%>%
- 
+  dygraph(xts_Jobs_403,main="CS403",group = "LON3")%>% dyRangeSelector()%>%
+  dyEvent("2015-11-1", "10GB", labelLoc = "top") 
 ```
 
 ```{r, echo=FALSE,fig.height=6,fig.width=12}
@@ -333,8 +333,8 @@ today()
   rm(Queued)
   xts_Jobs_411<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
   rm(Jobs)
-  dygraph(xts_Jobs_411,main="CS411",group = "LON3")%>% dyRangeSelector()#%>%
- 
+  dygraph(xts_Jobs_411,main="CS411",group = "LON3")%>% dyRangeSelector()%>%
+  dyEvent("2015-11-1", "10GB", labelLoc = "top") 
 ```
 
 ```{r, echo=FALSE,fig.height=6,fig.width=12}
@@ -473,7 +473,7 @@ today()
   rm(Queued)
   xts_Jobs_ITS<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
   rm(Jobs)
-  dygraph(xts_Jobs_404,main="CSITS",group = "LON3")%>% dyRangeSelector()#%>%
- 
+  dygraph(xts_Jobs_404,main="CSITS",group = "LON3")%>% dyRangeSelector()%>%
+  dyEvent("2015-11-1", "10GB", labelLoc = "top") 
 ```
 
