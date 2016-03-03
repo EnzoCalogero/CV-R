@@ -5,7 +5,7 @@
 #######################################################
 
 
-MMAFDeleted_Reader<-function(day=0,file='AFIDSummary.csv',escludingSIDB=c(20,12)){
+MMAFDeleted_Reader<-function(day=0,file='AF.csv',escludingSIDB=c(20,12)){
   library(ggplot2)
   timeZero<-"2015-01-30"
   #escludingSIDB<-c(20,12)

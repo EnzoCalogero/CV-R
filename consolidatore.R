@@ -4,7 +4,7 @@ library(data.table)
 library(dplyr)
 library(xts)
 library(reshape2)
-library(lubridate) #Date management
+library() #Date management
 library(ggplot2)
 library(tidyr)
 
@@ -36,9 +36,9 @@ RankALL <- read.csv(file,sep=';',stringsAsFactors=TRUE)
 RankALL$X<-NULL
 View(RankALL)
 
-RankALLfinal<-rbind(RankALL,RankALLtemp)
-View(RankALLfinal)
-write.csv2(RankALLfinal,'C:/temp/ord1/tempRank.csv')
+#RankALLfinal<-rbind(RankALL,RankALLtemp)
+#View(RankALLfinal)
+#write.csv2(RankALLfinal,'C:/temp/ord1/tempRank.csv')
 
 RankALL$Date<-ymd_hms(RankALL$Date)
 

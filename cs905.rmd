@@ -1,0 +1,43 @@
+---
+title: "Pruning Profile"
+author: "Enzo"
+date: "30 January 2016"
+output: html_document
+---
+
+
+```{r,message=FALSE,echo=FALSE}
+library(lubridate)
+library(dygraphs)
+library(data.table)
+library(dplyr)
+library(xts)
+library(reshape2)
+library(lubridate) #Date management
+library(ggplot2)
+library(tidyr)
+
+file<-'e:/temp/ord1/temp.csv'
+RankALL <- read.csv(file,sep=',',stringsAsFactors=TRUE)
+RankALL$X<-NULL
+#View(RankALL)
+RankALL$Date<-mdy_hms(RankALL$Date)
+
+RankALL$DDBID<-paste(RankALL$Host,"-",RankALL$DDBID)
+RankALL$CS<-substr(RankALL$Host,1,5)
+#data_wide <- dcast(RankALL, Date  ~ DDBID,max, value.var="AFID")
+#View(data_wide)
+```
+
+
+```{r,message=FALSE,echo=FALSE,warning=FALSE}
+CS<-"CS905"
+RankALLt<-subset(RankALL,RankALL$CS == "CS905" )
+RankALLt<-subset(RankALLt,RankALLt$Date < mdy_hms("01.30.2016 00:00:00"))
+
+data_wide <- dcast(RankALLt, Date  ~ DDBID,max, value.var="AFID")
+#data_wide<-subset(data_wide,data_wide$Date < mdy_hms("02.3.2015 00:00:00"))
+xts_Prun_ddb<-xts(data_wide[,-1],order.by=data_wide$Date)
+
+dygraph(xts_Prun_ddb,main=CS)%>% dyRangeSelector()
+```

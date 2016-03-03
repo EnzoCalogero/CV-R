@@ -1,4 +1,4 @@
-TS_JobStatus_CS404<-function(file='C:/dati/Jobs_Analisis/globalJobs.csv',SP){#}),SP="z_2Week_MA03-A"){
+TS_JobStatus_CS404<-function(file='E:/dati/JOBS_Analisis/globalJobs.csv'){
   library(dygraphs)
   library(data.table)
   library(dplyr)

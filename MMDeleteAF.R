@@ -5,7 +5,7 @@
 ## MM_final --> aggregate all the file  on the list on a single file.
 ## MMAFDeleted_TimeAnalysis --> time analysis of new AFids
 #############################################################################################MMDELcs904_08_04.csv'){
-MMAFDeleted_TimeAnalysis<-function(day=0,file='C:/Users/enzo7311/Desktop/dati/cs902mmdeleted_21_08_2015.csv'){ 
+MMAFDeleted_TimeAnalysis<-function(day=0,file='C:/dati/af/af.csv'){ 
   library(ggplot2)
   library(doBy)  
   library(lubridate)

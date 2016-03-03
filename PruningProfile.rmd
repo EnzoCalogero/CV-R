@@ -1,7 +1,5 @@
 ---
 title: "Pruning Profile"
-author: "Enzo"
-date: "30 January 2016"
 output: html_document
 ---
 
@@ -17,7 +15,7 @@ library(lubridate) #Date management
 library(ggplot2)
 library(tidyr)
 
-file<-'e:/temp/ord1/temp.csv'
+file<-'e:/temp/ord1/tempOld.csv'
 RankALL <- read.csv(file,sep=',',stringsAsFactors=TRUE)
 RankALL$X<-NULL
 #View(RankALL)
