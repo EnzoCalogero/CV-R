@@ -1,0 +1,14 @@
+---
+title: "Last Time DBmaintenace Run Report"
+output: html_document
+---
+
+
+
+```{r,echo=FALSE}
+library(DT)
+file="C:/dati/dbmaintenace/dbmaintenace.csv"
+dati<- read.csv(file,sep=',') 
+datatable(dati)
+```
+
