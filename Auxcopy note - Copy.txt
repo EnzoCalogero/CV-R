@@ -1,0 +1,20 @@
+##Filter on the logs:
+##from teh COmmcell..
+
+AuxCopyReserve::getJobParameters Copy properties: Policy 
+
+it gives the storage policy name and basic configurations:
+
+
+2920 1c34 05/21 11:03:32 5288412 AuxCopyReserve::getJobParameters Copy properties: Policy [z4WeekOffSite (DiskE-MA8) Inactive], Copy [primary][200], Source copy [198], StartTime [-1363737600], CopyFlags [6], DedupeFlags [0], DeferDays [0], ArchCheckValidMonths [0], MaxMultiplex [15].
+
+######################
+progress:
+######################
+
+AuxCopyManager::updateProgressToJM <Copy/Stream>
+
+output  [jobid][source streams...][target streams][size] [time ]
+
+
+8628 2ff0  03/13 15:45:19 6568991 AuxCopyManager::updateProgressToJM <Copy/Stream> Source <226/26> Target <228/2>: Application Size, Stream Throughput parameters: [2198773421] bytes read in [16814] seconds

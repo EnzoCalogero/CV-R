@@ -1,0 +1,150 @@
+---
+title: "Detail CommCell Report"
+date: '`r strftime(Sys.time(), format = "%B %d, %Y")`'
+output: html_document
+params:
+      CS: "CSITS"
+      file: "C:/Users/enzo7311/Desktop/globalJobspandav4.csv"
+      Days: 8
+---
+
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12,warning=FALSE}
+suppressWarnings(suppressPackageStartupMessages(library(dygraphs)))
+#library(data.table)
+suppressWarnings(suppressPackageStartupMessages(library(dplyr)))
+suppressWarnings(suppressPackageStartupMessages(library(xts)))
+suppressWarnings(suppressPackageStartupMessages(library(lubridate)))
+suppressWarnings(suppressPackageStartupMessages(library(ggplot2)))
+suppressWarnings(suppressPackageStartupMessages(library(tidyr)))
+suppressWarnings(suppressPackageStartupMessages(library(reshape)))
+
+
+Jobs_RAW <- read.csv(params$file)
+Jobs_RAW$Date.and.Time<-ymd_hms(Jobs_RAW$Date)
+Jobs_RAW$Date.and.Time<-floor_date(Jobs_RAW$Date.and.Time, "hour")
+#View(Jobs_RAW)
+#################
+##Filtering by time
+filterDate<-ymd_hms(now())-days(params$Days)
+
+Jobs_RAW<-Jobs_RAW[Jobs_RAW$Date.and.Time > filterDate,]
+Jobs_RAW<-subset(Jobs_RAW,Jobs_RAW$CS==params$CS)
+Jobs_RAW$CS<-NULL
+Jobs_RAW[is.na(Jobs_RAW)]=0
+```
+
+***
+
+***
+
+```{r, echo=FALSE,fig.height=6,fig.width=12,warning=FALSE}
+
+Jobs_W<-subset(Jobs_RAW,Jobs_RAW$Status=="Waiting")
+Jobs_W$Status<-NULL
+Jobs_W$Waiting<-as.numeric(Jobs_W$Number)
+
+Jobs_W$Number<-NULL
+#Jobs_W$Storage.Policy<-as.factor(Jobs_W$Storage.Policy)
+
+m <-reshape(Jobs_W, direction = "wide", timevar = "Storage.Policy", idvar = "Date.and.Time")          
+m[is.na(m)]=0
+m$Date.and.Time<-ymd_hms(m$Date.and.Time)
+if(nrow(m) >1) {
+
+xts_Jobs<-xts(m[,-1],order.by=m$Date.and.Time)
+dygraph(xts_Jobs,main=paste(params$CS,"Waiting")) %>% dyOptions(useDataTimezone = TRUE,fillGraph = TRUE, fillAlpha = 0.2)%>% dyRangeSelector()%>% dyRangeSelector()%>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))#dyLegend(show = "follow",width = 400)%>%
+}
+```
+
+***
+
+***
+
+```{r, echo=FALSE,fig.height=6,fig.width=12,warning=FALSE}
+Jobs_R<-subset(Jobs_RAW,Jobs_RAW$Status=="Running")
+Jobs_R$Status<-NULL
+Jobs_R$Running<-as.numeric(Jobs_R$Number)
+Jobs_R$Number<-NULL
+Jobs_R$Storage.Policy<-as.factor(Jobs_R$Storage.Policy)
+
+m <-reshape(Jobs_R, direction = "wide", timevar = "Storage.Policy", idvar = "Date.and.Time")          
+m[is.na(m)]=0
+m$Date.and.Time<-ymd_hms(m$Date.and.Time)
+if(nrow(m) >1) {
+
+xts_Jobs<-xts(m[,-1],order.by=m$Date.and.Time)
+dygraph(xts_Jobs,main=paste(params$CS,"Running")) %>% dyOptions(useDataTimezone = TRUE,fillGraph = TRUE, fillAlpha = 0.2)%>% dyRangeSelector()%>% dyRangeSelector()%>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3),hideOnMouseOut = FALSE)
+}
+if(nrow(m) < 2) {print("No Running Jobs")} 
+```
+
+***
+
+***
+
+```{r, echo=FALSE,fig.height=6,fig.width=12,warning=FALSE}
+Jobs_R<-subset(Jobs_RAW,Jobs_RAW$Status=="Pending")
+Jobs_R$Status<-NULL
+Jobs_R$Running<-as.numeric(Jobs_R$Number)
+Jobs_R$Number<-NULL
+Jobs_R$Storage.Policy<-as.factor(Jobs_R$Storage.Policy)
+
+m <-reshape(Jobs_R, direction = "wide", timevar = "Storage.Policy", idvar = "Date.and.Time")          
+m[is.na(m)]=0
+m$Date.and.Time<-ymd_hms(m$Date.and.Time)
+if(nrow(m) >1) {
+
+xts_Jobs<-xts(m[,-1],order.by=m$Date.and.Time)
+dygraph(xts_Jobs,main=paste(params$CS,"Pending")) %>% dyOptions(useDataTimezone = TRUE,fillGraph = TRUE, fillAlpha = 0.2)%>% dyRangeSelector()%>% dyRangeSelector()%>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
+}
+if(nrow(m) < 2) {print("No Pending Jobs")} 
+```
+
+***
+
+***
+
+```{r, echo=FALSE,fig.height=6,fig.width=12,warning=FALSE}
+Jobs_R<-subset(Jobs_RAW,Jobs_RAW$Status=="Queued")
+Jobs_R$Status<-NULL
+Jobs_R$Running<-as.numeric(Jobs_R$Number)
+Jobs_R$Number<-NULL
+Jobs_R$Storage.Policy<-as.factor(Jobs_R$Storage.Policy)
+
+m <-reshape(Jobs_R, direction = "wide", timevar = "Storage.Policy", idvar = "Date.and.Time")          
+m[is.na(m)]=0
+m$Date.and.Time<-ymd_hms(m$Date.and.Time)
+
+if(nrow(m) >1) {
+xts_Jobs<-xts(m[,-1],order.by=m$Date.and.Time)
+dygraph(xts_Jobs,main=paste(params$CS,"Queued")) %>% dyOptions(useDataTimezone = TRUE,fillGraph = TRUE, fillAlpha = 0.2)%>% dyRangeSelector()%>% dyRangeSelector()%>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
+}
+if(nrow(m) < 2) {print("No Queued Jobs")} 
+```
+
+***
+
+***
+
+```{r, echo=FALSE,fig.height=6,fig.width=12,warning=FALSE}
+Jobs_R<-subset(Jobs_RAW,Jobs_RAW$Status=="Suspended")
+Jobs_R$Status<-NULL
+Jobs_R$Running<-as.numeric(Jobs_R$Number)
+Jobs_R$Number<-NULL
+Jobs_R$Storage.Policy<-as.factor(Jobs_R$Storage.Policy)
+
+m <-reshape(Jobs_R, direction = "wide", timevar = "Storage.Policy", idvar = "Date.and.Time")          
+m[is.na(m)]=0
+m$Date.and.Time<-ymd_hms(m$Date.and.Time)
+if(nrow(m) >1) {
+
+xts_Jobs<-xts(m[,-1],order.by=m$Date.and.Time)
+dygraph(xts_Jobs,main=paste(params$CS,"Suspended")) %>% dyOptions(useDataTimezone = TRUE,fillGraph = TRUE, fillAlpha = 0.2)%>% dyRangeSelector()%>% dyRangeSelector()%>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
+}
+if(nrow(m) < 2) {print("No Suspended Jobs")} 
+```

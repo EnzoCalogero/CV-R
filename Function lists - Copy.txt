@@ -1,0 +1,14 @@
+--> DDB_Compare()
+compareDDB.R
+
+IT is used to compare the same set of DDBs in two different time windows.
+(it uses DDB table).
+
+-->prune_Analysis()
+insertPerf.R
+
+it analyses the logical pruning performance on the Media Agent.
+(it use teh siddbengine extract files)
+
+--> Animator_Analysis()
+to be Used as a template for animation creations... 

@@ -1,0 +1,52 @@
+---
+title: "LON3 -AFID TREND after 6pm"
+output: html_document
+---
+
+```{r,echo=FALSE,message=FALSE,fig.width=9,fig.height=9}
+library(ggplot2)
+library(plotly)
+library(lubridate)
+library(igraph)
+library(dplyr)
+file<-'C:/temp/lon3/temp.csv'
+AFID <- read.csv(file,sep=',')
+
+
+AFID$DDBID<-paste(AFID$Host,"-ID-",AFID$DDBID)
+AFID$Date1<-mdy_hms(AFID$Date)
+
+##############################################################
+##       Time Filtering                                      #
+##############################################################
+
+
+filterDate<-ymd_hms(now())-days(7)
+
+
+#AFID<-AFID[(AFID$Date1 > filterDate) &(AFID$Date1<=ymd_hms(now())),]
+
+AFID$Date2<-floor_date(AFID$Date1, "hour")
+#AFID$Date3<-floor_date(AFID$Date1, "day")
+
+# round_date
+AFID$Time.Hours<-(AFID$TimeSec/(60*60))
+AFID$timeHs<-as.integer(hour(AFID$Date1))
+#AFID$timeDay<-as.integer(day(AFID$Date3))
+
+
+
+#AFID$days<-mday(AFID$Date1)
+
+AFID<-AFID[(AFID$timeHs>18) |(AFID$timeHs<9),]
+
+```
+
+```{r,echo=FALSE,message=FALSE,fig.width=9,fig.height=9}
+  
+AFID$CS<-as.character(substr(AFID$DDBID,1,5))
+m1 <- ggplot(AFID, aes(x = Date2,y=AFID))+  geom_point(aes(colour = DDBID))  + facet_grid(CS~.)+ ggtitle("LON3 -AFID TREND after 6pm")
+ 
+ggplotly(m1)
+
+```

@@ -1,0 +1,302 @@
+---
+title: "Ord1 Jobs Analysis"
+output: html_document
+---
+
+
+
+```{r,warning=FALSE,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+  library(dygraphs)
+  library(data.table)
+  library(dplyr)
+  library(xts)
+  library(lubridate) #Date management
+  library(ggplot2)
+  library(tidyr)
+today()
+```
+
+```{r,warning=FALSE,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+  Local_tz<-"Europe/London"
+  #  Local_tz<-"America/Chicago"
+  
+  ##import the file
+  file='C:/dati/Jobs_Analisis/ord1/globalJobsord1.csv'
+  #Jobs_RAW <- read.csv(file,sep=",")
+  Jobs_RAW <- fread(file, header = T, sep = ',')
+  #View(Jobs_RAW)
+  Jobs_RAW$Date.and.Time<-ymd_hms(Jobs_RAW$Date)
+  Jobs_RAW$Date.and.Time<-floor_date(Jobs_RAW$Date.and.Time, "hour")
+  #View(Jobs_RAW)
+  
+  AUX_Aggregate<-Jobs_RAW%>%group_by(Date.and.Time,Status)%>%summarise(Number=sum(Number))
+  AUX_Aggregate_CS<-Jobs_RAW%>%group_by(Date.and.Time,Status,CS)%>%summarise(Number=sum(Number))
+  
+  #View(AUX_Aggregate)
+  #View(AUX_Aggregate_CS)
+  rm(Jobs_RAW)
+  Pending<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Pending")
+  Pending$Status<-NULL
+  names(Pending)[2]<-"Pending"
+  #View(Pending)
+
+  Running<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Running")
+  Running$Status<-NULL
+  names(Running)[2]<-"Running"
+  #View(Running)
+  Jobs<-full_join(Pending, Running, by = "Date.and.Time")
+  rm(Pending)
+  rm(Running)
+  
+  Waiting<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Waiting")
+  Waiting$Status<-NULL
+  names(Waiting)[2]<-"Waiting"
+  #View(Waiting)
+  
+  Jobs<-full_join(Jobs, Waiting, by = "Date.and.Time")
+  rm(Waiting)
+  Queued<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Queued")
+  Queued$Status<-NULL
+  names( Queued)[2]<-"Queued"
+ 
+  #View(Queued)
+
+  
+  
+  Jobs<-full_join(Jobs, Queued, by = "Date.and.Time")
+  #View(Jobs)
+  #summary(Jobs)
+  rm(Queued)
+  #Jobs<-Jobs%>%group_by(Date.and.Time,Status)%>%summarise(Number=sum(Number))
+  xts_Jobs<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
+  rm(Jobs)
+#   xts_Pending<-xts(Pending$Number,order.by=Pending$Date.and.Time)
+  #xts_Pending<-names("Pending")
+
+   # View(xts_Jobs)
+ # plot(xts_Jobs)
+
+################################################################
+##             Global vision                                  ##  
+################################################################  
+  
+  
+#    dygraph(xts_Jobs,group = "LON3")%>% dyRangeSelector()#%>%
+    #dySeries("Number.x", label = "LON404-Pending Jobs")%>%
+    #dySeries("Number.y", label = "LON404-Running Jobs")
+  
+#########################################################################
+#                                                                       #
+#    for single CS                                                      #
+#########################################################################
+```
+
+```{r, echo=FALSE,fig.height=6,fig.width=12}
+  #CS401
+  AUX_Aggregate<-subset(AUX_Aggregate_CS,AUX_Aggregate_CS$CS=="CS901")
+  AUX_Aggregate$CS<-NULL
+ 
+  Pending<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Pending")
+  Pending$Status<-NULL
+  names(Pending)[2]<-"Pending"
+ 
+  Running<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Running")
+  Running$Status<-NULL
+  names(Running)[2]<-"Running"
+ 
+  Jobs<-full_join(Pending, Running, by = "Date.and.Time")
+  rm(Pending)
+  rm(Running)
+  
+  Waiting<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Waiting")
+  Waiting$Status<-NULL
+  names(Waiting)[2]<-"Waiting"
+  
+  Jobs<-full_join(Jobs, Waiting, by = "Date.and.Time")
+  rm(Waiting)
+  Queued<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Queued")
+  Queued$Status<-NULL
+  names( Queued)[2]<-"Queued"
+  
+  Jobs<-full_join(Jobs, Queued, by = "Date.and.Time")
+  rm(Queued)
+  xts_Jobs_401<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
+  rm(Jobs)
+  dygraph(xts_Jobs_401,main="CS901",group = "Ord1")%>% dyRangeSelector()
+  
+ 
+```
+
+```{r, echo=FALSE,fig.height=6,fig.width=12}
+  #CS402
+  AUX_Aggregate<-subset(AUX_Aggregate_CS,AUX_Aggregate_CS$CS=="CS902")
+  AUX_Aggregate$CS<-NULL
+ 
+  Pending<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Pending")
+  Pending$Status<-NULL
+  names(Pending)[2]<-"Pending"
+ 
+  Running<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Running")
+  Running$Status<-NULL
+  names(Running)[2]<-"Running"
+ 
+  Jobs<-full_join(Pending, Running, by = "Date.and.Time")
+  rm(Pending)
+  rm(Running)
+  
+  Waiting<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Waiting")
+  Waiting$Status<-NULL
+  names(Waiting)[2]<-"Waiting"
+  
+  Jobs<-full_join(Jobs, Waiting, by = "Date.and.Time")
+  rm(Waiting)
+  Queued<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Queued")
+  Queued$Status<-NULL
+  names( Queued)[2]<-"Queued"
+  
+  Jobs<-full_join(Jobs, Queued, by = "Date.and.Time")
+  rm(Queued)
+  xts_Jobs_402<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
+  rm(Jobs)
+  dygraph(xts_Jobs_402,main="CS902",group = "Ord1")%>% dyRangeSelector()
+ 
+```
+
+```{r, echo=FALSE,fig.height=6,fig.width=12}
+  #CS403
+  AUX_Aggregate<-subset(AUX_Aggregate_CS,AUX_Aggregate_CS$CS=="CS903")
+  AUX_Aggregate$CS<-NULL
+ 
+  Pending<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Pending")
+  Pending$Status<-NULL
+  names(Pending)[2]<-"Pending"
+ 
+  Running<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Running")
+  Running$Status<-NULL
+  names(Running)[2]<-"Running"
+ 
+  Jobs<-full_join(Pending, Running, by = "Date.and.Time")
+  rm(Pending)
+  rm(Running)
+  
+  Waiting<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Waiting")
+  Waiting$Status<-NULL
+  names(Waiting)[2]<-"Waiting"
+  
+  Jobs<-full_join(Jobs, Waiting, by = "Date.and.Time")
+  rm(Waiting)
+  Queued<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Queued")
+  Queued$Status<-NULL
+  names( Queued)[2]<-"Queued"
+  
+  Jobs<-full_join(Jobs, Queued, by = "Date.and.Time")
+  rm(Queued)
+  xts_Jobs_403<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
+  rm(Jobs)
+  dygraph(xts_Jobs_403,main="CS903",group = "Ord1")%>% dyRangeSelector()
+  
+```
+
+```{r, echo=FALSE,fig.height=6,fig.width=12}
+  #CS402
+  AUX_Aggregate<-subset(AUX_Aggregate_CS,AUX_Aggregate_CS$CS=="CS904")
+  AUX_Aggregate$CS<-NULL
+ 
+  Pending<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Pending")
+  Pending$Status<-NULL
+  names(Pending)[2]<-"Pending"
+ 
+  Running<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Running")
+  Running$Status<-NULL
+  names(Running)[2]<-"Running"
+ 
+  Jobs<-full_join(Pending, Running, by = "Date.and.Time")
+  rm(Pending)
+  rm(Running)
+  
+  Waiting<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Waiting")
+  Waiting$Status<-NULL
+  names(Waiting)[2]<-"Waiting"
+  
+  Jobs<-full_join(Jobs, Waiting, by = "Date.and.Time")
+  rm(Waiting)
+  Queued<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Queued")
+  Queued$Status<-NULL
+  names( Queued)[2]<-"Queued"
+  
+  Jobs<-full_join(Jobs, Queued, by = "Date.and.Time")
+  rm(Queued)
+  xts_Jobs_404<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
+  rm(Jobs)
+  dygraph(xts_Jobs_404,main="CS904",group = "Ord1")%>% dyRangeSelector()
+```
+
+```{r, echo=FALSE,fig.height=6,fig.width=12}
+  #CS402
+  AUX_Aggregate<-subset(AUX_Aggregate_CS,AUX_Aggregate_CS$CS=="CS905")
+  AUX_Aggregate$CS<-NULL
+ 
+  Pending<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Pending")
+  Pending$Status<-NULL
+  names(Pending)[2]<-"Pending"
+ 
+  Running<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Running")
+  Running$Status<-NULL
+  names(Running)[2]<-"Running"
+ 
+  Jobs<-full_join(Pending, Running, by = "Date.and.Time")
+  rm(Pending)
+  rm(Running)
+  
+  Waiting<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Waiting")
+  Waiting$Status<-NULL
+  names(Waiting)[2]<-"Waiting"
+  
+  Jobs<-full_join(Jobs, Waiting, by = "Date.and.Time")
+  rm(Waiting)
+  Queued<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Queued")
+  Queued$Status<-NULL
+  names( Queued)[2]<-"Queued"
+  
+  Jobs<-full_join(Jobs, Queued, by = "Date.and.Time")
+  rm(Queued)
+  xts_Jobs_406<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
+  rm(Jobs)
+  dygraph(xts_Jobs_406,main="CS905",group = "Ord1")%>% dyRangeSelector()#%>%
+ 
+```
+
+```{r, echo=FALSE,fig.height=6,fig.width=12}
+  #CS402
+  AUX_Aggregate<-subset(AUX_Aggregate_CS,AUX_Aggregate_CS$CS=="CS906")
+  AUX_Aggregate$CS<-NULL
+ 
+  Pending<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Pending")
+  Pending$Status<-NULL
+  names(Pending)[2]<-"Pending"
+ 
+  Running<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Running")
+  Running$Status<-NULL
+  names(Running)[2]<-"Running"
+ 
+  Jobs<-full_join(Pending, Running, by = "Date.and.Time")
+  rm(Pending)
+  rm(Running)
+  
+  Waiting<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Waiting")
+  Waiting$Status<-NULL
+  names(Waiting)[2]<-"Waiting"
+  
+  Jobs<-full_join(Jobs, Waiting, by = "Date.and.Time")
+  rm(Waiting)
+  Queued<-subset(AUX_Aggregate,AUX_Aggregate$Status=="Queued")
+  Queued$Status<-NULL
+  names( Queued)[2]<-"Queued"
+  
+  Jobs<-full_join(Jobs, Queued, by = "Date.and.Time")
+  rm(Queued)
+  xts_Jobs_410<-xts(Jobs[,-1],order.by=Jobs$Date.and.Time)
+  rm(Jobs)
+  dygraph(xts_Jobs_410,main="CS906",group = "ord1")%>% dyRangeSelector()#%>%
+ 
+```

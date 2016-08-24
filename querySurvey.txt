@@ -1,0 +1,191 @@
+
+############################
+capacity for clients:
+
+
+
+
+SELECT  [SurveyResultId]
+      ,[ClientId]
+      ,[ClientName]
+      ,[AgentTypeId]
+      ,[AgentName]
+      ,[InstanceId]
+      ,[InstanceName]
+      ,[BackupsetId]
+      ,[BackupsetName]
+      ,[AppId]
+      ,[SubclientName]
+      ,[FrontEndSize]
+      ,[DataProtected]
+      ,[DataWritten]
+  FROM [CVCloud].[dbo].[cf_SurveyClientCapacityUsage]
+
+capacity for clients
+################################################################################
+LeastDedupedSubclients
+
+****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP 1000 [SurveyResultId]
+      ,[AppId]
+      ,[Client]
+      ,[Agent]
+      ,[Instance]
+      ,[Backupset]
+      ,[Subclient]
+      ,[StoragePolicy]
+      ,[OnFullJobs]
+      ,[AppSize]
+      ,[DataWritten]
+      ,[DedupSavingPct]
+  FROM [CVCloud].[dbo].[cf_SurveyLeastDedupedSubclients]
+
+
+#####################################################################################
+Dedup ratio per DDB
+
+SELECT TOP 1000 [CommServUniqueId]
+      ,[SurveyResultId]
+      ,[LogDateUTC]
+      ,[LogDate]
+      ,[LastNDays]
+      ,[StoragePolicy]
+      ,[Copy]
+      ,[WeekStartDate]
+      ,[appSizeGB]
+      ,[SizeOnMediaGB]
+      ,[DedupeRatio]
+      ,[Jobs]
+      ,[Clients]
+      ,[PrimaryCopies]
+      ,[DeDupPrimaryCopies]
+      ,[TotalAppSize]
+      ,[TotalSizeOnMedia]
+  FROM [CVCloud].[dbo].[cf_SurveyDDBRatioBySPCopy]
+
+############################################################
+
+Performances
+
+
+
+#############################################################
+SELECT TOP 1000 [ID]
+      ,[CommCellID]
+      ,[CommServIP]
+      ,[CommServGUID]
+      ,[CustomerName]
+      ,[CustomerLicContactName]
+      ,[CustomerLicContactEmail]
+      ,[CustomerLicNotes]
+      ,[CustomerDetails]
+      ,[Flags]
+      ,[CustomerPhone]
+      ,[CommServName]
+      ,[CommServTZ]
+      ,[CommServVersion]
+      ,[CSDBIPAddr]
+      ,[CSDescription]
+      ,[CommServEdition]
+      ,[ModifiedTime]
+      ,[UserFlags]
+      ,[CommCellSurveyEnabled]
+      ,[CommCellSurveyServices]
+      ,[CommCellMiniBrand]
+      ,[CommCellMajorBrand]
+      ,[CommCellInstallTime]
+      ,[APPCommCellID]
+  FROM [CVCloud].[dbo].[cf_CommcellIdNameMap]
+Commcell ID
+###############################################################################
+Size on DISK
+#########################################################
+SELECT TOP 1000 [CommServUniqueId]
+      ,[SurveyResultId]
+      ,[LogDateUTC]
+      ,[LogDate]
+      ,[LastNDays]
+      ,[StoragePolicy]
+      ,[Copy]
+      ,[WeekStartDate]
+      ,[appSizeGB]
+      ,[SizeOnMediaGB]
+      ,[DedupeRatio]
+      ,[Jobs]
+      ,[Clients]
+      ,[PrimaryCopies]
+      ,[DeDupPrimaryCopies]
+      ,[TotalAppSize]
+      ,[TotalSizeOnMedia]
+  FROM [CVCloud].[dbo].[cf_SurveyDDBRatioBySPCopy]
+
+
+
+
+#####################################################################
+#Libraries associated to the storage policy
+#####################################################################
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP 1000 [CommServUniqueId]
+      ,[SurveyResultId]
+      ,[LogDateUTC]
+      ,[LogDate]
+      ,[storagepolicyName]
+      ,[MediaAgent]
+      ,[AssociatedClientCount]
+      ,[ServicePack]
+      ,[LibraryName]
+      ,[Offline]
+      ,[TotalSpaceMB]
+      ,[TotalFreeSpaceMB]
+      ,[TotalCVDataSizeMB]
+      ,[AssociatedClients]
+  FROM [CVCloud].[dbo].[cf_Survey60StoragePolicyDetails]
+
+
+################################################################
+##Space for DDB
+################################################################
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP 1000 [CommServUniqueId]
+      ,[SurveyResultId]
+      ,[LogDateUTC]
+      ,[LogDate]
+      ,[SIDBStrId]
+      ,[SPName]
+      ,[SIDBStoreAliasName]
+      ,[StoragePolicyCpy]
+      ,[totalAppSize]
+      ,[sizeOnMedia]
+      ,[BaselineSize]
+      ,[PolicyId]
+      ,[CopyId]
+
+  FROM [CVCloud].[dbo].[cf_Survey78TblSIDBStoreAndBaselineSize]
+
+
+
+
+######
+######
+######
+######
+
+Work in progress   usage for ddb vs Librarry...
+
+###########################################
+SELECT [cf_CommcellIdNameMap].[CommServName], [cf_Survey78TblSIDBStoreAndBaselineSize].SPName,
+[cf_Survey78TblSIDBStoreAndBaselineSize].StoragePolicyCpy,
+[cf_Survey60StoragePolicyDetails].MediaAgent,
+[cf_Survey78TblSIDBStoreAndBaselineSize].SIDBStrId,
+[cf_Survey78TblSIDBStoreAndBaselineSize].sizeOnMedia,
+[cf_Survey78TblSIDBStoreAndBaselineSize].totalAppSize,
+[CVCloud].[dbo].[cf_Survey60StoragePolicyDetails].LibraryName
+
+FROM [CVCloud].[dbo].[cf_Survey78TblSIDBStoreAndBaselineSize]
+  JOIN [CVCloud].[dbo].[cf_CommcellIdNameMap]
+  on [CVCloud].[dbo].[cf_Survey78TblSIDBStoreAndBaselineSize].[CommServUniqueId]=[CVCloud].[dbo].[cf_CommcellIdNameMap].ID
+  join  [CVCloud].[dbo].[cf_Survey60StoragePolicyDetails] 
+  on [CVCloud].[dbo].[cf_Survey60StoragePolicyDetails].CommServUniqueId =[CVCloud].[dbo].[cf_Survey78TblSIDBStoreAndBaselineSize].CommServUniqueId
+  and [CVCloud].[dbo].[cf_Survey60StoragePolicyDetails].storagepolicyName =[CVCloud].[dbo].[cf_Survey78TblSIDBStoreAndBaselineSize].SPName
+ 

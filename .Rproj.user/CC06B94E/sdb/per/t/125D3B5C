@@ -1,0 +1,18 @@
+{
+    "contents" : "---\ntitle: \"Last Time DBmaintenace Run Report\"\noutput: html_document\n---\n\n\n\n```{r,echo=FALSE}\nlibrary(DT)\nfile=\"C:/dati/dbmaintenace/dbmaintenace.csv\"\ndati<- read.csv(file,sep=',') \ndatatable(dati)\n```\n\n",
+    "created" : 1461270050300.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "2391168593",
+    "id" : "125D3B5C",
+    "lastKnownWriteTime" : 1461270069,
+    "path" : "C:/Users/enzo7311/Desktop/cv_R/CV-R/DBmaintenace.rmd",
+    "project_path" : "DBmaintenace.rmd",
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "type" : "r_markdown"
+}

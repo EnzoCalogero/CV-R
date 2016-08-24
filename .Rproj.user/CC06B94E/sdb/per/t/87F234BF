@@ -1,0 +1,18 @@
+{
+    "contents" : "#################################################################################################\nSpace_Used<-function(m=m){ \n  library(ggplot2)\n  library(lubridate) \n  library(dplyr)\n  library(googleVis)\n  \n  m<-subset(m,m$Space.Occupied.On.Disk>0)\n  Tensor1<-data.frame(CS=m$CS,StoragePolicy=m$ï..Storage.Policy,DiskSpace=m$Space.Occupied.On.Disk)\n  #Tensor1$DiskSpace<-(Tensor1$DiskSpace/(1024^8))\n  \n  Tensor2<-aggregate(DiskSpace~CS,sum,data=Tensor1)\n  Tensor2$StoragePolicy<-Tensor2$CS\n  Tensor2$CS<-\"Commcells\"\n  #Tensor2$DiskSpace<-(Tensor2$DiskSpace/(1024^8))\n  \n  Tensor <- rbind( Tensor1, Tensor2)\n  \n  Tensor3<- data.frame(CS=m$ï..Storage.Policy,StoragePolicy=m$Library,DiskSpace=m$Space.Occupied.On.Disk)\n  #Tensor1$DiskSpace<-(Tensor1$DiskSpace/(1024^8))\n  Tensor <- rbind( Tensor, Tensor3)\n  \n  Tensor4<-aggregate(DiskSpace~StoragePolicy,sum,data=Tensor3)\n  Tensor4$CS<-Tensor4$StoragePolicy\n  #Tensor4$Library<-NULL\n  Tensor4$StoragePolicy<-\"Library\"\n  #T#ensor4$DiskSpace<-Tensor4$DiskSpace/(1024^8)\n  #View(Tensor4)\n  Tensor <- rbind( Tensor, Tensor4)\n  \n  return(Tensor)\n  \n \n}\n\nrollingCS<-function(){\n  library(ggplot2)\n  library(lubridate) \n  library(dplyr)\n  library(googleVis)\n  \n  \nAlllabel<-c(\"CS401\",\"CS411\")\nfor (label in Alllabel){ \nCopyPro<-read.csv(paste(\"C:/Users/enzo7311/Desktop/temp/report/\",label,\"_CopyProperties.csv\",sep=\"\"), stringsAsFactors=FALSE)\nDedupStoreInfo <- read.csv(paste(\"C:/Users/enzo7311/Desktop/temp/report/\",label,\"_DedupStoreInfo.csv\",sep=\"\"), stringsAsFactors=FALSE)\nm=merge(CopyPro,DedupStoreInfo,by=c(\"ï..Storage.Policy\",\"MediaAgent\"))\n\nm$CS<-label\nView(m)\n\nTensor<-Space_Used(m)\n\n\nAUXPlot7<-gvisSankey(Tensor, from='CS', to='StoragePolicy', weight='DiskSpace',\n                     options = list(height=\"600px\",width=\"1200px\",title=\"Space consumed by STorage policy\"))\n\nplot(AUXPlot7)\n}\n}",
+    "created" : 1455456115130.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "1010882763",
+    "id" : "87F234BF",
+    "lastKnownWriteTime" : 1455979261,
+    "path" : "C:/Users/enzo7311/Desktop/cv_R/CV-R/SpaceUsed.R",
+    "project_path" : "SpaceUsed.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : true,
+    "type" : "r_source"
+}

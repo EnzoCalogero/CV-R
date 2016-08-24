@@ -1,0 +1,84 @@
+---
+title: "ODBC Report"
+author: "Enzo"
+date: "6 March 2016"
+output: html_document
+---
+
+
+
+```{r,echo=FALSE,message=FALSE}
+CS="CS401"
+ID=30
+DAY=30
+
+  library(RODBC)
+  library(lubridate) 
+  library(xts)
+  library(dygraphs)
+
+  DBconn <- odbcConnect(CS,uid='backup-tools',pwd= '4vwnP5Bo')
+  query="SELECT  [SIDBStoreId],[SubStoreId],[HistoryType],[ModifiedTime],
+[PrimaryEntries],[SecondaryEntries],[AvgQITime],[AvgQITimeSampleCount],[NumOfConnections],[ZeroRefCount],
+[DataSizeToPrune],[SizeOccupied],[DDBManagedSize],  [DeleteChunkCount]
+FROM [commserv].[dbo].[IdxSIDBUsageHistory]"
+  
+  DDB<-sqlQuery(DBconn,query)  
+  
+
+  odbcClose(DBconn)
+  DDB$ModifiedTime<-as.POSIXlt(as.numeric(DDB$ModifiedTime),origin="1970-01-01",tz="GMT")
+  #View(DDB)
+  DDB$ModifiedTime<-ymd_hms(DDB$ModifiedTime)
+  
+  DDB<-subset(DDB,DDB$SIDBStoreId==ID)
+  DDB<-subset(DDB,DDB$ModifiedTime>ymd_hms(now()- days(DAY)))
+```
+
+
+
+```{r, echo=FALSE}
+  DDB$AvgQITimeL<-log(DDB$AvgQITime+1)
+  xts_Insert<-xts(DDB$AvgQITimeL,order.by=DDB$ModifiedTime)
+ # View(xts_Insert)
+  dygraph(xts_Insert,main=paste(CS,"DDBid-",ID,"- Log AVG Insert Time", "Last ", DAY))%>% dyRangeSelector()
+```
+
+```{r}
+
+  xts_zeroRef<-xts(DDB$ZeroRefCount,order.by=DDB$ModifiedTime)
+ # View(xts_zeroRef)
+  dygraph(xts_zeroRef,main="ZERO REF Count")%>% dyRangeSelector()  
+```  
+
+```{r}
+xts_dataProne<-xts(DDB$DataSizeToPrune,order.by=DDB$ModifiedTime)
+  #View(xts_dataProne)
+  dygraph(xts_dataProne,main="data to Prone")%>% dyRangeSelector()  
+```  
+
+```{r}
+  DDB$ratio<-100*DDB$ZeroRefCount/DDB$PrimaryEntries
+  xts_ratio<-xts(DDB$ratio,order.by=DDB$ModifiedTime)
+  #View(xts_ratio)
+  dygraph(xts_ratio,main="Pending Ratio Pruning")%>% dyRangeSelector()
+```
+
+```{r}
+ DDB$DEDUPratio<-DDB$SecondaryEntries/DDB$PrimaryEntries  
+  xts_DEdupratio<-xts(DDB$DEDUPratio,order.by=DDB$ModifiedTime)
+  #View(xts_DEdupratio)
+  dygraph(xts_DEdupratio,main="DEDUP Ratio")%>% dyRangeSelector()  
+
+```
+
+Time Series Analysis for Log Insert Time
+```{r}
+  X2<-xts_Insert
+    hr.mean<-period.apply(X2, endpoints(X2, "hours"), mean)
+    aa<-ts(hr.mean,frequency = 24)
+    fit<-stl(aa[,1],s.window=24)
+    plot(fit)
+
+```  
+    

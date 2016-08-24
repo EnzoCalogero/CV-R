@@ -1,0 +1,78 @@
+---
+title: "Workload"
+author: "Enzo"
+output: html_document
+---
+
+
+```{r,echo=FALSE,message=FALSE}
+
+
+Ora=21
+which<-"2Week"
+
+  library(RODBC)
+  library(lubridate) 
+  library(xts)
+  library(dygraphs)
+  library(dplyr)
+   library(ggplot2)
+  library(tidyr)
+  library(reshape2)
+  DBconn <- odbcConnect("cs401",uid='backup-tools',pwd= '4vwnP5Bo')
+
+  Jobs<-sqlQuery(DBconn,paste("SELECT [jobinitfrom],[clientname],[idataagent],[data_sp],[jobstatus],[backuplevel],[startdate],[enddate],[durationunixsec],[numstreams],[numbytesuncomp],[numbytescomp],[numobjects],[totalBackupSize] FROM [commserv].[dbo].[CommCellBackupInfo] where [startdate] > '2016-03-03 00:00:00'")) 
+  odbcClose(DBconn)
+  
+ # View(Jobs)
+  Jobs$numbytesuncomp<-(Jobs$numbytesuncomp/1024^4)
+  Jobs$numbytescomp<-(Jobs$numbytescomp/1024^4)
+  Jobs$startdate<-ymd_hms(Jobs$startdate)
+  #print("222")
+  Jobs$startdate<-floor_date(Jobs$startdate, "hour")
+  #View(Jobs)
+```
+
+```{r}
+
+jobs_AGG_h<-Jobs%>%group_by(startdate,data_sp)%>%summarise(numbytesuncomp=sum(numbytesuncomp),durationunixsec=sum(durationunixsec),numbytescomp=sum(numbytescomp),totalBackupSize=sum(totalBackupSize))
+  
+  #----------------------------------------------------------
+   library(stringr)
+library(dplyr)
+  jobs_AGG_h$hour<-hour(jobs_AGG_h$startdate)
+  jobs_AGG_h<-subset(jobs_AGG_h,jobs_AGG_h$hour==Ora)
+  
+  jobs_AGG_h<-jobs_AGG_h %>%  filter(str_detect(data_sp, which))
+  #jobs_AGG_h<-subset(jobs_AGG_h,grep("", jobs_AGG_h$data_sp))
+  
+#---------------------------------------------------  
+ ```
+
+```{r,fig.width=14} 
+  
+  
+  
+ # jobs_AGG_h$startdate<-(numbytesuncomp$startdate/1024^3)
+  numbytesuncomp <- dcast(jobs_AGG_h, startdate  ~ `data_sp`,max, value.var="numbytesuncomp")
+  View(numbytesuncomp)
+  
+  numbytesuncomp<-xts(numbytesuncomp[,-1],order.by=numbytesuncomp$startdate)
+ # numbytesuncomp$numbytesuncomp<-(numbytesuncomp$numbytesuncomp/1024^3)
+  dygraph(numbytesuncomp,main="numbytesuncomp",group = "LON3")%>% dyRangeSelector()%>% dyHighlight(highlightCircleSize = 6, 
+              highlightSeriesBackgroundAlpha = 0.4,
+              hideOnMouseOut = TRUE)
+  ```
+
+```{r,fig.width=14} 
+  
+  numbytescomp <- dcast(jobs_AGG_h, startdate  ~ `data_sp`,max, value.var="numbytescomp")
+  #View(numbytescomp)
+  numbytescomp<-xts(numbytescomp[,-1],order.by=numbytescomp$startdate)
+  
+  dygraph(numbytescomp,main="numbytescomp",group = "LON3")%>% dyRangeSelector()%>% dyRangeSelector()%>% dyHighlight(highlightCircleSize = 6, 
+              highlightSeriesBackgroundAlpha = 0.4,
+              hideOnMouseOut = FALSE)
+```
+
+

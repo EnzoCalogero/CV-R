@@ -1,0 +1,262 @@
+---
+title: "DFW1 Jobs Analysis Waiting Jobs (WJxH) Report"
+output: html_document
+---
+
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+  library(dygraphs)
+  library(data.table)
+  library(dplyr)
+  library(xts)
+  library(lubridate) #Date management
+  library(ggplot2)
+  library(tidyr)
+library(reshape2)
+library(DT)
+day_=15   #days used for the report
+hours_=9  #until what time in the morning used for the computation  
+entry_=0 #Number of lines to be used for generating the graphs.
+#print("Created on")
+now()
+```
+
+```{r,echo=FALSE, ,message=FALSE,fig.height=6,fig.width=12,warning=FALSE}
+
+  ##import the file
+  file='c:/dati/Jobs_Analisis/dfw1/globalJobsdfw1A.csv'
+  #Jobs_RAW <- read.csv(file,sep=",")
+  
+Jobs_RAW <- fread(file, header = T, sep = ',')
+  #View(Jobs_RAW)
+  Jobs_RAW$Date.and.Time<-ymd_hms(Jobs_RAW$Date)
+  Jobs_RAW$Date.and.Time<-floor_date(Jobs_RAW$Date.and.Time, "hour")
+  Jobs_RAW<-subset(Jobs_RAW,Jobs_RAW$Status== "Waiting")
+#  View(Jobs_RAW)
+  
+# Creazione Dataframe per singolo Day
+  Jobs_night<-Jobs_RAW
+  Jobs_night$hours<-hour(Jobs_night$Date.and.Time)
+  Jobs_night<-subset(Jobs_night,Jobs_night$hours<hours_)
+  Jobs_night$Date.and.Time<-floor_date(Jobs_night$Date.and.Time, "day")
+  #Jobs_night<-subset(Jobs_night,Jobs_night$Status== "Waiting")
+  
+#Espansione per i dati generici...  
+data_wide <- dcast(Jobs_RAW, Date.and.Time + Status+CS  ~ `Storage Policy`,max, value.var="Number")
+#View(data_wide)
+#rm(Jobs_RAW)
+#data_wide<-subset(data_wide,data_wide$Status== "Waiting")
+data_wide<-subset(data_wide,data_wide$Date.and.Time> ymd_hms(now()-days(day_)))
+
+#Creazione per night dataframe
+#data_night<-subset(data_night,data_night$Status== "Waiting")
+
+data_night <- dcast(Jobs_night, Date.and.Time + Status+CS  ~ `Storage Policy`,max, value.var="Number")
+#data_night<-subset(data_night,data_night$Status== "Waiting")
+data_night<-subset(data_night,data_night$Date.and.Time> ymd_hms(now()-days(day_)))
+
+```
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,fig.height=6,fig.width=12}
+#Preparazione data frame per Job Wait x Hour
+Jobs_night$`Storage Policy`<-paste(Jobs_night$CS, Jobs_night$`Storage Policy`)
+Jobs_night_Daily<-aggregate(Number~Date.and.Time+CS+`Storage Policy`,sum,data=Jobs_night)
+
+Jobs_night_Daily<-subset(Jobs_night_Daily,Jobs_night_Daily$Date.and.Time > ymd_hms(now()-days(day_)))
+
+
+Jobs_night_Full<-aggregate(Number~`Storage Policy`,sum,data=Jobs_night_Daily)
+
+##Graph 
+Jobs_night_Daily_C <- dcast(Jobs_night_Daily, Date.and.Time +CS  ~ `Storage Policy`,max,value.var="Number")
+
+xts_night_Daily_C<-xts(Jobs_night_Daily_C[,-1],order.by=Jobs_night_Daily_C$Date.and.Time)
+
+
+```
+
+
+*****
+
+## Last `r day_ ` Days SPs Big Offenders
+### (WJxH Integral Aggregated for the `r day_ ` Last Days)
+
+*****
+
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+Jobs_night_Full$WJxH<-Jobs_night_Full$Number
+Jobs_night_Full$Number<-NULL
+
+#Jobs_night_Full<-Jobs_night_Full[ order(Jobs_night_Full$WJxH),]
+datatable(Jobs_night_Full,options = list(rownames = FALSE,order=list(2,'des'),pageLength = 10))
+```
+
+*****
+*****
+*****
+
+## All WJxH Daily Entries for the last `r day_ ` Days 
+### (WJxH Integral for Each Single Day)
+
+*****
+
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+Jobs_night_Daily$WJxH<-Jobs_night_Daily$Number
+Jobs_night_Daily$Number<-NULL
+Jobs_night_Daily$`Week Day`<-wday(Jobs_night_Daily$Date.and.Time, label=TRUE)
+Jobs_night_Daily$Date.and.Time<-as.Date(Jobs_night_Daily$Date.and.Time)
+Jobs_night_Daily<-Jobs_night_Daily[c('Date.and.Time','Week Day','Storage Policy','WJxH')]
+datatable(Jobs_night_Daily,options = list(rownames = FALSE,order=list(4,'des'),pageLength = 15))
+
+#dygraph(xts_night_Daily_C,main="xts_night_Daily_C")%>% dyRangeSelector() %>%
+#  dyLegend(show = "always", hideOnMouseOut = FALSE)
+```
+
+*****
+*****
+*****
+
+# Waiting jobs Time Series for CSs (with #[WJxH] > `r entry_`) 
+
+*****
+
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+  #CS401
+data_widet<-subset(data_wide,data_wide$CS== "CS01")
+if(nrow(data_widet)>entry_){ 
+   xts_Jobs<-xts(data_widet[,-1],order.by=data_widet$Date.and.Time)
+   dygraph(xts_Jobs,main="CS01 Waiting Jobs")%>% dyRangeSelector() %>%
+     dyLegend(show = "follow")
+}
+####night data
+
+#data_nightT<-subset(data_night,data_night$CS== "CS401")
+#if(nrow(data_nightT)>0){  
+#xts_Jobs<-xts(data_nightT[,-1],order.by=data_nightT$Date.and.Time)
+
+# dygraph(xts_Jobs,main="CS401 Saturation Index")%>% dyRangeSelector() %>% dyLegend(show = "follow")
+
+#}
+
+```
+*****
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+  #CS402
+data_widet<-subset(data_wide,data_wide$CS== "CS07")
+if(nrow(data_widet)>entry_){  
+   xts_Jobs<-xts(data_widet[,-1],order.by=data_widet$Date.and.Time)
+   dygraph(xts_Jobs,main="CS07")%>% dyRangeSelector() %>%
+     dyLegend(show = "follow")
+}
+####night data
+
+#data_nightT<-subset(data_night,data_night$CS== "CS402")
+# if(nrow(data_nightT)>0){ 
+#xts_Jobs<-xts(data_nightT[,-1],order.by=data_nightT$Date.and.Time)
+
+#dygraph(xts_Jobs,main="CS402")%>% dyRangeSelector() %>%
+#  dyLegend(show = "follow")
+#}
+```
+*****
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+  #CS903
+data_widet<-subset(data_wide,data_wide$CS== "CS12")
+if(nrow(data_widet)>entry_){  
+  
+  xts_Jobs<-xts(data_widet[,-1],order.by=data_widet$Date.and.Time)
+  dygraph(xts_Jobs,main="CS12")%>% dyRangeSelector() %>%
+    dyLegend(show = "follow")
+}
+####night data
+
+#data_nightT<-subset(data_night,data_night$CS== "CS403")
+#if(nrow(data_nightT)>0){
+#xts_Jobs<-xts(data_nightT[,-1],order.by=data_nightT$Date.and.Time)
+
+#dygraph(xts_Jobs,main="CS403")%>% dyRangeSelector() %>%
+#  dyLegend(show = "follow")
+#}
+
+```
+*****
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+  #CS404
+data_widet<-subset(data_wide,data_wide$CS== "CS20")
+if(nrow(data_widet)>entry_){  
+
+  xts_Jobs<-xts(data_widet[,-1],order.by=data_widet$Date.and.Time)
+  dygraph(xts_Jobs,main="CS20")%>% dyRangeSelector() %>%
+    dyLegend(show = "follow")
+}
+####night data
+
+#data_nightT<-subset(data_night,data_night$CS== "CS404")
+#if(nrow(data_nightT)>0){  
+#xts_Jobs<-xts(data_nightT[,-1],order.by=data_nightT$Date.and.Time)
+
+#dygraph(xts_Jobs,main="CS404")%>% dyRangeSelector() %>%
+#  dyLegend(show = "follow")
+#}
+```
+*****
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+  #CS406
+data_widet<-subset(data_wide,data_wide$CS== "CS21")
+if(nrow(data_widet)>entry_){  
+  
+  xts_Jobs<-xts(data_widet[,-1],order.by=data_widet$Date.and.Time)
+  dygraph(xts_Jobs,main="CS21")%>% dyRangeSelector() %>%
+    dyLegend(show = "follow")
+}
+####night data
+
+#  data_nightT<-subset(data_night,data_night$CS== "CS406")
+#if(nrow(data_nightT)>0){  
+#  xts_Jobs<-xts(data_nightT[,-1],order.by=data_nightT$Date.and.Time)
+
+#  dygraph(xts_Jobs,main="CS406")%>% dyRangeSelector() %>%
+#    dyLegend(show = "follow")
+#}
+
+```
+*****
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+  #CS410
+data_widet<-subset(data_wide,data_wide$CS== "AONCS")
+if(nrow(data_widet)>entry_){  
+
+   xts_Jobs<-xts(data_widet[,-1],order.by=data_widet$Date.and.Time)
+   dygraph(xts_Jobs,main="AONCS")%>% dyRangeSelector() %>%
+    dyLegend(show = "follow")
+}
+####night data
+
+#data_nightT<-subset(data_night,data_night$CS== "CS410")
+#if(nrow(data_nightT)>0){  
+#xts_Jobs<-xts(data_nightT[,-1],order.by=data_nightT$Date.and.Time)
+
+#dygraph(xts_Jobs,main="CS410")%>% dyRangeSelector() %>%
+#  dyLegend(show = "follow")
+#}
+```
+
+*****
+```{r,echo=FALSE,message=FALSE,fig.height=6,fig.width=12}
+  #CS410
+data_widet<-subset(data_wide,data_wide$CS== "CS41")
+if(nrow(data_widet)>entry_){  
+
+   xts_Jobs<-xts(data_widet[,-1],order.by=data_widet$Date.and.Time)
+   dygraph(xts_Jobs,main="CS41")%>% dyRangeSelector() %>%
+    dyLegend(show = "follow")
+}
+####night data
+
+#data_nightT<-subset(data_night,data_night$CS== "CS410")
+#if(nrow(data_nightT)>0){  
+#xts_Jobs<-xts(data_nightT[,-1],order.by=data_nightT$Date.and.Time)
+
+#dygraph(xts_Jobs,main="CS410")%>% dyRangeSelector() %>%
+#  dyLegend(show = "follow")
+#}
+```
